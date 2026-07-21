@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import UIKit
 
 @MainActor
 final class GameViewModel: ObservableObject {
@@ -14,6 +15,7 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var investigation: InvestigationState?
     @Published private(set) var isGenerating = false
     @Published private(set) var errorMessage: String?
+    @Published var capturedImage: UIImage?
 
     @Published var selectedSuspectID: UUID?
 
@@ -26,6 +28,7 @@ final class GameViewModel: ObservableObject {
     }
 
     var canGenerate: Bool {
+        capturedImage != nil &&
         objectNames.count == 4 &&
         objectNames.allSatisfy {
             !$0.trimmingCharacters(
@@ -178,5 +181,6 @@ final class GameViewModel: ObservableObject {
         investigation = nil
         selectedSuspectID = nil
         errorMessage = nil
+        capturedImage = nil
     }
 }

@@ -1,7 +1,9 @@
 import SwiftUI
+import UIKit
 
 struct GameView: View {
     @StateObject private var viewModel = GameViewModel()
+    @State private var isShowingCamera = false
 
     var body: some View {
         NavigationStack {
@@ -18,6 +20,10 @@ struct GameView: View {
             .navigationTitle(
                 viewModel.mystery?.title ?? "Murder Room"
             )
+            .sheet(isPresented: $isShowingCamera) {
+                CameraPicker(image: $viewModel.capturedImage)
+                    .ignoresSafeArea()
+            }
         }
     }
 
@@ -34,7 +40,27 @@ struct GameView: View {
                     "Manual entry temporarily replaces the camera."
                 )
             }
+            
+            Section("Room photograph") {
+                if let capturedImage = viewModel.capturedImage {
+                    Image(uiImage: capturedImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxHeight: 240)
+                        .clipShape(
+                            RoundedRectangle(cornerRadius: 12)
+                        )
+                }
 
+                Button(
+                    viewModel.capturedImage == nil
+                        ? "Photograph Room"
+                        : "Retake Photograph"
+                ) {
+                    isShowingCamera = true
+                }
+            }
+            
             Section("Room objects") {
                 ForEach(
                     viewModel.objectNames.indices,
@@ -70,6 +96,10 @@ struct GameView: View {
                     !viewModel.canGenerate ||
                     viewModel.isGenerating
                 )
+            } footer: {
+                if viewModel.capturedImage == nil {
+                    Text("Photograph your room before beginning the case.")
+                }
             }
         }
     }
@@ -195,38 +225,39 @@ struct GameView: View {
             Section {
                 Text(
                     resolution.isCorrect
-                        ? "Correct accusation"
-                        : "Incorrect accusation"
+                    ? "Correct accusation"
+                    : "Incorrect accusation"
                 )
                 .font(.title2)
                 .fontWeight(.bold)
             }
-
+            
             Section("The killer") {
                 Text(resolution.killer.name)
             }
-
+            
             Section("Motive") {
                 Text(resolution.reconstruction.motive)
             }
-
+            
             Section("Method") {
                 Text(resolution.reconstruction.method)
             }
-
+            
             Section("Time of death") {
                 Text(resolution.reconstruction.timeOfDeath)
             }
-
+            
             Section("Opportunity") {
                 Text(resolution.reconstruction.opportunity)
             }
-
+            
             Section {
                 Button("Start Another Case") {
                     viewModel.startAnotherCase()
                 }
             }
+            
         }
     }
 }

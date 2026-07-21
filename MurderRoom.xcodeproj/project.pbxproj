@@ -25,6 +25,7 @@
 		544EFF2E300F842E003E7F2D /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544EFF2D300F83F9003E7F2D /* GameView.swift */; };
 		544EFF2F300F8432003E7F2D /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544EFF2C300F83E9003E7F2D /* GameViewModel.swift */; };
 		544EFF31300F8C44003E7F2D /* SuspectAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */; };
+		5456C898300FA54A0096F572 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C897300FA5440096F572 /* CameraPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		544EFF2C300F83E9003E7F2D /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		544EFF2D300F83F9003E7F2D /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuspectAssessment.swift; sourceTree = "<group>"; };
+		5456C897300FA5440096F572 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -179,6 +181,7 @@
 		544EFF12300F6605003E7F2D /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				5456C897300FA5440096F572 /* CameraPicker.swift */,
 				544EFF26300F75E8003E7F2D /* HardcodedMysteryGenerator.swift */,
 			);
 			path = Infrastructure;
@@ -349,6 +352,7 @@
 				544EFF21300F6D18003E7F2D /* MysteryDeduction.swift in Sources */,
 				544EFF20300F6D13003E7F2D /* MysteryCase.swift in Sources */,
 				544EFF29300F7DFF003E7F2D /* MysteryResolution.swift in Sources */,
+				5456C898300FA54A0096F572 /* CameraPicker.swift in Sources */,
 				544EFF1D300F6D07003E7F2D /* RoomObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -512,6 +516,7 @@
 				DEVELOPMENT_TEAM = 229VF74PS3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Murder Room uses your camera to turn your room into a fictional crime scene.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -544,6 +549,7 @@
 				DEVELOPMENT_TEAM = 229VF74PS3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Murder Room uses your camera to turn your room into a fictional crime scene.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -572,6 +578,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 229VF74PS3;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
@@ -593,6 +600,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 229VF74PS3;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
@@ -613,6 +621,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 229VF74PS3;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.thomaspercival.MurderRoomUITests;
@@ -632,6 +641,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 229VF74PS3;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.thomaspercival.MurderRoomUITests;

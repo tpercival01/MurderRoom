@@ -697,4 +697,28 @@ struct MurderRoomTests {
         )
         #expect(investigation.resolution?.isCorrect == true)
     }
+    
+    @Test
+    func recognitionLabelsAreNormalisedAndDeduplicated() {
+        let labels = [
+            "machine",
+            "computer",
+            "laptop",
+            "consumer electronics",
+            "computer monitor",
+            "screen",
+            "desk"
+        ]
+
+        let results = RoomObjectRecogniser
+            .normaliseLabels(labels)
+
+        #expect(
+            results == [
+                "Computer",
+                "Monitor",
+                "Desk"
+            ]
+        )
+    }
 }

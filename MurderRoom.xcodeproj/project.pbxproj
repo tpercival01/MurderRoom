@@ -26,6 +26,7 @@
 		544EFF2F300F8432003E7F2D /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544EFF2C300F83E9003E7F2D /* GameViewModel.swift */; };
 		544EFF31300F8C44003E7F2D /* SuspectAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */; };
 		5456C898300FA54A0096F572 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C897300FA5440096F572 /* CameraPicker.swift */; };
+		5456C89A300FA8AD0096F572 /* RoomObjectRecogniser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		544EFF2D300F83F9003E7F2D /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuspectAssessment.swift; sourceTree = "<group>"; };
 		5456C897300FA5440096F572 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomObjectRecogniser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -181,6 +183,7 @@
 		544EFF12300F6605003E7F2D /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */,
 				5456C897300FA5440096F572 /* CameraPicker.swift */,
 				544EFF26300F75E8003E7F2D /* HardcodedMysteryGenerator.swift */,
 			);
@@ -342,6 +345,7 @@
 				544EFF31300F8C44003E7F2D /* SuspectAssessment.swift in Sources */,
 				544EFF25300F75DD003E7F2D /* MysteryGenerating.swift in Sources */,
 				544EFF2F300F8432003E7F2D /* GameViewModel.swift in Sources */,
+				5456C89A300FA8AD0096F572 /* RoomObjectRecogniser.swift in Sources */,
 				544EFF2E300F842E003E7F2D /* GameView.swift in Sources */,
 				544EFF0D300F6529003E7F2D /* ContentView.swift in Sources */,
 				544EFF27300F7620003E7F2D /* HardcodedMysteryGenerator.swift in Sources */,

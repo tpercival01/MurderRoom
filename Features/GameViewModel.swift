@@ -16,19 +16,28 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var isGenerating = false
     @Published private(set) var errorMessage: String?
     @Published var capturedImage: UIImage?
+    @Published private(set) var isRecognisingObjects = false
+    @Published private(set) var hasConfirmedObjects = false
+    @Published private(set) var recognitionMessage: String?
 
     @Published var selectedSuspectID: UUID?
 
     private let generator: any MysteryGenerating
+    private let recogniser: RoomObjectRecogniser
 
     init(
-        generator: any MysteryGenerating = HardcodedMysteryGenerator()
+        generator: any MysteryGenerating =
+            HardcodedMysteryGenerator(),
+        recogniser: RoomObjectRecogniser =
+            RoomObjectRecogniser()
     ) {
         self.generator = generator
+        self.recogniser = recogniser
     }
 
     var canGenerate: Bool {
         capturedImage != nil &&
+        hasConfirmedObjects &&
         objectNames.count == 4 &&
         objectNames.allSatisfy {
             !$0.trimmingCharacters(
@@ -49,6 +58,64 @@ final class GameViewModel: ObservableObject {
             investigation.revealedClueIDs.count ==
             mystery.clues.count &&
             !investigation.isResolved
+    }
+    
+    func recogniseRoomObjects() {
+        hasConfirmedObjects = false
+        
+        guard let capturedImage else {
+            errorMessage = "Photograph your room first."
+            return
+        }
+
+        isRecognisingObjects = true
+        errorMessage = nil
+        recognitionMessage = nil
+
+        defer {
+            isRecognisingObjects = false
+        }
+
+        do {
+            var suggestions = try recogniser.recognise(
+                in: capturedImage
+            )
+
+            while suggestions.count < 4 {
+                suggestions.append("")
+            }
+
+            objectNames = Array(suggestions.prefix(4))
+
+            recognitionMessage =
+                "Review and correct the suggested objects."
+        } catch {
+            recognitionMessage = """
+            No useful suggestions were found. \
+            Enter four objects manually.
+            """
+        }
+    }
+    
+    func confirmObjects() {
+        let cleanedNames = objectNames.map {
+            $0.trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+        }
+
+        guard
+            cleanedNames.count == 4,
+            cleanedNames.allSatisfy({ !$0.isEmpty })
+        else {
+            errorMessage = "Confirm four room objects."
+            return
+        }
+
+        objectNames = cleanedNames
+        hasConfirmedObjects = true
+        errorMessage = nil
+        recognitionMessage = "Objects confirmed."
     }
 
     func generateMystery() async {
@@ -175,6 +242,10 @@ final class GameViewModel: ObservableObject {
             errorMessage = "The suspect assessment could not be saved."
         }
     }
+    
+    func objectNamesDidChange() {
+        hasConfirmedObjects = false
+    }
 
     func startAnotherCase() {
         mystery = nil
@@ -182,5 +253,7 @@ final class GameViewModel: ObservableObject {
         selectedSuspectID = nil
         errorMessage = nil
         capturedImage = nil
+        recognitionMessage = nil
+        hasConfirmedObjects = false
     }
 }

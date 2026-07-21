@@ -59,6 +59,27 @@ struct GameView: View {
                 ) {
                     isShowingCamera = true
                 }
+                
+                Button {
+                    viewModel.recogniseRoomObjects()
+                } label: {
+                    if viewModel.isRecognisingObjects {
+                        ProgressView()
+                    } else {
+                        Text("Suggest Objects")
+                    }
+                }
+                .disabled(
+                    viewModel.capturedImage == nil ||
+                    viewModel.isRecognisingObjects
+                )
+
+                if let recognitionMessage =
+                    viewModel.recognitionMessage {
+                    Text(recognitionMessage)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             
             Section("Room objects") {
@@ -70,7 +91,36 @@ struct GameView: View {
                         "Object \(index + 1)",
                         text: $viewModel.objectNames[index]
                     )
+                    .onChange(
+                        of: viewModel.objectNames[index]
+                    ) {
+                        viewModel.objectNamesDidChange()
+                    }
                 }
+            }
+            
+            Section {
+                Button(
+                    viewModel.hasConfirmedObjects
+                        ? "Objects Confirmed"
+                        : "Confirm These Objects"
+                ) {
+                    viewModel.confirmObjects()
+                }
+                .disabled(
+                    viewModel.hasConfirmedObjects ||
+                    viewModel.objectNames.contains {
+                        $0.trimmingCharacters(
+                            in: .whitespacesAndNewlines
+                        ).isEmpty
+                    }
+                )
+            } footer: {
+                Text(
+                    viewModel.hasConfirmedObjects
+                        ? "These objects will become part of the mystery."
+                        : "Correct any suggestions before confirming."
+                )
             }
 
             if let errorMessage = viewModel.errorMessage {

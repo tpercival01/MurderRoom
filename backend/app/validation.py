@@ -35,6 +35,34 @@ BANNED_REASONING_PHRASES = {
     "no relevance",
     "unrelated to the murder",
     "unrelated to the incident",
+    "shows the killer was near",
+    "proves the killer was near",
+    "meaning the killer was near",
+    "shows the killer was present",
+    "proves the killer was present",
+}
+
+BANNED_EXTERNAL_LOCATIONS = {
+    "break room",
+    "study",
+    "kitchen",
+    "garden",
+    "hallway",
+    "corridor",
+    "car park",
+    "bedroom",
+    "bathroom",
+}
+
+BANNED_CORE_METHOD_TERMS = {
+    "poison",
+    "sedative",
+    "toxin",
+    "cyanide",
+    "allergic reaction",
+    "electrocution",
+    "electrical surge",
+    "live feed",
 }
 
 STOP_WORDS = {
@@ -75,20 +103,64 @@ def validate_core_truth(
     primary_object = room_objects[
         draft.primary_room_object_index
     ].casefold()
+    contradiction_object = room_objects[
+        draft.contradiction_room_object_index
+    ].casefold()
 
-    if primary_object not in draft.method.casefold():
+    method_text = draft.method.casefold()
+    denial_text = draft.killer_denial.casefold()
+    hidden_text = draft.hidden_detail.casefold()
+    revealed_text = draft.killer_revealed_detail.casefold()
+    flaw_text = draft.killer_alibi_flaw.casefold()
+
+    if primary_object not in method_text:
         issues.append(
             "The method does not mention its primary room object."
         )
 
-    flaw_text = draft.killer_alibi_flaw.casefold()
+    if contradiction_object not in denial_text:
+        issues.append(
+            "The killer denial does not mention the locked "
+            "contradiction object."
+        )
 
-    if not any(
-        room_object.casefold() in flaw_text
-        for room_object in room_objects
+    if contradiction_object not in hidden_text:
+        issues.append(
+            "The hidden detail does not mention the locked "
+            "contradiction object."
+        )
+
+    if contradiction_object not in flaw_text:
+        issues.append(
+            "The killer alibi flaw does not mention the locked "
+            "contradiction object."
+        )
+
+    if not _has_shared_detail(
+        draft.hidden_detail,
+        draft.killer_revealed_detail,
     ):
         issues.append(
-            "The killer alibi flaw does not use a supplied room object."
+            "The killer's revealed detail does not match the "
+            "locked hidden detail."
+        )
+
+    if not _has_shared_detail(
+        draft.hidden_detail,
+        draft.killer_alibi_flaw,
+    ):
+        issues.append(
+            "The killer alibi flaw does not explain the locked "
+            "hidden detail."
+        )
+
+    if not _has_shared_detail(
+        draft.killer_denial,
+        draft.killer_alibi_flaw,
+    ):
+        issues.append(
+            "The killer alibi flaw does not directly address the "
+            "killer's denial."
         )
 
     combined = " ".join(
@@ -100,10 +172,31 @@ def validate_core_truth(
         ]
     ).casefold()
 
+    for banned_term in BANNED_CORE_METHOD_TERMS:
+        if banned_term in combined:
+            issues.append(
+                "Core truth uses unsupported reasoning: "
+                f"{banned_term}."
+            )
+
     for banned_term in BANNED_EVIDENCE_TERMS:
         if banned_term in combined:
             issues.append(
                 f"Core truth uses prohibited evidence: {banned_term}."
+            )
+
+    for banned_phrase in BANNED_REASONING_PHRASES:
+        if banned_phrase in flaw_text:
+            issues.append(
+                "Core truth uses weak alibi reasoning: "
+                f"{banned_phrase}."
+            )
+
+    for location in BANNED_EXTERNAL_LOCATIONS:
+        if location in combined:
+            issues.append(
+                "Core truth introduces an external location: "
+                f"{location}."
             )
 
     for key in SuspectKey:
@@ -113,9 +206,12 @@ def validate_core_truth(
             )
             break
 
-    if not re.search(r"\b\d{1,2}:\d{2}\b", draft.time_of_death):
+    if not re.fullmatch(
+        r"(?:[01]\d|2[0-3]):[0-5]\d",
+        draft.time_of_death.strip(),
+    ):
         issues.append(
-            "Time of death must contain at least one 24-hour time."
+            "Time of death must be one exact 24-hour time."
         )
 
     if draft.killer_alibi.strip() == draft.killer_alibi_flaw.strip():
@@ -124,7 +220,6 @@ def validate_core_truth(
         )
 
     return issues
-
 
 def validate_suspect_cast(
     suspect_cast: SuspectCastDraft,

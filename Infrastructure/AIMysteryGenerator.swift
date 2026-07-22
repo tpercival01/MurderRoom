@@ -1,5 +1,9 @@
 import Foundation
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 enum MysteryDifficulty: String, Encodable {
     case easy
     case standard
@@ -57,6 +61,11 @@ enum AIMysteryGeneratorError: Error, LocalizedError {
     }
 }
 
+/// Performs one complete request to the backend.
+///
+/// A 502 means the backend exhausted its bounded retries for that
+/// generated case. It is deliberately allowed to throw so the
+/// persistent wrapper can start a completely fresh case.
 struct AIMysteryGenerator: MysteryGenerating {
     let baseURL: URL
     let difficulty: MysteryDifficulty
@@ -108,7 +117,10 @@ struct AIMysteryGenerator: MysteryGenerating {
             "application/json",
             forHTTPHeaderField: "Content-Type"
         )
-        request.timeoutInterval = 90
+
+        // One full phased generation can take longer than a normal
+        // API request, especially when the backend rejects drafts.
+        request.timeoutInterval = 180
 
         let payload = GenerateCaseRequest(
             roomObjects: confirmedObjects.map(\.name),
@@ -186,6 +198,100 @@ struct AIMysteryGenerator: MysteryGenerating {
     }
 }
 
+/// Keeps starting fresh whole-case generations until one succeeds.
+///
+/// The backend should keep its own retries bounded. This wrapper handles
+/// the higher-level policy: a failed suspect cast or evidence board means
+/// abandon that whole draft, pause briefly, then start a new case.
+///
+/// It stops only when the surrounding Swift task is cancelled or the
+/// room-object input is invalid.
+struct PersistentMysteryGenerator<
+    Generator: MysteryGenerating
+>: MysteryGenerating {
+    let generator: Generator
+    let maximumDelaySeconds: Double
+
+    init(
+        generator: Generator,
+        maximumDelaySeconds: Double = 12
+    ) {
+        self.generator = generator
+        self.maximumDelaySeconds =
+            maximumDelaySeconds
+    }
+
+    func generate(
+        from roomObjects: [RoomObject]
+    ) async throws -> MysteryCase {
+        var failedWholeCaseAttempts = 0
+
+        while true {
+            try Task.checkCancellation()
+
+            do {
+                return try await generator.generate(
+                    from: roomObjects
+                )
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch let error as AIMysteryGeneratorError {
+                if case .invalidRoomObjects = error {
+                    throw error
+                }
+
+                failedWholeCaseAttempts += 1
+
+                try await waitBeforeRetry(
+                    failedAttemptCount:
+                        failedWholeCaseAttempts
+                )
+            } catch let error as URLError
+                where error.code == .cancelled {
+                throw CancellationError()
+            } catch {
+                failedWholeCaseAttempts += 1
+
+                try await waitBeforeRetry(
+                    failedAttemptCount:
+                        failedWholeCaseAttempts
+                )
+            }
+        }
+    }
+
+    private func waitBeforeRetry(
+        failedAttemptCount: Int
+    ) async throws {
+        let exponent = min(
+            max(failedAttemptCount - 1, 0),
+            4
+        )
+
+        let baseDelay = min(
+            pow(2, Double(exponent)),
+            maximumDelaySeconds
+        )
+
+        let jitter = Double.random(
+            in: 0.85...1.15
+        )
+
+        let delay = min(
+            baseDelay * jitter,
+            maximumDelaySeconds
+        )
+
+        let nanoseconds = UInt64(
+            delay * 1_000_000_000
+        )
+
+        try await Task.sleep(
+            nanoseconds: nanoseconds
+        )
+    }
+}
+
 private struct GenerateCaseRequest: Encodable {
     let roomObjects: [String]
     let difficulty: MysteryDifficulty
@@ -200,6 +306,10 @@ private struct ServerErrorResponse: Decodable {
     let detail: String
 }
 
+/// Retained for previews or a future explicit offline mode.
+///
+/// Do not wrap PersistentMysteryGenerator in this during the current
+/// integration test, because a fallback would hide backend defects.
 struct FallbackMysteryGenerator<
     Primary: MysteryGenerating,
     Fallback: MysteryGenerating

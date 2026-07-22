@@ -75,6 +75,20 @@ class GenerateMysteryRequest(StrictModel):
 
     _validate_objects = field_validator("room_objects")(_clean_room_objects)
 
+class CoreTruthAIResponse(StrictModel):
+    title: str
+    opening_incident: str
+    victim_name: str
+
+    killer_key: SuspectKey
+    motive: str
+    method: str
+    time_of_death: str
+
+    killer_denial: str
+    hidden_detail: str
+    killer_revealed_detail: str
+
 
 class CoreTruthDraft(StrictModel):
     title: str
@@ -86,10 +100,22 @@ class CoreTruthDraft(StrictModel):
     method: str
     time_of_death: str
 
+    killer_denial: str
+    hidden_detail: str
+    killer_revealed_detail: str
+
     killer_alibi: str
     killer_alibi_flaw: str
 
-    primary_room_object_index: int = Field(ge=0, le=3)
+    primary_room_object_index: int = Field(
+        ge=0,
+        le=3,
+    )
+
+    contradiction_room_object_index: int = Field(
+        ge=0,
+        le=3,
+    )
 
 
 class GenerateSuspectRequest(StrictModel):

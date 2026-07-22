@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import random
 import logging
 import re
 from textwrap import dedent
@@ -10,12 +12,12 @@ from openai import OpenAI
 from app.assembly import assemble_mystery
 from app.config import get_settings
 from app.models import (
+    CoreTruthAIResponse,
     CoreTruthDraft,
     Difficulty,
     EvidenceBoardDraft,
     EvidenceBoardReview,
     MysteryDraft,
-    SolutionDraft,
     SuspectCastDraft,
 )
 from app.reviewer import build_evidence_review_prompt
@@ -48,6 +50,92 @@ def _is_retryable(error: Exception) -> bool:
     return status_code == 429 or status_code >= 500
 
 
+def _parse_json_object(
+    raw_content: str,
+    model_class: Type,
+):
+    """Extract and validate one model object from provider text."""
+    cleaned = raw_content.strip()
+
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+
+        cleaned = "\n".join(lines).strip()
+
+    try:
+        payload = json.loads(cleaned)
+    except json.JSONDecodeError:
+        # Defensive fallback for a provider adding prose around an
+        # otherwise valid JSON object.
+        object_start = cleaned.find("{")
+
+        if object_start == -1:
+            raise ValueError(
+                "Provider response contains no JSON object. "
+                f"Response excerpt: {cleaned[:500]!r}"
+            )
+
+        try:
+            payload, _ = json.JSONDecoder().raw_decode(
+                cleaned[object_start:]
+            )
+        except json.JSONDecodeError as error:
+            raise ValueError(
+                "Provider returned malformed or truncated JSON. "
+                f"Response excerpt: {cleaned[:500]!r}"
+            ) from error
+
+    if not isinstance(payload, dict):
+        raise ValueError(
+            "Provider JSON must be an object, not "
+            f"{type(payload).__name__}."
+        )
+
+    # Some non-schema models wrap the result in {"result": {...}}.
+    if len(payload) == 1:
+        only_key, only_value = next(iter(payload.items()))
+
+        if (
+            isinstance(only_value, dict)
+            and only_key.casefold()
+            in {
+                "result",
+                "data",
+                model_class.__name__.casefold(),
+            }
+        ):
+            payload = only_value
+
+    allowed_fields = set(model_class.model_fields)
+    unexpected_fields = set(payload) - allowed_fields
+
+    if unexpected_fields:
+        logger.info(
+            "Ignoring unexpected %s fields: %s",
+            model_class.__name__,
+            sorted(unexpected_fields),
+        )
+        payload = {
+            key: value
+            for key, value in payload.items()
+            if key in allowed_fields
+        }
+
+    try:
+        return model_class.model_validate(payload)
+    except Exception as error:
+        raise ValueError(
+            f"Provider JSON did not match {model_class.__name__}: "
+            f"{error}. Response excerpt: {cleaned[:800]!r}"
+        ) from error
+
+
 def call_structured_model(
     prompt: str,
     model_class: Type,
@@ -61,44 +149,74 @@ def call_structured_model(
 
     for attempt in range(1, attempt_count + 1):
         try:
-            response = client.chat.completions.create(
-                model=settings.groq_model,
-                messages=[
+            user_instruction = (
+                "Return one complete JSON object only. "
+                "Do not use Markdown or explanatory prose."
+            )
+
+            request_options = {
+                "model": settings.groq_model,
+                "messages": [
                     {
                         "role": "system",
                         "content": prompt,
                     },
-                    {
-                        "role": "user",
-                        "content": (
-                            "Return complete structured JSON matching "
-                            "every required field."
-                        ),
-                    },
                 ],
-                temperature=settings.generation_temperature,
-                max_completion_tokens=max_tokens,
-                reasoning_effort=(
+                "temperature": settings.generation_temperature,
+                "max_completion_tokens": max_tokens,
+            }
+
+            if settings.groq_model.startswith("openai/gpt-oss"):
+                request_options["reasoning_effort"] = (
                     settings.generation_reasoning_effort
-                ),
-                response_format={
+                )
+                request_options["response_format"] = {
                     "type": "json_schema",
                     "json_schema": {
                         "name": model_class.__name__,
                         "strict": True,
                         "schema": schema,
                     },
-                },
+                }
+            else:
+                # JSON Object Mode guarantees JSON syntax, but it does
+                # not send the model our schema. Include the exact
+                # Pydantic schema in the instruction, then validate the
+                # result locally.
+                compact_schema = json.dumps(
+                    schema,
+                    separators=(",", ":"),
+                )
+                user_instruction += (
+                    "\nThe JSON must conform exactly to this schema:"
+                    f"\n{compact_schema}"
+                )
+                request_options["response_format"] = {
+                    "type": "json_object",
+                }
+
+            request_options["messages"].append(
+                {
+                    "role": "user",
+                    "content": user_instruction,
+                }
+            )
+
+            response = client.chat.completions.create(
+                **request_options,
             )
 
             raw_content = response.choices[0].message.content
 
             if not raw_content:
-                raise MysteryGenerationError(
+                raise ValueError(
                     "Groq returned an empty response."
                 )
 
-            return model_class.model_validate_json(raw_content)
+            return _parse_json_object(
+                raw_content,
+                model_class,
+            )
 
         except Exception as error:
             last_error = error
@@ -173,59 +291,193 @@ def generate_core_truth(
         for index, name in enumerate(room_objects)
     )
 
+    primary_room_object_index = random.randrange(
+        len(room_objects)
+    )
+    primary_room_object = room_objects[
+        primary_room_object_index
+    ]
+
+    contradiction_candidates = [
+        index
+        for index in range(len(room_objects))
+        if index != primary_room_object_index
+    ]
+    contradiction_room_object_index = random.choice(
+        contradiction_candidates
+    )
+    contradiction_room_object = room_objects[
+        contradiction_room_object_index
+    ]
+
     base_prompt = dedent(
         f"""
-        Design only the locked foundation for a fictional Murder Room
-        mystery.
+        Create only the locked foundation for a fair, fictional
+        one-room murder mystery.
 
-        ROOM OBJECTS:
+        The mystery takes place entirely inside the photographed room.
+        Every important physical object must be one of these four:
+
         {objects}
+
+        PRIMARY METHOD OBJECT:
+        {primary_room_object}
+
+        CONTRADICTION OBJECT:
+        {contradiction_room_object}
 
         DIFFICULTY:
         {_difficulty_guidance(difficulty)}
 
-        HARD RULES:
+        REQUIRED LOGIC:
 
-        1. Create one fictional victim and select one killer key.
-        2. The exact murder method must naturally use the supplied
-           object identified by primary_room_object_index.
-        3. The killer must make one concise, exculpatory alibi claim.
-        4. killer_alibi_flaw must directly disprove that exact claim
-           using observable evidence from a supplied room object.
-        5. The flaw must attack location, activity or timing. It must
-           not discuss whether the murder object could function.
-        6. The method, time, alibi and flaw must be mutually possible.
-        7. Do not use CCTV, recordings, DNA, fingerprints, laboratory
-           analysis, unnamed witnesses or confessions.
-        8. Do not invent an essential murder object outside the four
-           supplied objects.
-        9. Do not expose suspect_1, suspect_2 or suspect_3 in prose.
-        10. Use grounded contemporary fiction, British English and
-            non-graphic language.
-        11. Return only the schema. Do not generate suspects or clues.
+        1. The method must use the exact primary method object,
+           "{primary_room_object}", as an ordinary real object.
+        2. The method must be physically plausible and leave a visible
+           trace that a player could observe without laboratory work.
+        3. killer_denial must clearly say the killer did not approach,
+           inspect or handle the contradiction object,
+           "{contradiction_room_object}".
+        4. hidden_detail must describe one plausible physical detail
+           on, under, inside or behind "{contradiction_room_object}".
+           It must not be visible from normal viewing distance.
+        5. killer_revealed_detail must accidentally reveal knowledge
+           of that exact hidden detail while preserving the denial.
+        6. The revealed detail must closely repeat the distinctive
+           words used in hidden_detail.
+        7. The contradiction comes from impossible knowledge. The
+           hidden detail itself does not prove who made it or who was
+           present during the murder.
+
+        HARD LIMITS:
+
+        - Use exactly one victim and one killer key.
+        - Use a 24-hour time such as "20:15".
+        - Keep all events and claims inside this single room.
+        - Do not invent another room, corridor, garden, kitchen,
+          study, break room, witness or external location.
+        - Do not use poison, sedatives, toxins, allergies,
+          electrocution, electrical surges or invisible chemicals.
+        - Do not use CCTV, recordings, live feeds, fingerprints,
+          DNA, forensic analysis, laboratory tests or confessions.
+        - Do not invent machinery, detachable crushing panels,
+          implausible traps or impossible object behaviour.
+        - Do not put suspect_1, suspect_2 or suspect_3 inside prose.
+        - Use grounded contemporary fiction, British English and
+          concise iPhone-friendly wording.
+        - Return only the required JSON object.
+        - Do not generate suspects, clues, an alibi flaw or indexes.
         """
     ).strip()
 
     issues: list[str] = []
+    last_generation_error: Optional[
+        MysteryGenerationError
+    ] = None
 
     for _ in range(settings.generation_max_retries):
-        draft = call_structured_model(
-            _feedback_prompt(base_prompt, issues, "core truth"),
-            CoreTruthDraft,
-            max_tokens=settings.core_max_tokens,
-            attempts=1,
+        try:
+            generated = call_structured_model(
+                _feedback_prompt(
+                    base_prompt,
+                    issues,
+                    "core truth",
+                ),
+                CoreTruthAIResponse,
+                max_tokens=settings.core_max_tokens,
+                attempts=1,
+            )
+        except MysteryGenerationError as error:
+            status_code = getattr(
+                error.__cause__,
+                "status_code",
+                None,
+            )
+
+            # Authentication and quota failures cannot be fixed by
+            # immediately asking the same provider again.
+            if status_code in {401, 403, 429}:
+                raise
+
+            last_generation_error = error
+            issues = [
+                "The provider returned malformed or incomplete JSON."
+            ]
+            continue
+
+        killer_denial = generated.killer_denial.strip()
+        revealed_detail = (
+            generated.killer_revealed_detail.strip()
+        )
+        hidden_detail = generated.hidden_detail.strip()
+
+        killer_alibi = " ".join(
+            [
+                killer_denial,
+                revealed_detail,
+            ]
         )
 
-        issues = validate_core_truth(draft, room_objects)
+        # Python owns the deduction wording. The model supplies the
+        # facts, but it cannot replace impossible-knowledge logic with
+        # an unrelated claim about presence.
+        killer_alibi_flaw = (
+            f"{revealed_detail} This reveals knowledge of "
+            f"{hidden_detail} That detail cannot be observed without "
+            f"approaching, inspecting or handling the "
+            f"{contradiction_room_object}, directly contradicting "
+            f"the denial: {killer_denial}"
+        )
+
+        draft = CoreTruthDraft(
+            title=generated.title,
+            opening_incident=generated.opening_incident,
+            victim_name=generated.victim_name,
+            killer_key=generated.killer_key,
+            motive=generated.motive,
+            method=generated.method,
+            time_of_death=generated.time_of_death,
+            killer_denial=killer_denial,
+            hidden_detail=hidden_detail,
+            killer_revealed_detail=revealed_detail,
+            killer_alibi=killer_alibi,
+            killer_alibi_flaw=killer_alibi_flaw,
+            primary_room_object_index=(
+                primary_room_object_index
+            ),
+            contradiction_room_object_index=(
+                contradiction_room_object_index
+            ),
+        )
+
+        issues = validate_core_truth(
+            draft,
+            room_objects,
+        )
 
         if not issues:
             return draft
 
-    raise MysteryGenerationError(
-        "Core truth failed deterministic validation: "
-        + ", ".join(issues)
-    )
+    if (
+        last_generation_error is not None
+        and issues == [
+            "The provider returned malformed or incomplete JSON."
+        ]
+    ):
+        raise last_generation_error
 
+    if issues:
+        raise MysteryGenerationError(
+            "Core truth failed deterministic validation: "
+            + ", ".join(issues)
+        )
+
+    if last_generation_error is not None:
+        raise last_generation_error
+
+    raise MysteryGenerationError(
+        "Core truth generation failed without a result."
+    )
 
 def generate_suspect_cast(
     core_truth: CoreTruthDraft,

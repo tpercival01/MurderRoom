@@ -10,12 +10,12 @@ BACKEND_ROOT = Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
     groq_api_key: str
     groq_base_url: str = "https://api.groq.com/openai/v1"
-    groq_model: str = "openai/gpt-oss-120b"
+    groq_model: str = "llama-3.3-70b-versatile"
 
     generation_max_retries: int = 3
-    generation_temperature: float = 0.4
+    generation_temperature: float = 0.2
 
-    core_max_tokens: int = 900
+    core_max_tokens: int = 1_200
     suspect_max_tokens: int = 1_300
     evidence_max_tokens: int = 2_200
     review_max_tokens: int = 650

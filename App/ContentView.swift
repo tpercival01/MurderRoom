@@ -1,11 +1,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var viewModel: GameViewModel
+
     var body: some View {
-        GameView()
+        GameView(viewModel: viewModel)
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(
+        viewModel: GameViewModel()
+    )
 }

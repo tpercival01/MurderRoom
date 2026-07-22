@@ -1,0 +1,19 @@
+{
+    "title": "The Bitter Brew",
+    "opening_incident": "Dr. Eleanor Finch was found slumped over her desk, the monitor still glowing and a half\u2011filled mug beside her.",
+    "victim_name": "Dr. Eleanor Finch",
+    "killer_key": "suspect_2",
+    "motive": "The killer was jealous of the victim's recent promotion and wanted to remove her from the team.",
+    "method": "Poisoned coffee administered via the office mug",
+    "time_of_death": "19:30 to 19:45",
+    "opportunity": "Only the killer could have accessed the mug without raising suspicion",
+    "killer_statement": "I was out of the office after 18:00 and never handled the mug.",
+    "contradiction_fact": "The mug is still warm and bears a fresh condensation ring, proving it was poured into within the 19:30\u201119:45 window, contradicting the claim of never having touched it.",
+    "method_fact": "The mug on the desk contains a faint oily ring and a bitter almond scent, both consistent with a dissolved cyanide compound mixed into the coffee.",
+    "timeline_fact": "The monitor displays a system log timestamp of the last user activity at 19:35, and the screen is frozen on that time, indicating the victim died between 19:30 and 19:45.",
+    "opportunity_fact": "The desk drawer was found ajar with a single coffee\u2011stirring spoon placed inside; the spoon bears a distinctive notch that matches the one on the killer's personal set, showing the killer retrieved the mug from the desk and returned it after poisoning.",
+    "method_room_object_index": 2,
+    "timeline_room_object_index": 1,
+    "opportunity_room_object_index": 0,
+    "contradiction_room_object_index": 2
+}

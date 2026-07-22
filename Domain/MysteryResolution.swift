@@ -113,6 +113,9 @@ struct MysteryResolver {
         case .supportsSuspect:
             return "Supports the case against \(suspectName ?? "a suspect")."
 
+        case .corroboratesAlibi:
+            return "Corroborates \(suspectName ?? "a suspect")'s alibi."
+
         case .establishesMethod:
             return "Establishes how the murder was committed."
 

@@ -1,0 +1,138 @@
+{
+    "id": "8d9a9a2c-cba5-420a-bee6-30ab033a4281",
+    "title": "The Silent Sip",
+    "openingIncident": "The victim, Amelia Hart, was found slumped over her desk with a half\u2011filled mug of coffee, the room unusually quiet after the midday rush.",
+    "victim": {
+        "id": "ca6989f7-5df8-43da-b793-fdb89fd2d569",
+        "name": "Amelia Hart",
+        "role": "Victim",
+        "relationshipToVictim": "Victim",
+        "statement": "",
+        "alibiClaim": ""
+    },
+    "suspects": [
+        {
+            "id": "f8d02bc7-a9f0-47d6-99e1-a5a9688c7a8f",
+            "name": "David Reed",
+            "role": "Suspect",
+            "relationshipToVictim": "colleague",
+            "statement": "I was reviewing the quarterly report on the desk when Amelia stepped away.",
+            "alibiClaim": "I was at my workstation reviewing documents at 14:30."
+        },
+        {
+            "id": "d7475731-afad-4ff4-aeee-0a66680487a1",
+            "name": "Mark Lawson",
+            "role": "Suspect",
+            "relationshipToVictim": "assistant",
+            "statement": "I was finalising the spreadsheet on the monitor when the incident occurred.",
+            "alibiClaim": "I was on a video call at my desk at 14:30 and could not have been near the mug."
+        },
+        {
+            "id": "cb8c0cef-b8ad-44db-865a-1033bcd31bc5",
+            "name": "Lena Patel",
+            "role": "Suspect",
+            "relationshipToVictim": "friend",
+            "statement": "I was adjusting the lamp to get better light for my sketch.",
+            "alibiClaim": "I was at the lamp fixing its angle at 14:30."
+        }
+    ],
+    "roomObjects": [
+        {
+            "id": "14f53ccc-8587-487f-9984-1237a674829e",
+            "name": "Desk",
+            "isConfirmed": true
+        },
+        {
+            "id": "200ed91e-546b-48c7-9f7f-05db8b18fddb",
+            "name": "Monitor",
+            "isConfirmed": true
+        },
+        {
+            "id": "d8f09906-82f5-4547-8496-296cce3c3446",
+            "name": "Mug",
+            "isConfirmed": true
+        },
+        {
+            "id": "b45f61e6-4226-48fe-9294-9c1296870a30",
+            "name": "Lamp",
+            "isConfirmed": true
+        }
+    ],
+    "clues": [
+        {
+            "id": "320ff96d-05b6-4062-ae00-52d9afd4fcea",
+            "title": "Desk Observation",
+            "detail": "The desk was tidy with only the open report visible, matching my claim.",
+            "roomObjectID": "14f53ccc-8587-487f-9984-1237a674829e",
+            "kind": "evidence",
+            "deductions": [
+                {
+                    "kind": "corroboratesAlibi",
+                    "relatedSuspectID": "f8d02bc7-a9f0-47d6-99e1-a5a9688c7a8f"
+                }
+            ]
+        },
+        {
+            "id": "3aeb7f40-98bd-4599-8d4e-9970f8f32a96",
+            "title": "Monitor Status",
+            "detail": "The monitor was switched off and the desk drawer was open, indicating no video call was active and the victim was still at the desk, contradicting the claimed alibi. Time of death recorded at 14:30.",
+            "roomObjectID": "200ed91e-546b-48c7-9f7f-05db8b18fddb",
+            "kind": "evidence",
+            "deductions": [
+                {
+                    "kind": "contradictsStatement",
+                    "relatedSuspectID": "d7475731-afad-4ff4-aeee-0a66680487a1"
+                },
+                {
+                    "kind": "establishesTimeline",
+                    "relatedSuspectID": null
+                }
+            ]
+        },
+        {
+            "id": "9f2abb23-b03e-4303-9956-5a83ca91ecdd",
+            "title": "Mug\u2011Monitor Connection",
+            "detail": "A faint residue of fast\u2011acting toxin is visible on the rim of the Mug, and the Monitor being off shows Mark Lawson was not on a video call, meaning he could have been at the desk to slip the poison into the Mug.",
+            "roomObjectID": "d8f09906-82f5-4547-8496-296cce3c3446",
+            "kind": "evidence",
+            "deductions": [
+                {
+                    "kind": "establishesMethod",
+                    "relatedSuspectID": null
+                },
+                {
+                    "kind": "establishesOpportunity",
+                    "relatedSuspectID": "d7475731-afad-4ff4-aeee-0a66680487a1"
+                }
+            ]
+        },
+        {
+            "id": "ddc08000-35bb-4f55-8ca9-0a6f6212dc19",
+            "title": "Lamp Position",
+            "detail": "The lamp was tilted slightly to the left, as I remembered adjusting it.",
+            "roomObjectID": "b45f61e6-4226-48fe-9294-9c1296870a30",
+            "kind": "evidence",
+            "deductions": [
+                {
+                    "kind": "corroboratesAlibi",
+                    "relatedSuspectID": "cb8c0cef-b8ad-44db-865a-1033bcd31bc5"
+                }
+            ]
+        },
+        {
+            "id": "13fe56d3-f594-41f1-bdfd-fd08eac63d0c",
+            "title": "Spilled Coffee",
+            "detail": "A small spill of coffee near the Mug suggests someone may have been nervous.",
+            "roomObjectID": "d8f09906-82f5-4547-8496-296cce3c3446",
+            "kind": "redHerring",
+            "deductions": []
+        }
+    ],
+    "solution": {
+        "killerID": "d7475731-afad-4ff4-aeee-0a66680487a1",
+        "motive": "Financial pressure after discovering the victim intended to expose the killer's embezzlement.",
+        "method": "Poisoned coffee administered by slipping a fast\u2011acting toxin into the mug while the victim was distracted.",
+        "timeOfDeath": "14:30",
+        "opportunity": "Because the Monitor was off, Mark Lawson could not have been on a video call and was therefore free to approach the desk; the open desk drawer and the Mug\u2019s proximity to the Monitor place him within arm\u2019s reach to add the toxin to the coffee."
+    }
+}

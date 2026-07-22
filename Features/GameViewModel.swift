@@ -161,7 +161,7 @@ final class GameViewModel: ObservableObject {
                 mysteryID: candidate.id
             )
         } catch {
-            errorMessage = "Mystery generation failed."
+            errorMessage = error.localizedDescription
         }
     }
 

@@ -3,6 +3,7 @@ import Foundation
 enum MysteryDeductionKind: String, Codable {
     case eliminatesSuspect
     case supportsSuspect
+    case corroboratesAlibi
     case establishesMethod
     case establishesTimeline
     case establishesOpportunity

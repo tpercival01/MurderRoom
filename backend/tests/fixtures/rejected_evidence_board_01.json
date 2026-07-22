@@ -1,0 +1,66 @@
+{
+    "opportunity": "Clara, as the victim's assistant, regularly maintained the desk lamp and could easily tamper with its wiring.",
+    "clue_1": {
+        "title": "Desk Notes Timestamp",
+        "detail": "A stack of notes on the desk is dated 20:10, matching Thomas's claim of working until that time before leaving for coffee.",
+        "room_object_index": 0,
+        "kind": "evidence",
+        "deductions": [
+            {
+                "kind": "eliminatesSuspect",
+                "related_suspect_key": "suspect_1"
+            }
+        ]
+    },
+    "clue_2": {
+        "title": "Monitor Power Failure Log",
+        "detail": "The monitor's internal log shows the power feed cut at 20:00, meaning typing could not have continued to 20:15.",
+        "room_object_index": 1,
+        "kind": "evidence",
+        "deductions": [
+            {
+                "kind": "contradictsStatement",
+                "related_suspect_key": "suspect_2"
+            },
+            {
+                "kind": "establishesTimeline",
+                "related_suspect_key": "none"
+            }
+        ]
+    },
+    "clue_3": {
+        "title": "Lamp Wiring Tampering",
+        "detail": "The lamp cord is frayed and a splice is visible; the flicker recorded matches a short\u2011circuit surge that would be lethal.",
+        "room_object_index": 3,
+        "kind": "evidence",
+        "deductions": [
+            {
+                "kind": "establishesMethod",
+                "related_suspect_key": "none"
+            },
+            {
+                "kind": "establishesOpportunity",
+                "related_suspect_key": "suspect_2"
+            }
+        ]
+    },
+    "clue_4": {
+        "title": "Mug Tea Stain Timestamp",
+        "detail": "A tea ring on the mug\u2019s coaster bears a faint clock imprint showing 20:13, confirming Martin left the lamp area at that time.",
+        "room_object_index": 2,
+        "kind": "evidence",
+        "deductions": [
+            {
+                "kind": "eliminatesSuspect",
+                "related_suspect_key": "suspect_3"
+            }
+        ]
+    },
+    "clue_5": {
+        "title": "Missing Pen on Desk",
+        "detail": "A pen is absent from the desk drawer; its whereabouts are unknown and unrelated to the murder.",
+        "room_object_index": 0,
+        "kind": "redHerring",
+        "deductions": []
+    }
+}

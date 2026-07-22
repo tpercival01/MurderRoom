@@ -598,7 +598,8 @@ struct MurderRoomTests {
                      .establishesMethod,
                      .establishesTimeline,
                      .contradictsStatement,
-                     .establishesOpportunity:
+                     .establishesOpportunity,
+                     .corroboratesAlibi:
                     return false
                 }
             }

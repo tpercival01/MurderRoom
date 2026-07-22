@@ -1,0 +1,12 @@
+{
+  "title": "The Final Edit",
+  "opening_incident": "Eleanor Finch was found beside her desk, the lamp sitting crookedly and the monitor displaying an unfinished financial report.",
+  "victim_name": "Eleanor Finch",
+  "killer_key": "suspect_2",
+  "motive": "Eleanor had discovered financial fraud that would expose the killer.",
+  "method": "The killer used the desk lamp's cord to strangle Eleanor before replacing the lamp on the desk.",
+  "time_of_death": "20:11 to 20:13",
+  "killer_alibi": "I left the room at 20:00 and did not return.",
+  "killer_alibi_flaw": "The monitor's visible revision history shows the speaker's local account made a keyboard edit at 20:13, proving they were at the desk after 20:00.",
+  "primary_room_object_index": 3
+}

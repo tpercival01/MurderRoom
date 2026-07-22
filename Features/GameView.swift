@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 struct GameView: View {
-    @StateObject private var viewModel = GameViewModel()
+    @ObservedObject var viewModel: GameViewModel
     @State private var isShowingCamera = false
 
     var body: some View {
@@ -366,5 +366,7 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView()
+    GameView(
+        viewModel: GameViewModel()
+    )
 }

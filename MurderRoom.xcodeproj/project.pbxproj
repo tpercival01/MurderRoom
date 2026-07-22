@@ -27,6 +27,7 @@
 		544EFF31300F8C44003E7F2D /* SuspectAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */; };
 		5456C898300FA54A0096F572 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C897300FA5440096F572 /* CameraPicker.swift */; };
 		5456C89A300FA8AD0096F572 /* RoomObjectRecogniser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */; };
+		54E4D2DB301101A10069FA50 /* AIMysteryGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,8 @@
 		544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuspectAssessment.swift; sourceTree = "<group>"; };
 		5456C897300FA5440096F572 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
 		5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomObjectRecogniser.swift; sourceTree = "<group>"; };
+		54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIMysteryGenerator.swift; sourceTree = "<group>"; };
+		54E4D2DC3011023D0069FA50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -138,6 +141,7 @@
 		544EFF0B300F6529003E7F2D /* MurderRoom */ = {
 			isa = PBXGroup;
 			children = (
+				54E4D2DC3011023D0069FA50 /* Info.plist */,
 				544EFF08300F6529003E7F2D /* Assets.xcassets */,
 			);
 			path = MurderRoom;
@@ -183,6 +187,7 @@
 		544EFF12300F6605003E7F2D /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */,
 				5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */,
 				5456C897300FA5440096F572 /* CameraPicker.swift */,
 				544EFF26300F75E8003E7F2D /* HardcodedMysteryGenerator.swift */,
@@ -352,6 +357,7 @@
 				544EFF22300F6D1C003E7F2D /* MysteryValidationIssue.swift in Sources */,
 				544EFF0E300F6529003E7F2D /* MurderRoomApp.swift in Sources */,
 				544EFF1C300F6CF7003E7F2D /* MysteryPerson.swift in Sources */,
+				54E4D2DB301101A10069FA50 /* AIMysteryGenerator.swift in Sources */,
 				544EFF1F300F6D0F003E7F2D /* MysterySolution.swift in Sources */,
 				544EFF21300F6D18003E7F2D /* MysteryDeduction.swift in Sources */,
 				544EFF20300F6D13003E7F2D /* MysteryCase.swift in Sources */,
@@ -520,6 +526,7 @@
 				DEVELOPMENT_TEAM = 229VF74PS3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MurderRoom/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Murder Room uses your camera to turn your room into a fictional crime scene.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -553,6 +560,7 @@
 				DEVELOPMENT_TEAM = 229VF74PS3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MurderRoom/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Murder Room uses your camera to turn your room into a fictional crime scene.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

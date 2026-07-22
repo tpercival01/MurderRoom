@@ -1,6 +1,9 @@
 import Foundation
+
 struct MysteryValidator {
-    func validate(_ mystery: MysteryCase) -> [MysteryValidationIssue] {
+    func validate(
+        _ mystery: MysteryCase
+    ) -> [MysteryValidationIssue] {
         var issues: [MysteryValidationIssue] = []
 
         if mystery.suspects.count != 3 {
@@ -22,7 +25,7 @@ struct MysteryValidator {
         if redHerringCount != 1 {
             issues.append(.invalidRedHerringCount)
         }
-        
+
         let killerExists = mystery.suspects.contains {
             $0.id == mystery.solution.killerID
         }
@@ -30,23 +33,31 @@ struct MysteryValidator {
         if !killerExists {
             issues.append(.killerIsNotASuspect)
         }
-        
-        let roomObjectIDs = Set(mystery.roomObjects.map(\.id))
 
-        let hasUnknownRoomObject = mystery.clues.contains { clue in
-            !roomObjectIDs.contains(clue.roomObjectID)
+        let roomObjectIDs = Set(
+            mystery.roomObjects.map(\.id)
+        )
+
+        let hasUnknownRoomObject = mystery.clues.contains {
+            !roomObjectIDs.contains($0.roomObjectID)
         }
 
         if hasUnknownRoomObject {
-            issues.append(.clueReferencesUnknownRoomObject)
+            issues.append(
+                .clueReferencesUnknownRoomObject
+            )
         }
-        
-        let suspectIDs = Set(mystery.suspects.map(\.id))
+
+        let suspectIDs = Set(
+            mystery.suspects.map(\.id)
+        )
 
         let hasUnknownSuspectReference = mystery.clues
             .flatMap(\.deductions)
             .contains { deduction in
-                guard let suspectID = deduction.relatedSuspectID else {
+                guard let suspectID =
+                    deduction.relatedSuspectID
+                else {
                     return false
                 }
 
@@ -54,22 +65,33 @@ struct MysteryValidator {
             }
 
         if hasUnknownSuspectReference {
-            issues.append(.deductionReferencesUnknownSuspect)
+            issues.append(
+                .deductionReferencesUnknownSuspect
+            )
         }
 
-        let redHerringHasDeduction = mystery.clues.contains { clue in
-            clue.kind == .redHerring && !clue.deductions.isEmpty
+        let redHerringHasDeduction = mystery.clues.contains {
+            $0.kind == .redHerring &&
+            !$0.deductions.isEmpty
         }
 
         if redHerringHasDeduction {
-            issues.append(.redHerringContainsDeduction)
+            issues.append(
+                .redHerringContainsDeduction
+            )
         }
-        
-        let deductions = mystery.clues.flatMap(\.deductions)
 
-        let eliminatedSuspectIDs: Set<UUID> = Set(
-            deductions.compactMap { deduction  -> UUID? in
-                guard deduction.kind == .eliminatesSuspect else {
+        let deductions = mystery.clues.flatMap(
+            \.deductions
+        )
+
+        let eliminatedSuspectIDs = Set(
+            deductions.compactMap {
+                deduction -> UUID? in
+
+                guard deduction.kind ==
+                    .eliminatesSuspect
+                else {
                     return nil
                 }
 
@@ -77,25 +99,69 @@ struct MysteryValidator {
             }
         )
 
-        if eliminatedSuspectIDs.contains(mystery.solution.killerID) {
+        if eliminatedSuspectIDs.contains(
+            mystery.solution.killerID
+        ) {
             issues.append(.killerIsEliminated)
         }
+
+        let corroboratedSuspectIDs = Set(
+            deductions.compactMap {
+                deduction -> UUID? in
+
+                guard deduction.kind ==
+                    .corroboratesAlibi
+                else {
+                    return nil
+                }
+
+                return deduction.relatedSuspectID
+            }
+        )
 
         let innocentSuspects = mystery.suspects.filter {
             $0.id != mystery.solution.killerID
         }
 
-        let hasUneliminatedInnocentSuspect = innocentSuspects.contains {
-            !eliminatedSuspectIDs.contains($0.id)
+        let hasUnsupportedInnocent =
+            innocentSuspects.contains { suspect in
+                !eliminatedSuspectIDs.contains(
+                    suspect.id
+                ) &&
+                !corroboratedSuspectIDs.contains(
+                    suspect.id
+                )
+            }
+
+        if hasUnsupportedInnocent {
+            // Keep the existing issue case so current tests
+            // and UI code do not need a second migration.
+            issues.append(
+                .innocentSuspectCannotBeEliminated
+            )
         }
 
-        if hasUneliminatedInnocentSuspect {
-            issues.append(.innocentSuspectCannotBeEliminated)
-        }
-        
-        let supportsKiller = deductions.contains { deduction in
-            deduction.kind == .supportsSuspect &&
-            deduction.relatedSuspectID == mystery.solution.killerID
+        let supportsKiller = deductions.contains {
+            deduction in
+
+            guard deduction.relatedSuspectID ==
+                mystery.solution.killerID
+            else {
+                return false
+            }
+
+            switch deduction.kind {
+            case .supportsSuspect,
+                 .establishesOpportunity,
+                 .contradictsStatement:
+                return true
+
+            case .eliminatesSuspect,
+                 .corroboratesAlibi,
+                 .establishesMethod,
+                 .establishesTimeline:
+                return false
+            }
         }
 
         if !supportsKiller {
@@ -119,16 +185,25 @@ struct MysteryValidator {
         }
 
         let establishesOpportunity = deductions.contains {
-            $0.kind == .establishesOpportunity
+            deduction in
+
+            deduction.kind ==
+                .establishesOpportunity &&
+            deduction.relatedSuspectID ==
+                mystery.solution.killerID
         }
 
         if !establishesOpportunity {
             issues.append(.missingOpportunityEvidence)
         }
-        
-        let hasContradiction = deductions.contains { deduction in
-            deduction.kind == .contradictsStatement &&
-            deduction.relatedSuspectID != nil
+
+        let hasContradiction = deductions.contains {
+            deduction in
+
+            deduction.kind ==
+                .contradictsStatement &&
+            deduction.relatedSuspectID ==
+                mystery.solution.killerID
         }
 
         if !hasContradiction {

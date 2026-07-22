@@ -1,0 +1,31 @@
+{
+  "suspects": [
+    {
+      "key": "suspect_1",
+      "name": "Martin Hale",
+      "relationship_to_victim": "Colleague",
+      "statement": "I wrapped the cracked mug handle with blue tape, left it beside the desk and went at 20:05.",
+      "alibi_claim": "I repaired the mug handle and left the room at 20:05.",
+      "alibi_room_object_index": 2,
+      "alibi_evidence_fact": "The mug's cracked handle is freshly wrapped in blue tape exactly as Martin described, corroborating the specific task he said he completed before leaving."
+    },
+    {
+      "key": "suspect_2",
+      "name": "Lydia Grant",
+      "relationship_to_victim": "Senior Analyst",
+      "statement": "I stepped out for some air and did not return.",
+      "alibi_claim": "I left the room at 20:00 and did not return.",
+      "alibi_room_object_index": 1,
+      "alibi_evidence_fact": "The monitor's visible revision history shows the speaker's local account made a keyboard edit at 20:13, proving they were at the desk after 20:00."
+    },
+    {
+      "key": "suspect_3",
+      "name": "Jasper Liu",
+      "relationship_to_victim": "Assistant",
+      "statement": "I sorted the reports into two piles and left the red folder face-down before leaving.",
+      "alibi_claim": "I was organising papers at the desk until 20:08, then left.",
+      "alibi_room_object_index": 0,
+      "alibi_evidence_fact": "The desk contains two neat paper piles with the red folder face-down, matching Jasper's unusually specific description of how he left it."
+    }
+  ]
+}

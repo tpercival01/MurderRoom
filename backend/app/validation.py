@@ -108,6 +108,7 @@ def validate_core_truth(
     ].casefold()
 
     method_text = draft.method.casefold()
+    method_evidence_text = draft.method_evidence.casefold()
     denial_text = draft.killer_denial.casefold()
     hidden_text = draft.hidden_detail.casefold()
     revealed_text = draft.killer_revealed_detail.casefold()
@@ -116,6 +117,20 @@ def validate_core_truth(
     if primary_object not in method_text:
         issues.append(
             "The method does not mention its primary room object."
+        )
+
+    if primary_object not in method_evidence_text:
+        issues.append(
+            "The method evidence does not mention the primary "
+            "room object."
+        )
+
+    if (
+        draft.contradiction_room_object_index
+        != draft.primary_room_object_index
+    ):
+        issues.append(
+            "The contradiction object must be the murder object."
         )
 
     if contradiction_object not in denial_text:
@@ -167,6 +182,7 @@ def validate_core_truth(
         [
             draft.opening_incident,
             draft.method,
+            draft.method_evidence,
             draft.killer_alibi,
             draft.killer_alibi_flaw,
         ]
@@ -247,6 +263,14 @@ def validate_suspect_cast(
             "The killer evidence fact does not match the locked flaw."
         )
 
+    if (
+        killer.alibi_room_object_index
+        != core_truth.primary_room_object_index
+    ):
+        issues.append(
+            "The killer must use the locked murder object."
+        )
+
     alibi_indexes = {
         suspect.alibi_room_object_index
         for suspect in suspect_cast.suspects
@@ -255,12 +279,6 @@ def validate_suspect_cast(
     if len(alibi_indexes) != 3:
         issues.append(
             "Each suspect must use a different alibi room object."
-        )
-
-    if core_truth.primary_room_object_index in alibi_indexes:
-        issues.append(
-            "The primary murder object must be reserved for the "
-            "method clue, not a suspect alibi."
         )
 
     for suspect in suspect_cast.suspects:
@@ -325,7 +343,9 @@ def validate_evidence_board(
     primary_object_index = core_truth.primary_room_object_index
     primary_object = room_objects[primary_object_index].casefold()
     killer = suspect_by_key[killer_key]
-    killer_object_index = killer.alibi_room_object_index
+    killer_object_index = (
+        core_truth.contradiction_room_object_index
+    )
     killer_object = room_objects[killer_object_index].casefold()
     death_times = re.findall(
         r"\b\d{1,2}:\d{2}\b",
@@ -385,6 +405,15 @@ def validate_evidence_board(
                     issues.append(
                         f"clue_{clue_index + 1} method detail does "
                         "not mention the primary room object."
+                    )
+
+                if not _has_shared_detail(
+                    clue.detail,
+                    core_truth.method_evidence,
+                ):
+                    issues.append(
+                        f"clue_{clue_index + 1} does not use the "
+                        "locked method evidence."
                     )
 
             elif deduction.kind == DeductionKind.establishes_timeline:
@@ -494,11 +523,11 @@ def validate_evidence_board(
 
                 if not _has_shared_detail(
                     clue.detail,
-                    core_truth.killer_alibi_flaw,
+                    core_truth.hidden_detail,
                 ):
                     issues.append(
-                        f"clue_{clue_index + 1} opportunity is not "
-                        "grounded in the locked killer flaw."
+                        f"clue_{clue_index + 1} opportunity does not "
+                        "use the locked hidden detail."
                     )
 
     missing_innocents = innocent_keys - corroborated
@@ -523,11 +552,6 @@ def validate_evidence_board(
     if not method_clues:
         issues.append(
             "No clue establishes the murder method."
-        )
-
-    if not timeline_clues:
-        issues.append(
-            "No clue establishes the timeline."
         )
 
     if contradiction_clues and opportunity_clues:
@@ -561,11 +585,11 @@ def validate_evidence_board(
 
         if not _has_shared_detail(
             board.opportunity,
-            core_truth.killer_alibi_flaw,
+            core_truth.hidden_detail,
         ):
             issues.append(
-                "The case-level opportunity is not grounded in the "
-                "locked killer flaw."
+                "The case-level opportunity does not use the locked "
+                "hidden detail."
             )
 
     return issues

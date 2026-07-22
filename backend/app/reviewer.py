@@ -47,10 +47,11 @@ def build_evidence_review_prompt(
            time or window. Presence alone is not a death time.
         4. Method evidence is observable and supports the exact
            locked method without laboratory assumptions.
-        5. Opportunity explicitly connects the killer's locked
-           alibi-room evidence to physical reach of the primary murder
-           object. Both supplied object names must appear. Do not
-           accept invented duties, access, ownership or rooms.
+        5. Opportunity explicitly connects the killer's revealed
+           knowledge of the locked hidden detail to physical reach of
+           the primary murder object. The contradiction object and
+           primary object must both be named. Do not accept invented
+           duties, access, ownership or rooms.
         6. Every deduction label says no more than its clue proves.
         7. No timestamps are inferred from stains, temperature,
            dust, scratches or condensation.

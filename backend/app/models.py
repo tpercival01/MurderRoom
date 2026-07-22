@@ -83,6 +83,7 @@ class CoreTruthAIResponse(StrictModel):
     killer_key: SuspectKey
     motive: str
     method: str
+    method_evidence: str
     time_of_death: str
 
     killer_denial: str
@@ -98,6 +99,7 @@ class CoreTruthDraft(StrictModel):
     killer_key: SuspectKey
     motive: str
     method: str
+    method_evidence: str
     time_of_death: str
 
     killer_denial: str

@@ -12,15 +12,19 @@ from openai import OpenAI
 from app.assembly import assemble_mystery
 from app.config import get_settings
 from app.models import (
+    ClueDraft,
+    ClueKind,
     CoreTruthAIResponse,
     CoreTruthDraft,
+    DeductionDraft,
+    DeductionKind,
     Difficulty,
     EvidenceBoardDraft,
-    EvidenceBoardReview,
     MysteryDraft,
     SuspectCastDraft,
+    SuspectKey,
+    SuspectReferenceKey,
 )
-from app.reviewer import build_evidence_review_prompt
 from app.validation import (
     validate_core_truth,
     validate_evidence_board,
@@ -298,17 +302,13 @@ def generate_core_truth(
         primary_room_object_index
     ]
 
-    contradiction_candidates = [
-        index
-        for index in range(len(room_objects))
-        if index != primary_room_object_index
-    ]
-    contradiction_room_object_index = random.choice(
-        contradiction_candidates
+    # The strongest fair deduction is impossible knowledge about
+    # the murder object itself. This makes opportunity follow from
+    # the same observable object rather than an inferred room layout.
+    contradiction_room_object_index = (
+        primary_room_object_index
     )
-    contradiction_room_object = room_objects[
-        contradiction_room_object_index
-    ]
+    contradiction_room_object = primary_room_object
 
     base_prompt = dedent(
         f"""
@@ -326,6 +326,9 @@ def generate_core_truth(
         CONTRADICTION OBJECT:
         {contradiction_room_object}
 
+        The method object and contradiction object are intentionally
+        the same supplied object.
+
         DIFFICULTY:
         {_difficulty_guidance(difficulty)}
 
@@ -333,19 +336,21 @@ def generate_core_truth(
 
         1. The method must use the exact primary method object,
            "{primary_room_object}", as an ordinary real object.
-        2. The method must be physically plausible and leave a visible
-           trace that a player could observe without laboratory work.
-        3. killer_denial must clearly say the killer did not approach,
+        2. The method must be physically plausible.
+        3. method_evidence must describe one visible physical trace on
+           "{primary_room_object}" that supports the exact method.
+           It must be observable without laboratory or forensic work.
+        4. killer_denial must clearly say the killer did not approach,
            inspect or handle the contradiction object,
            "{contradiction_room_object}".
-        4. hidden_detail must describe one plausible physical detail
+        5. hidden_detail must describe a different physical detail
            on, under, inside or behind "{contradiction_room_object}".
            It must not be visible from normal viewing distance.
-        5. killer_revealed_detail must accidentally reveal knowledge
+        6. killer_revealed_detail must accidentally reveal knowledge
            of that exact hidden detail while preserving the denial.
-        6. The revealed detail must closely repeat the distinctive
+        7. The revealed detail must closely repeat the distinctive
            words used in hidden_detail.
-        7. The contradiction comes from impossible knowledge. The
+        8. The contradiction comes from impossible knowledge. The
            hidden detail itself does not prove who made it or who was
            present during the murder.
 
@@ -409,7 +414,7 @@ def generate_core_truth(
         revealed_detail = (
             generated.killer_revealed_detail.strip()
         )
-        hidden_detail = generated.hidden_detail.strip()
+        hidden_detail = generated.hidden_detail.strip().rstrip(". ")
 
         killer_alibi = " ".join(
             [
@@ -436,6 +441,9 @@ def generate_core_truth(
             killer_key=generated.killer_key,
             motive=generated.motive,
             method=generated.method,
+            method_evidence=(
+                generated.method_evidence.strip().rstrip(". ")
+            ),
             time_of_death=generated.time_of_death,
             killer_denial=killer_denial,
             hidden_detail=hidden_detail,
@@ -489,6 +497,33 @@ def generate_suspect_cast(
         for index, name in enumerate(room_objects)
     )
 
+    innocent_keys = [
+        key
+        for key in SuspectKey
+        if key != core_truth.killer_key
+    ]
+    innocent_object_indexes = [
+        index
+        for index in range(len(room_objects))
+        if index != core_truth.primary_room_object_index
+    ]
+
+    object_assignments = {
+        core_truth.killer_key: (
+            core_truth.contradiction_room_object_index
+        ),
+        innocent_keys[0]: innocent_object_indexes[0],
+        innocent_keys[1]: innocent_object_indexes[1],
+    }
+
+    assignment_text = "\n".join(
+        (
+            f"- {key.value}: index {index} "
+            f'("{room_objects[index]}")'
+        )
+        for key, index in object_assignments.items()
+    )
+
     base_prompt = dedent(
         f"""
         Create exactly three suspects around this locked truth.
@@ -502,18 +537,24 @@ def generate_suspect_cast(
         DIFFICULTY:
         {_difficulty_guidance(difficulty)}
 
+        LOCKED ALIBI OBJECT ASSIGNMENTS:
+        {assignment_text}
+
         HARD RULES:
 
         1. Use suspect_1, suspect_2 and suspect_3 exactly once.
         2. The locked killer key is the killer, but prose must not
            reveal that.
-        3. The killer's alibi_claim and alibi_evidence_fact must
-           exactly reproduce the locked alibi and flaw.
-        4. Each innocent statement must include one distinctive,
+        3. Every suspect's alibi_room_object_index must exactly
+           match the locked assignment above.
+        4. The killer's assigned object is the locked contradiction
+           object. The killer's alibi_claim and alibi_evidence_fact
+           must exactly reproduce the locked alibi and flaw.
+        5. Each innocent statement must include one distinctive,
            observable detail about their indexed room object.
-        5. Each innocent alibi_evidence_fact must corroborate that
+        6. Each innocent alibi_evidence_fact must corroborate that
            exact detail. It need not prove absolute innocence.
-        6. Do not infer continuous behaviour from object temperature,
+        7. Do not infer continuous behaviour from object temperature,
            position, stains or condition.
         7. Do not invent timestamps in stains, rings, dents, dust or
            handwriting.
@@ -536,6 +577,40 @@ def generate_suspect_cast(
             attempts=1,
         )
 
+        # Locked killer facts and all object assignments are
+        # server-owned. The model may paraphrase exact text, so
+        # overwrite those fields before deterministic validation.
+        corrected_suspects = []
+
+        for suspect in cast.suspects:
+            updates = {
+                "alibi_room_object_index": (
+                    object_assignments[suspect.key]
+                )
+            }
+
+            if suspect.key == core_truth.killer_key:
+                updates.update(
+                    {
+                        "alibi_claim": (
+                            core_truth.killer_alibi
+                        ),
+                        "alibi_evidence_fact": (
+                            core_truth.killer_alibi_flaw
+                        ),
+                    }
+                )
+
+            corrected_suspects.append(
+                suspect.model_copy(update=updates)
+            )
+
+        cast = cast.model_copy(
+            update={
+                "suspects": corrected_suspects,
+            }
+        )
+
         issues = validate_suspect_cast(
             cast,
             core_truth,
@@ -551,31 +626,15 @@ def generate_suspect_cast(
     )
 
 
-def review_evidence_board(
-    core_truth: CoreTruthDraft,
-    suspect_cast: SuspectCastDraft,
-    evidence_board: EvidenceBoardDraft,
-    room_objects: list[str],
-) -> EvidenceBoardReview:
-    return call_structured_model(
-        build_evidence_review_prompt(
-            core_truth,
-            suspect_cast,
-            evidence_board,
-            room_objects,
-        ),
-        EvidenceBoardReview,
-        max_tokens=settings.review_max_tokens,
-        attempts=1,
-    )
-
-
-
-def _evidence_blueprint(
+def generate_evidence_board(
     core_truth: CoreTruthDraft,
     suspect_cast: SuspectCastDraft,
     room_objects: list[str],
-) -> str:
+    difficulty: Difficulty = Difficulty.standard,
+) -> EvidenceBoardDraft:
+    """Assemble locked evidence without asking the model to copy facts."""
+    del difficulty
+
     killer = next(
         suspect
         for suspect in suspect_cast.suspects
@@ -589,203 +648,154 @@ def _evidence_blueprint(
 
     first_innocent = innocents[0]
     second_innocent = innocents[1]
-    killer_object = room_objects[
-        killer.alibi_room_object_index
+
+    primary_index = core_truth.primary_room_object_index
+    primary_object = room_objects[primary_index]
+
+    used_alibi_indexes = {
+        suspect.alibi_room_object_index
+        for suspect in suspect_cast.suspects
+    }
+    red_herring_index = next(
+        index
+        for index in range(len(room_objects))
+        if index not in used_alibi_indexes
+    )
+    red_herring_object = room_objects[red_herring_index]
+
+    first_object = room_objects[
+        first_innocent.alibi_room_object_index
     ]
-    primary_object = room_objects[
-        core_truth.primary_room_object_index
+    second_object = room_objects[
+        second_innocent.alibi_room_object_index
     ]
-    death_times = ", ".join(
-        re.findall(
-            r"\b\d{1,2}:\d{2}\b",
-            core_truth.time_of_death,
-        )
+
+    clue_1 = ClueDraft(
+        title=f"The {first_object} Detail",
+        detail=(
+            f"{first_object}: "
+            f"{first_innocent.alibi_evidence_fact}"
+        ),
+        room_object_index=(
+            first_innocent.alibi_room_object_index
+        ),
+        kind=ClueKind.evidence,
+        deductions=[
+            DeductionDraft(
+                kind=DeductionKind.corroborates_alibi,
+                related_suspect_key=SuspectReferenceKey(
+                    first_innocent.key.value
+                ),
+            )
+        ],
     )
 
-    return dedent(
-        f"""
-        MANDATORY CLUE BLUEPRINT:
-
-        clue_1
-        - room_object_index: {first_innocent.alibi_room_object_index}
-        - detail must literally name "{room_objects[first_innocent.alibi_room_object_index]}"
-        - one deduction: corroboratesAlibi for {first_innocent.key.value}
-        - paraphrase this locked fact without inventing anything:
-          {first_innocent.alibi_evidence_fact}
-
-        clue_2
-        - room_object_index: {killer.alibi_room_object_index}
-        - detail must literally name "{killer_object}"
-        - deductions: contradictsStatement for {killer.key.value}
-          and establishesTimeline with related key "none"
-        - directly expose this locked flaw:
-          {core_truth.killer_alibi_flaw}
-        - explicitly include every locked death time: {death_times}
-
-        clue_3
-        - room_object_index: {core_truth.primary_room_object_index}
-        - detail must literally name both "{primary_object}" and
-          "{killer_object}"
-        - deductions: establishesMethod with related key "none"
-          and establishesOpportunity for {killer.key.value}
-        - show the observable method on the {primary_object}
-        - connect the killer's presence established by the
-          {killer_object} evidence to physical reach of the
-          {primary_object}
-        - do not invent duties, ownership, access permissions,
-          extra rooms or extra objects
-
-        clue_4
-        - room_object_index: {second_innocent.alibi_room_object_index}
-        - detail must literally name "{room_objects[second_innocent.alibi_room_object_index]}"
-        - one deduction: corroboratesAlibi for {second_innocent.key.value}
-        - paraphrase this locked fact without inventing anything:
-          {second_innocent.alibi_evidence_fact}
-
-        clue_5
-        - kind: redHerring
-        - deductions: []
-        - detail must literally name its indexed supplied room object
-        - make it plausibly suspicious without claiming it is
-          irrelevant or proving any deduction
-
-        CASE-LEVEL OPPORTUNITY:
-        - opportunity must literally name both "{killer_object}" and
-          "{primary_object}"
-        - it must explain how the locked {killer_object} evidence places
-          {killer.name} within reach of the {primary_object}
-        - it must not introduce any fact absent from the locked core or
-          suspect cast
-        """
-    ).strip()
-
-def generate_evidence_board(
-    core_truth: CoreTruthDraft,
-    suspect_cast: SuspectCastDraft,
-    room_objects: list[str],
-    difficulty: Difficulty = Difficulty.standard,
-) -> EvidenceBoardDraft:
-    objects = "\n".join(
-        f"{index}: {name}"
-        for index, name in enumerate(room_objects)
+    clue_2 = ClueDraft(
+        title="The Hidden Detail",
+        detail=(
+            f"{primary_object}: "
+            f"{core_truth.killer_alibi_flaw}"
+        ),
+        room_object_index=primary_index,
+        kind=ClueKind.evidence,
+        deductions=[
+            DeductionDraft(
+                kind=DeductionKind.contradicts_statement,
+                related_suspect_key=SuspectReferenceKey(
+                    killer.key.value
+                ),
+            )
+        ],
     )
 
-    base_prompt = dedent(
-        f"""
-        Create the five-clue evidence board for this locked case.
-
-        ROOM OBJECTS:
-        {objects}
-
-        LOCKED CORE:
-        {core_truth.model_dump_json()}
-
-        LOCKED SUSPECTS:
-        {suspect_cast.model_dump_json()}
-
-        DIFFICULTY:
-        {_difficulty_guidance(difficulty)}
-
-        {_evidence_blueprint(
-            core_truth,
-            suspect_cast,
-            room_objects,
-        )}
-
-        HARD STRUCTURE:
-
-        1. Fill clue_1 through clue_5 with five different clues.
-        2. Exactly one clue is redHerring and has no deductions.
-        3. Use all four room objects.
-        4. Every clue detail must literally name the supplied room
-           object selected by its room_object_index.
-        5. Follow the mandatory clue blueprint exactly. Do not move
-           deduction roles to different clue slots.
-        6. Each innocent receives a corroboratesAlibi deduction tied
-           to their locked alibi_evidence_fact.
-        7. Use eliminatesSuspect only for genuine impossibility.
-        8. The killer receives contradictsStatement and
-           establishesOpportunity deductions, but never
-           corroboratesAlibi or eliminatesSuspect.
-        9. Include establishesMethod and establishesTimeline.
-        10. establishesMethod and establishesTimeline use "none".
-        11. All other deduction kinds identify the relevant suspect.
-        12. The contradiction and opportunity must not both depend
-            on one clue.
-        13. At least two clues must be combined to solve the case.
-
-        FAIRNESS:
-
-        1. Treat the locked alibi_evidence_fact values as the complete
-           factual source. Paraphrase them without inventing extra
-           times, ownership, access or behaviour.
-        2. Timeline evidence must support the stated death time or
-           window, not merely place somebody in the room.
-        3. Method evidence must support the exact locked method using
-           observable features of the primary room object.
-        4. Opportunity must follow from the locked killer flaw and
-           physical proximity to the primary room object. Do not
-           invent job duties or special access.
-        5. No DNA, fingerprints, CCTV, recordings, microscopic work,
-           unnamed witnesses or hidden external evidence.
-        6. No timestamps inferred from temperature, stains, dust,
-           scratches, condensation or handwriting.
-        7. The red herring must sound relevant. Never call it
-           irrelevant, unrelated or meaningless.
-        8. Use British English and concise iPhone-friendly prose.
-
-        KEY MAPPING:
-
-        - corroboratesAlibi: the innocent suspect's key
-        - eliminatesSuspect: the genuinely eliminated suspect's key
-        - supportsSuspect: the suspect supported
-        - contradictsStatement: the contradicted suspect
-        - establishesOpportunity: the killer
-        - establishesMethod: "none"
-        - establishesTimeline: "none"
-
-        Return only the schema.
-        """
-    ).strip()
-
-    issues: list[str] = []
-
-    for _ in range(settings.generation_max_retries):
-        board = call_structured_model(
-            _feedback_prompt(base_prompt, issues, "evidence board"),
-            EvidenceBoardDraft,
-            max_tokens=settings.evidence_max_tokens,
-            attempts=1,
-        )
-
-        issues = validate_evidence_board(
-            board,
-            core_truth,
-            suspect_cast,
-            room_objects,
-        )
-
-        if issues:
-            continue
-
-        review = review_evidence_board(
-            core_truth,
-            suspect_cast,
-            board,
-            room_objects,
-        )
-
-        if review.passes:
-            return board
-
-        issues = review.issues or [
-            "The semantic reviewer rejected the evidence board."
-        ]
-
-    raise MysteryGenerationError(
-        "Evidence board failed validation: "
-        + ", ".join(issues)
+    clue_3 = ClueDraft(
+        title=f"Marks on the {primary_object}",
+        detail=(
+            f"{primary_object}: {core_truth.method_evidence} "
+            f"{killer.name}'s knowledge of "
+            f"{core_truth.hidden_detail} shows they inspected or "
+            f"handled the {primary_object}, giving them access to "
+            f"the same object used in this method: "
+            f"{core_truth.method}"
+        ),
+        room_object_index=primary_index,
+        kind=ClueKind.evidence,
+        deductions=[
+            DeductionDraft(
+                kind=DeductionKind.establishes_method,
+                related_suspect_key=SuspectReferenceKey.none,
+            ),
+            DeductionDraft(
+                kind=DeductionKind.establishes_opportunity,
+                related_suspect_key=SuspectReferenceKey(
+                    killer.key.value
+                ),
+            ),
+        ],
     )
+
+    clue_4 = ClueDraft(
+        title=f"The {second_object} Detail",
+        detail=(
+            f"{second_object}: "
+            f"{second_innocent.alibi_evidence_fact}"
+        ),
+        room_object_index=(
+            second_innocent.alibi_room_object_index
+        ),
+        kind=ClueKind.evidence,
+        deductions=[
+            DeductionDraft(
+                kind=DeductionKind.corroborates_alibi,
+                related_suspect_key=SuspectReferenceKey(
+                    second_innocent.key.value
+                ),
+            )
+        ],
+    )
+
+    clue_5 = ClueDraft(
+        title=f"The Moved {red_herring_object}",
+        detail=(
+            f"{red_herring_object}: a fresh-looking scuff suggests "
+            "recent movement, creating suspicion without identifying "
+            "who moved it."
+        ),
+        room_object_index=red_herring_index,
+        kind=ClueKind.red_herring,
+        deductions=[],
+    )
+
+    opportunity = (
+        f"{killer.name}'s knowledge of {core_truth.hidden_detail} "
+        f"could only come from inspecting or handling the "
+        f"{primary_object}. That places them in direct contact with "
+        f"the same {primary_object} used in the murder method."
+    )
+
+    board = EvidenceBoardDraft(
+        opportunity=opportunity,
+        clue_1=clue_1,
+        clue_2=clue_2,
+        clue_3=clue_3,
+        clue_4=clue_4,
+        clue_5=clue_5,
+    )
+
+    issues = validate_evidence_board(
+        board,
+        core_truth,
+        suspect_cast,
+        room_objects,
+    )
+
+    if issues:
+        raise MysteryGenerationError(
+            "Deterministic evidence assembly failed: "
+            + ", ".join(issues)
+        )
+
+    return board
 
 
 def generate_mystery_draft(

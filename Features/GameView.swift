@@ -243,6 +243,29 @@ struct GameView: View {
 
                             Text(clue.detail)
                                 .foregroundStyle(.secondary)
+                            Menu {
+                                ForEach(mystery.suspects) { suspect in
+                                    Button(suspect.name) {
+                                        viewModel.markContradiction(
+                                            clue: clue,
+                                            suspect: suspect
+                                        )
+                                    }
+                                }
+                            } label: {
+                                if let suspect =
+                                    viewModel.contradictionSuspect(for: clue) {
+                                    Label(
+                                        "Contradicts \(suspect.name)",
+                                        systemImage: "exclamationmark.bubble.fill"
+                                    )
+                                } else {
+                                    Label(
+                                        "Mark Contradiction",
+                                        systemImage: "exclamationmark.bubble"
+                                    )
+                                }
+                            }
                         }
                         .padding(.vertical, 4)
                     } else {
@@ -259,10 +282,14 @@ struct GameView: View {
                 }
                 .disabled(!viewModel.canAccuse)
             } footer: {
-                if !viewModel.canAccuse {
-                    Text(
-                        "Examine every clue and select one suspect."
-                    )
+                if viewModel.investigation?
+                    .revealedClueIDs.count != mystery.clues.count {
+                    Text("Examine every clue before accusing someone.")
+                } else if viewModel.investigation?
+                    .contradictionClaims.isEmpty != false {
+                    Text("Mark at least one contradiction before accusing.")
+                } else if viewModel.selectedSuspectID == nil {
+                    Text("Select the suspect you wish to accuse.")
                 }
             }
         }
@@ -300,6 +327,32 @@ struct GameView: View {
             
             Section("Opportunity") {
                 Text(resolution.reconstruction.opportunity)
+            }
+            
+            Section("How the evidence fits") {
+                ForEach(resolution.reconstruction.steps) { step in
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(step.clueTitle)
+                            .font(.headline)
+
+                        Text("Found through: \(step.roomObjectName)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        Text(step.clueDetail)
+
+                        ForEach(step.findings, id: \.self) { finding in
+                            Label(
+                                finding,
+                                systemImage: step.isRedHerring
+                                    ? "questionmark.circle"
+                                    : "checkmark.circle"
+                            )
+                            .font(.subheadline)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
             }
             
             Section {

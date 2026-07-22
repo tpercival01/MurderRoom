@@ -48,8 +48,8 @@ final class GameViewModel: ObservableObject {
 
     var canAccuse: Bool {
         guard
-            let mystery = mystery,
-            let investigation = investigation
+            let mystery,
+            let investigation
         else {
             return false
         }
@@ -57,6 +57,7 @@ final class GameViewModel: ObservableObject {
         return selectedSuspectID != nil &&
             investigation.revealedClueIDs.count ==
             mystery.clues.count &&
+            !investigation.contradictionClaims.isEmpty &&
             !investigation.isResolved
     }
     
@@ -240,6 +241,46 @@ final class GameViewModel: ObservableObject {
             investigation = currentInvestigation
         } catch {
             errorMessage = "The suspect assessment could not be saved."
+        }
+    }
+    
+    func contradictionSuspect(
+        for clue: MysteryClue
+    ) -> MysteryPerson? {
+        guard
+            let mystery,
+            let suspectID =
+                investigation?.contradictionClaims[clue.id]
+        else {
+            return nil
+        }
+
+        return mystery.suspects.first {
+            $0.id == suspectID
+        }
+    }
+
+    func markContradiction(
+        clue: MysteryClue,
+        suspect: MysteryPerson
+    ) {
+        guard
+            let mystery,
+            var currentInvestigation = investigation
+        else {
+            return
+        }
+
+        do {
+            try currentInvestigation.markContradiction(
+                clueID: clue.id,
+                suspectID: suspect.id,
+                in: mystery
+            )
+
+            investigation = currentInvestigation
+        } catch {
+            errorMessage = "The contradiction could not be recorded."
         }
     }
     

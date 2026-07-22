@@ -684,7 +684,21 @@ struct MurderRoomTests {
                 in: mystery
             )
         }
+        
+        let contradictionClue = try #require(
+            mystery.clues.first { clue in
+                clue.deductions.contains { deduction in
+                    deduction.kind == .contradictsStatement
+                }
+            }
+        )
 
+        try investigation.markContradiction(
+            clueID: contradictionClue.id,
+            suspectID: mystery.solution.killerID,
+            in: mystery
+        )
+        
         try investigation.accuse(
             suspectID: mystery.solution.killerID,
             in: mystery
@@ -720,5 +734,91 @@ struct MurderRoomTests {
                 "Desk"
             ]
         )
+    }
+    @Test
+    func recordsContradictionOnlyAfterClueIsRevealed() async throws {
+        let roomObjects = [
+            RoomObject(name: "Coffee Mug", isConfirmed: true),
+            RoomObject(name: "Floor Lamp", isConfirmed: true),
+            RoomObject(name: "Armchair", isConfirmed: true),
+            RoomObject(name: "Wall Clock", isConfirmed: true)
+        ]
+
+        let mystery = try await HardcodedMysteryGenerator()
+            .generate(from: roomObjects)
+
+        let clue = mystery.clues[0]
+        let suspect = mystery.suspects[0]
+
+        var investigation = InvestigationState(
+            mysteryID: mystery.id
+        )
+
+        do {
+            try investigation.markContradiction(
+                clueID: clue.id,
+                suspectID: suspect.id,
+                in: mystery
+            )
+
+            Issue.record(
+                "An unrevealed clue should not be usable."
+            )
+        } catch let error as InvestigationStateError {
+            #expect(error == .clueNotRevealed)
+        }
+
+        try investigation.reveal(
+            clueID: clue.id,
+            in: mystery
+        )
+
+        try investigation.markContradiction(
+            clueID: clue.id,
+            suspectID: suspect.id,
+            in: mystery
+        )
+
+        #expect(
+            investigation.contradictionClaims[clue.id] ==
+            suspect.id
+        )
+    }
+    
+    @Test
+    func preventsAccusationWithoutContradictionClaim() async throws {
+        let roomObjects = [
+            RoomObject(name: "Coffee Mug", isConfirmed: true),
+            RoomObject(name: "Floor Lamp", isConfirmed: true),
+            RoomObject(name: "Armchair", isConfirmed: true),
+            RoomObject(name: "Wall Clock", isConfirmed: true)
+        ]
+
+        let mystery = try await HardcodedMysteryGenerator()
+            .generate(from: roomObjects)
+
+        var investigation = InvestigationState(
+            mysteryID: mystery.id
+        )
+
+        for clue in mystery.clues {
+            try investigation.reveal(
+                clueID: clue.id,
+                in: mystery
+            )
+        }
+
+        do {
+            try investigation.accuse(
+                suspectID: mystery.solution.killerID,
+                in: mystery
+            )
+
+            Issue.record(
+                "An accusation without a contradiction should fail."
+            )
+        } catch let error as InvestigationStateError {
+            #expect(error == .noContradictionMarked)
+        }
     }
 }

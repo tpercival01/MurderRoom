@@ -32,6 +32,7 @@
 		5466D33F30121751006DF879 /* RoomPhotoInvestigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D33E3012174C006DF879 /* RoomPhotoInvestigationView.swift */; };
 		5466D341301218ED006DF879 /* ObjectClueSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D340301218E9006DF879 /* ObjectClueSheetView.swift */; };
 		5466D343301225F3006DF879 /* CaseNotebookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D342301225ED006DF879 /* CaseNotebookView.swift */; };
+		5466D34530124A5A006DF879 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D34430124A57006DF879 /* Configuration.swift */; };
 		54E4D2DB301101A10069FA50 /* AIMysteryGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		5466D33E3012174C006DF879 /* RoomPhotoInvestigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPhotoInvestigationView.swift; sourceTree = "<group>"; };
 		5466D340301218E9006DF879 /* ObjectClueSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectClueSheetView.swift; sourceTree = "<group>"; };
 		5466D342301225ED006DF879 /* CaseNotebookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseNotebookView.swift; sourceTree = "<group>"; };
+		5466D34430124A57006DF879 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIMysteryGenerator.swift; sourceTree = "<group>"; };
 		54E4D2DC3011023D0069FA50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -202,6 +204,7 @@
 		544EFF12300F6605003E7F2D /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				5466D34430124A57006DF879 /* Configuration.swift */,
 				54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */,
 				5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */,
 				5456C897300FA5440096F572 /* CameraPicker.swift */,
@@ -379,6 +382,7 @@
 				5466D341301218ED006DF879 /* ObjectClueSheetView.swift in Sources */,
 				54E4D2DB301101A10069FA50 /* AIMysteryGenerator.swift in Sources */,
 				544EFF1F300F6D0F003E7F2D /* MysterySolution.swift in Sources */,
+				5466D34530124A5A006DF879 /* Configuration.swift in Sources */,
 				544EFF21300F6D18003E7F2D /* MysteryDeduction.swift in Sources */,
 				544EFF20300F6D13003E7F2D /* MysteryCase.swift in Sources */,
 				544EFF29300F7DFF003E7F2D /* MysteryResolution.swift in Sources */,

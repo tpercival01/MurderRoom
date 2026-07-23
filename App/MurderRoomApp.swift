@@ -8,7 +8,7 @@ struct MurderRoomApp: App {
     init() {
         let aiGenerator = AIMysteryGenerator(
             baseURL: URL(
-                string: "http://10.101.148.72:8000"
+                string: "https://api.murderroom.thomaspercival.dev"
             )!
         )
 

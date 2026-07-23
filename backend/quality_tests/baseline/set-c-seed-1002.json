@@ -1,0 +1,146 @@
+{
+  "id": "661591c6-00d5-4fb0-8159-c2255a3abfa2",
+  "title": "The Study of Deceit",
+  "openingIncident": "At 8:45 pm, Astrid Pembly, retired university lecturer, was found dead in the cluttered home office. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "victim": {
+    "id": "daf8dadd-5a55-4363-a9cd-a7f61dad96ab",
+    "name": "Astrid Pembly",
+    "role": "Victim",
+    "relationshipToVictim": "Victim",
+    "statement": "",
+    "alibiClaim": ""
+  },
+  "suspects": [
+    {
+      "id": "0b758dd5-f8ca-404b-b50a-8e2f4db54d79",
+      "name": "Evelyn Markham",
+      "role": "Suspect",
+      "relationshipToVictim": "estranged niece",
+      "statement": "I left at 8:30 pm. I never touched the water bottle and did not go near the shoe.",
+      "alibiClaim": "I had already left the room by 8:30 pm and did not return."
+    },
+    {
+      "id": "d258b551-1f4b-4d9b-b168-aab28b8305ea",
+      "name": "Cedric Fothergill",
+      "role": "Suspect",
+      "relationshipToVictim": "former research colleague",
+      "statement": "At 8:35 pm, Lysander Wellesley helped me move the remote control aside. We left the room together immediately afterwards. Evelyn Markham and Astrid Pembly were still inside.",
+      "alibiClaim": "Lysander Wellesley and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+    },
+    {
+      "id": "4e31c231-4b67-4b70-885c-d14f7b084002",
+      "name": "Lysander Wellesley",
+      "role": "Suspect",
+      "relationshipToVictim": "family solicitor",
+      "statement": "At 8:35 pm, I helped Cedric Fothergill move the remote control aside. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Cedric Fothergill and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+    }
+  ],
+  "roomObjects": [
+    {
+      "id": "6eaeef40-eb66-40dc-9975-540c3915c18e",
+      "name": "shoe",
+      "isConfirmed": true
+    },
+    {
+      "id": "07876c7a-87ce-4fa7-9a2b-36d09e57fd96",
+      "name": "remote control",
+      "isConfirmed": true
+    },
+    {
+      "id": "0bf2929d-506a-47c4-bf25-366c666c5051",
+      "name": "water bottle",
+      "isConfirmed": true
+    },
+    {
+      "id": "95eab7fe-7f8b-46fe-8ca8-af3e1292d645",
+      "name": "backpack",
+      "isConfirmed": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "f53b14ce-f8a3-4141-b4a1-0bd03a62c053",
+      "title": "Granules in Water Bottle",
+      "detail": "Undissolved blue granules cling below the liquid line inside the water bottle. The same blue residue is visible at Astrid Pembly's lips and in the remaining drink.",
+      "roomObjectID": "0bf2929d-506a-47c4-bf25-366c666c5051",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesMethod",
+          "relatedSuspectID": null
+        }
+      ]
+    },
+    {
+      "id": "7258125e-0ef0-4e35-adfe-5023ca79e014",
+      "title": "Position of Remote Control",
+      "detail": "The fresh contact mark left by the remote control is crossed by a narrow blue droplet from the spilled poisoned drink whose edge remains unbroken. Cedric Fothergill and Lysander Wellesley both state that they moved the remote control aside at 8:35 pm before leaving together.",
+      "roomObjectID": "07876c7a-87ce-4fa7-9a2b-36d09e57fd96",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesTimeline",
+          "relatedSuspectID": null
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "d258b551-1f4b-4d9b-b168-aab28b8305ea"
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "4e31c231-4b67-4b70-885c-d14f7b084002"
+        }
+      ]
+    },
+    {
+      "id": "0f5d8fc3-5c1d-4149-9930-356a8f1e571f",
+      "title": "Fibres on Water Bottle",
+      "detail": "Fine copper-coloured silk threads are caught around the handle and rim of the water bottle. Evelyn Markham's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
+      "roomObjectID": "0bf2929d-506a-47c4-bf25-366c666c5051",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "contradictsStatement",
+          "relatedSuspectID": "0b758dd5-f8ca-404b-b50a-8e2f4db54d79"
+        },
+        {
+          "kind": "establishesOpportunity",
+          "relatedSuspectID": "0b758dd5-f8ca-404b-b50a-8e2f4db54d79"
+        },
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "0b758dd5-f8ca-404b-b50a-8e2f4db54d79"
+        }
+      ]
+    },
+    {
+      "id": "d9d1fde9-cdd4-474e-a7e6-a685acdf6345",
+      "title": "Fragment at Shoe",
+      "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the shoe on top of a narrow blue droplet from the spilled poisoned drink. The black-and-gold fountain-pen cap worn by Evelyn Markham has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "6eaeef40-eb66-40dc-9975-540c3915c18e",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "0b758dd5-f8ca-404b-b50a-8e2f4db54d79"
+        }
+      ]
+    },
+    {
+      "id": "3701d225-c2d0-493d-9ef8-2a7cb30307ec",
+      "title": "Mark on Backpack",
+      "detail": "A dark mark crosses the backpack. The same intact factory finish continues over the marked area.",
+      "roomObjectID": "95eab7fe-7f8b-46fe-8ca8-af3e1292d645",
+      "kind": "redHerring",
+      "deductions": []
+    }
+  ],
+  "solution": {
+    "killerID": "0b758dd5-f8ca-404b-b50a-8e2f4db54d79",
+    "motive": "Evelyn Markham killed Astrid Pembly because a long-buried family scandal that threatened to destroy her reputation because.",
+    "method": "A fatal crushed dose was dissolved in the water bottle before Astrid Pembly drank.",
+    "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
+    "opportunity": "Evelyn Markham claimed to have left at 8:30 pm. The timeline evidence places the attack after Cedric Fothergill and Lysander Wellesley left together at 8:35 pm; the fine copper-coloured silk threads on the water bottle and the black and gold fragment recovered from the shoe place Evelyn Markham inside afterwards. Evelyn Markham therefore had the only evidenced opportunity to be alone with Astrid Pembly and reach the water bottle during the murder window."
+  }
+}

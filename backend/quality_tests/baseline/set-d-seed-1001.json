@@ -1,0 +1,146 @@
+{
+  "id": "c68c3577-cecd-451a-851b-5e384f4d6ffa",
+  "title": "The Shadow at Netherwood Manor",
+  "openingIncident": "At 8:45 pm, Aubrey Fothergill, renowned restaurateur, was found dead in the grand dining room with its intricately carved wooden panels and lavish furnishings. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "victim": {
+    "id": "b6c356fe-5e72-4d19-bde4-a1c7f700aa32",
+    "name": "Aubrey Fothergill",
+    "role": "Victim",
+    "relationshipToVictim": "Victim",
+    "statement": "",
+    "alibiClaim": ""
+  },
+  "suspects": [
+    {
+      "id": "b0b13288-7fe8-4a9a-b25d-a87206721df2",
+      "name": "Clementine Markham",
+      "role": "Suspect",
+      "relationshipToVictim": "former head chef",
+      "statement": "At 8:35 pm, Roderick Pembroke helped me set the bottle down on the side table. We left the room together immediately afterwards. Beatrix Fothergill and Aubrey Fothergill were still inside.",
+      "alibiClaim": "Roderick Pembroke and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+    },
+    {
+      "id": "fe53bbcb-1d84-4c2e-8cb2-bc1a75849dbe",
+      "name": "Roderick Pembroke",
+      "role": "Suspect",
+      "relationshipToVictim": "business rival",
+      "statement": "At 8:35 pm, I helped Clementine Markham set the bottle down on the side table. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Clementine Markham and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+    },
+    {
+      "id": "712caded-912a-4474-b830-0d568c4c20a8",
+      "name": "Beatrix Fothergill",
+      "role": "Suspect",
+      "relationshipToVictim": "estranged daughter",
+      "statement": "I left at 8:30 pm. I never touched the knife and did not go near the glass.",
+      "alibiClaim": "I had already left the room by 8:30 pm and did not return."
+    }
+  ],
+  "roomObjects": [
+    {
+      "id": "878de6e8-8f19-4f10-8b5c-1b029a8660d6",
+      "name": "glass",
+      "isConfirmed": true
+    },
+    {
+      "id": "6a039a2b-ebf4-45e6-84c3-e4898f38c00e",
+      "name": "bottle",
+      "isConfirmed": true
+    },
+    {
+      "id": "f3e32531-bed2-4e9c-a9f2-d6243da18d3a",
+      "name": "plate",
+      "isConfirmed": true
+    },
+    {
+      "id": "8c9cd3df-8232-480e-adca-dd24a5d990b7",
+      "name": "knife",
+      "isConfirmed": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "6494347e-879f-482f-87ba-e0e3f9fe3489",
+      "title": "The Edge of Knife",
+      "detail": "A fresh line of blood runs along one edge of the knife, and its point has a new bend. Aubrey Fothergill has a narrow wound consistent with that edge.",
+      "roomObjectID": "8c9cd3df-8232-480e-adca-dd24a5d990b7",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesMethod",
+          "relatedSuspectID": null
+        }
+      ]
+    },
+    {
+      "id": "88ec5585-d6b4-428d-9d92-992ee936388c",
+      "title": "Ring beneath Bottle",
+      "detail": "The fresh circular ring beneath the bottle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Clementine Markham and Roderick Pembroke both state that they set the bottle down on the side table at 8:35 pm before leaving together.",
+      "roomObjectID": "6a039a2b-ebf4-45e6-84c3-e4898f38c00e",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesTimeline",
+          "relatedSuspectID": null
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "b0b13288-7fe8-4a9a-b25d-a87206721df2"
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "fe53bbcb-1d84-4c2e-8cb2-bc1a75849dbe"
+        }
+      ]
+    },
+    {
+      "id": "b212eebd-87c6-4be8-bc03-8ef20164187e",
+      "title": "Fibres on Knife",
+      "detail": "Teal-and-cream tweed fibres are caught around the handle of the knife. Beatrix Fothergill's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
+      "roomObjectID": "8c9cd3df-8232-480e-adca-dd24a5d990b7",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "contradictsStatement",
+          "relatedSuspectID": "712caded-912a-4474-b830-0d568c4c20a8"
+        },
+        {
+          "kind": "establishesOpportunity",
+          "relatedSuspectID": "712caded-912a-4474-b830-0d568c4c20a8"
+        },
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "712caded-912a-4474-b830-0d568c4c20a8"
+        }
+      ]
+    },
+    {
+      "id": "acd6f3cc-a84c-40fc-9bf7-c3840e5e3785",
+      "title": "Fragment at Glass",
+      "detail": "A curved black lacquer chip edged in gold is lodged inside the handle joint of the glass on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Beatrix Fothergill has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "878de6e8-8f19-4f10-8b5c-1b029a8660d6",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "712caded-912a-4474-b830-0d568c4c20a8"
+        }
+      ]
+    },
+    {
+      "id": "1c57ca96-eaed-4819-a013-98cd1dcd9f7c",
+      "title": "Crack in Plate",
+      "detail": "A crack runs across the plate. A continuous yellowed glue line is visible deep inside the break.",
+      "roomObjectID": "f3e32531-bed2-4e9c-a9f2-d6243da18d3a",
+      "kind": "redHerring",
+      "deductions": []
+    }
+  ],
+  "solution": {
+    "killerID": "712caded-912a-4474-b830-0d568c4c20a8",
+    "motive": "Beatrix Fothergill killed Aubrey Fothergill because the impending exposure of a long-buried family scandal that would ruin the victim's reputation and destroy the family's legacy because.",
+    "method": "Aubrey Fothergill was fatally stabbed with the knife.",
+    "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
+    "opportunity": "Beatrix Fothergill claimed to have left at 8:30 pm. The timeline evidence places the attack after Clementine Markham and Roderick Pembroke left together at 8:35 pm; the teal-and-cream tweed fibres on the knife and the black and gold fragment recovered from the glass place Beatrix Fothergill inside afterwards. Beatrix Fothergill therefore had the only evidenced opportunity to be alone with Aubrey Fothergill and reach the knife during the murder window."
+  }
+}

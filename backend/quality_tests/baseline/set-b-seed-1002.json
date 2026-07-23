@@ -1,0 +1,146 @@
+{
+  "id": "32b01a12-fe79-49b6-870b-65d2de833202",
+  "title": "Shadow in the Manor",
+  "openingIncident": "At 8:45 pm, Astrid Pembroke, renowned art curator, was found dead in the dimly lit, ornate study with a large, stone fireplace, filled with old, leather-bound books and a beautifully crafted, antique mirror hanging above the fireplace. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "victim": {
+    "id": "77b80b69-06b3-453d-8746-d7e69b70972d",
+    "name": "Astrid Pembroke",
+    "role": "Victim",
+    "relationshipToVictim": "Victim",
+    "statement": "",
+    "alibiClaim": ""
+  },
+  "suspects": [
+    {
+      "id": "7cfcd348-5c49-4e63-82ed-d736f3b2799e",
+      "name": "Evelyn Markham",
+      "role": "Suspect",
+      "relationshipToVictim": "estranged daughter",
+      "statement": "I left at 8:30 pm. I never touched the clock and did not go near the mirror.",
+      "alibiClaim": "I had already left the room by 8:30 pm and did not return."
+    },
+    {
+      "id": "4a096011-2f7d-48b8-925d-7fefe1853491",
+      "name": "Cedric Fothergill",
+      "role": "Suspect",
+      "relationshipToVictim": "business partner",
+      "statement": "At 8:35 pm, Lysander Blackwood helped me shift the candle to light the victim's papers. We left the room together immediately afterwards. Evelyn Markham and Astrid Pembroke were still inside.",
+      "alibiClaim": "Lysander Blackwood and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+    },
+    {
+      "id": "6ef8d77b-62f7-40a8-9eae-36221bae8c6b",
+      "name": "Lysander Blackwood",
+      "role": "Suspect",
+      "relationshipToVictim": "former lover",
+      "statement": "At 8:35 pm, I helped Cedric Fothergill shift the candle to light the victim's papers. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Cedric Fothergill and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+    }
+  ],
+  "roomObjects": [
+    {
+      "id": "126c004e-1dee-4308-801b-7f2c8e0765cb",
+      "name": "mirror",
+      "isConfirmed": true
+    },
+    {
+      "id": "505db8be-29f0-4da6-a20a-296e413960cd",
+      "name": "clock",
+      "isConfirmed": true
+    },
+    {
+      "id": "a9d8f2f1-467d-48d9-9c1a-ae6fce472e20",
+      "name": "candle",
+      "isConfirmed": true
+    },
+    {
+      "id": "b8ef05ba-feda-434e-b308-1be0aa07da36",
+      "name": "photograph",
+      "isConfirmed": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "320d34eb-191e-4dc5-ac89-51d8f1ea750b",
+      "title": "The Dented Clock",
+      "detail": "A fresh blood smear and a new impact dent mark the clock. Astrid Pembroke has a fresh blunt wound to the head.",
+      "roomObjectID": "505db8be-29f0-4da6-a20a-296e413960cd",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesMethod",
+          "relatedSuspectID": null
+        }
+      ]
+    },
+    {
+      "id": "baa16346-39e1-4c80-affd-b1a3264e4235",
+      "title": "Outline beneath Candle",
+      "detail": "The clean outline beneath the shifted base of the candle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Cedric Fothergill and Lysander Blackwood both state that they shifted the candle to light the victim's papers at 8:35 pm before leaving together.",
+      "roomObjectID": "a9d8f2f1-467d-48d9-9c1a-ae6fce472e20",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesTimeline",
+          "relatedSuspectID": null
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "4a096011-2f7d-48b8-925d-7fefe1853491"
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "6ef8d77b-62f7-40a8-9eae-36221bae8c6b"
+        }
+      ]
+    },
+    {
+      "id": "3b277afa-9146-4bfa-99e9-6b5d2af8be33",
+      "title": "Fibres on Clock",
+      "detail": "Fine copper-coloured silk threads are caught inside a fresh split on the clock. Evelyn Markham's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
+      "roomObjectID": "505db8be-29f0-4da6-a20a-296e413960cd",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "contradictsStatement",
+          "relatedSuspectID": "7cfcd348-5c49-4e63-82ed-d736f3b2799e"
+        },
+        {
+          "kind": "establishesOpportunity",
+          "relatedSuspectID": "7cfcd348-5c49-4e63-82ed-d736f3b2799e"
+        },
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "7cfcd348-5c49-4e63-82ed-d736f3b2799e"
+        }
+      ]
+    },
+    {
+      "id": "54243413-e1a7-4c1e-a202-4547e09b6543",
+      "title": "Fragment at Mirror",
+      "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the mirror on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Evelyn Markham has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "126c004e-1dee-4308-801b-7f2c8e0765cb",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "7cfcd348-5c49-4e63-82ed-d736f3b2799e"
+        }
+      ]
+    },
+    {
+      "id": "2b67a78b-fe90-49f2-af7e-1eb3598c49dd",
+      "title": "Mark on Photograph",
+      "detail": "A dark mark crosses the photograph. The same intact factory finish continues over the marked area.",
+      "roomObjectID": "b8ef05ba-feda-434e-b308-1be0aa07da36",
+      "kind": "redHerring",
+      "deductions": []
+    }
+  ],
+  "solution": {
+    "killerID": "7cfcd348-5c49-4e63-82ed-d736f3b2799e",
+    "motive": "Evelyn Markham killed Astrid Pembroke because the victim's discovery of a long-buried family secret that threatened to destroy their reputation and livelihood because of the impending exposure of a forged art collection.",
+    "method": "Astrid Pembroke was killed by a heavy blow from the clock.",
+    "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
+    "opportunity": "Evelyn Markham claimed to have left at 8:30 pm. The timeline evidence places the attack after Cedric Fothergill and Lysander Blackwood left together at 8:35 pm; the fine copper-coloured silk threads on the clock and the black and gold fragment recovered from the mirror place Evelyn Markham inside afterwards. Evelyn Markham therefore had the only evidenced opportunity to be alone with Astrid Pembroke and reach the clock during the murder window."
+  }
+}

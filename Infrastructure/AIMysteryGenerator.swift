@@ -13,6 +13,7 @@ enum MysteryDifficulty: String, Encodable {
 enum AIMysteryGeneratorError: Error, LocalizedError {
     case invalidRoomObjects
     case invalidHTTPResponse
+    case rateLimited(retryAfterSeconds: Double?)
     case serverRejectedRequest(
         statusCode: Int,
         detail: String
@@ -31,6 +32,18 @@ enum AIMysteryGeneratorError: Error, LocalizedError {
         case .invalidHTTPResponse:
             return """
             The mystery server returned an invalid response.
+            """
+
+        case let .rateLimited(retryAfterSeconds):
+            if let retryAfterSeconds {
+                return """
+                Mystery generation is temporarily rate limited. \
+                Retry after \(Int(retryAfterSeconds.rounded(.up))) seconds.
+                """
+            }
+
+            return """
+            Mystery generation is temporarily rate limited.
             """
 
         case let .serverRejectedRequest(
@@ -62,10 +75,6 @@ enum AIMysteryGeneratorError: Error, LocalizedError {
 }
 
 /// Performs one complete request to the backend.
-///
-/// A 502 means the backend exhausted its bounded retries for that
-/// generated case. It is deliberately allowed to throw so the
-/// persistent wrapper can start a completely fresh case.
 struct AIMysteryGenerator: MysteryGenerating {
     let baseURL: URL
     let difficulty: MysteryDifficulty
@@ -117,9 +126,6 @@ struct AIMysteryGenerator: MysteryGenerating {
             "application/json",
             forHTTPHeaderField: "Content-Type"
         )
-
-        // One full phased generation can take longer than a normal
-        // API request, especially when the backend rejects drafts.
         request.timeoutInterval = 180
 
         let payload = GenerateCaseRequest(
@@ -143,6 +149,14 @@ struct AIMysteryGenerator: MysteryGenerating {
         else {
             throw AIMysteryGeneratorError
                 .invalidHTTPResponse
+        }
+
+        if httpResponse.statusCode == 429 {
+            throw AIMysteryGeneratorError.rateLimited(
+                retryAfterSeconds: retryAfterSeconds(
+                    from: httpResponse
+                )
+            )
         }
 
         guard 200..<300 ~= httpResponse.statusCode else {
@@ -176,6 +190,18 @@ struct AIMysteryGenerator: MysteryGenerating {
         return mystery
     }
 
+    private func retryAfterSeconds(
+        from response: HTTPURLResponse
+    ) -> Double? {
+        guard let rawValue = response.value(
+            forHTTPHeaderField: "Retry-After"
+        ) else {
+            return nil
+        }
+
+        return Double(rawValue)
+    }
+
     private func decodeServerError(
         from data: Data
     ) -> String {
@@ -200,25 +226,26 @@ struct AIMysteryGenerator: MysteryGenerating {
 
 /// Keeps starting fresh whole-case generations until one succeeds.
 ///
-/// The backend should keep its own retries bounded. This wrapper handles
-/// the higher-level policy: a failed suspect cast or evidence board means
-/// abandon that whole draft, pause briefly, then start a new case.
-///
-/// It stops only when the surrounding Swift task is cancelled or the
-/// room-object input is invalid.
+/// Ordinary generation failures use short exponential backoff.
+/// Provider rate limits honour the backend's Retry-After header so
+/// newly released quota is not immediately consumed by another loop.
 struct PersistentMysteryGenerator<
     Generator: MysteryGenerating
 >: MysteryGenerating {
     let generator: Generator
     let maximumDelaySeconds: Double
+    let defaultRateLimitDelaySeconds: Double
 
     init(
         generator: Generator,
-        maximumDelaySeconds: Double = 12
+        maximumDelaySeconds: Double = 12,
+        defaultRateLimitDelaySeconds: Double = 60
     ) {
         self.generator = generator
         self.maximumDelaySeconds =
             maximumDelaySeconds
+        self.defaultRateLimitDelaySeconds =
+            defaultRateLimitDelaySeconds
     }
 
     func generate(
@@ -236,16 +263,29 @@ struct PersistentMysteryGenerator<
             } catch is CancellationError {
                 throw CancellationError()
             } catch let error as AIMysteryGeneratorError {
-                if case .invalidRoomObjects = error {
+                switch error {
+                case .invalidRoomObjects:
                     throw error
+
+                case let .rateLimited(
+                    retryAfterSeconds
+                ):
+                    try await waitForRateLimit(
+                        retryAfterSeconds:
+                            retryAfterSeconds
+                    )
+
+                case .invalidHTTPResponse,
+                     .serverRejectedRequest,
+                     .decodingFailed,
+                     .invalidMystery:
+                    failedWholeCaseAttempts += 1
+
+                    try await waitBeforeRetry(
+                        failedAttemptCount:
+                            failedWholeCaseAttempts
+                    )
                 }
-
-                failedWholeCaseAttempts += 1
-
-                try await waitBeforeRetry(
-                    failedAttemptCount:
-                        failedWholeCaseAttempts
-                )
             } catch let error as URLError
                 where error.code == .cancelled {
                 throw CancellationError()
@@ -258,6 +298,21 @@ struct PersistentMysteryGenerator<
                 )
             }
         }
+    }
+
+    private func waitForRateLimit(
+        retryAfterSeconds: Double?
+    ) async throws {
+        let requestedDelay =
+            retryAfterSeconds
+            ?? defaultRateLimitDelaySeconds
+
+        let safeDelay = min(
+            max(requestedDelay, 1),
+            3_600
+        )
+
+        try await sleep(seconds: safeDelay)
     }
 
     private func waitBeforeRetry(
@@ -282,8 +337,14 @@ struct PersistentMysteryGenerator<
             maximumDelaySeconds
         )
 
+        try await sleep(seconds: delay)
+    }
+
+    private func sleep(
+        seconds: Double
+    ) async throws {
         let nanoseconds = UInt64(
-            delay * 1_000_000_000
+            seconds * 1_000_000_000
         )
 
         try await Task.sleep(
@@ -306,10 +367,6 @@ private struct ServerErrorResponse: Decodable {
     let detail: String
 }
 
-/// Retained for previews or a future explicit offline mode.
-///
-/// Do not wrap PersistentMysteryGenerator in this during the current
-/// integration test, because a fallback would hide backend defects.
 struct FallbackMysteryGenerator<
     Primary: MysteryGenerating,
     Fallback: MysteryGenerating

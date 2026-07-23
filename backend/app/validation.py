@@ -8,7 +8,6 @@ from app.models import (
     DeductionKind,
     EvidenceBoardDraft,
     SuspectCastDraft,
-    SuspectKey,
     SuspectReferenceKey,
 )
 
@@ -21,77 +20,72 @@ BANNED_EVIDENCE_TERMS = {
     "video recording",
     "microscopic",
     "forensic analysis",
+    "phone record",
+    "mobile record",
     "unnamed witness",
-    "witness observed",
+    "hidden passage",
 }
 
-BANNED_REASONING_PHRASES = {
-    "clock imprint",
-    "dated around",
-    "still holding",
-    "was not near",
-    "only the killer could",
-    "regularly maintained",
-    "no relevance",
+BANNED_PLAYER_CONCLUSION_PHRASES = {
+    "this directly contradicts",
+    "this independently places",
+    "the attack therefore",
+    "proving it was",
+    "showing it was",
+    "therefore had the only",
+}
+
+BANNED_RED_HERRING_RESOLUTION_PHRASES = {
+    "earlier repair",
+    "older repair",
+    "predates the attack",
+    "before the attack",
+    "before the evening",
+    "not fresh damage",
     "unrelated to the murder",
-    "unrelated to the incident",
-    "shows the killer was near",
-    "proves the killer was near",
-    "meaning the killer was near",
-    "shows the killer was present",
-    "proves the killer was present",
+    "irrelevant",
 }
 
-BANNED_EXTERNAL_LOCATIONS = {
-    "break room",
-    "study",
-    "kitchen",
-    "garden",
-    "hallway",
-    "corridor",
-    "car park",
-    "bedroom",
-    "bathroom",
+BANNED_WEAK_PHRASES = {
+    "may have",
+    "might have",
+    "possibly",
+    "perhaps",
+    "suggests they may",
+    "just a coincidence",
+    "probably unrelated",
+    "likely caused by",
+    "could have been used",
 }
 
-BANNED_CORE_METHOD_TERMS = {
-    "poison",
-    "sedative",
-    "toxin",
-    "cyanide",
-    "allergic reaction",
-    "electrocution",
-    "electrical surge",
-    "live feed",
-}
-
-STOP_WORDS = {
-    "a", "an", "and", "at", "before", "by", "for", "from", "i",
-    "in", "is", "it", "of", "on", "the", "then", "to", "was",
-    "with", "after", "that", "this", "their", "they",
-}
+_INTERNAL_REFERENCE_RE = re.compile(r"\bsuspect[_ ]?[123]\b", re.IGNORECASE)
 
 
-def _content_words(text: str) -> set[str]:
-    words: set[str] = set()
-
-    for raw_word in re.findall(r"[a-z0-9']+", text.casefold()):
-        word = (
-            raw_word[:-2]
-            if raw_word.endswith("'s")
-            else raw_word
-        )
-
-        if len(word) > 2 and word not in STOP_WORDS:
-            words.add(word)
-
-    return words
+def _mentions_object(text: str, object_name: str) -> bool:
+    text_cf = text.casefold()
+    name_cf = object_name.casefold().strip()
+    if name_cf in text_cf:
+        return True
+    tokens = [token for token in re.findall(r"[a-z0-9]+", name_cf) if len(token) > 2]
+    return bool(tokens) and tokens[-1] in text_cf
 
 
-def _has_shared_detail(left: str, right: str) -> bool:
-    return len(
-        _content_words(left).intersection(_content_words(right))
-    ) >= 2
+def _text_issues(text: str, label: str, *, minimum: int = 12) -> list[str]:
+    issues: list[str] = []
+    stripped = text.strip()
+    lowered = stripped.casefold()
+
+    if len(stripped) < minimum:
+        issues.append(f"{label} is too short to carry a fair deduction.")
+    if _INTERNAL_REFERENCE_RE.search(stripped):
+        issues.append(f"{label} exposes an internal suspect key.")
+    for term in BANNED_EVIDENCE_TERMS:
+        if term in lowered:
+            issues.append(f"{label} uses prohibited external evidence: {term}.")
+    for phrase in BANNED_WEAK_PHRASES:
+        if phrase in lowered:
+            issues.append(f"{label} uses weak or unsupported reasoning: {phrase}.")
+    return issues
 
 
 def validate_core_truth(
@@ -99,143 +93,57 @@ def validate_core_truth(
     room_objects: list[str],
 ) -> list[str]:
     issues: list[str] = []
+    method_object = room_objects[draft.primary_room_object_index]
+    contradiction_object = room_objects[draft.contradiction_room_object_index]
 
-    primary_object = room_objects[
-        draft.primary_room_object_index
-    ].casefold()
-    contradiction_object = room_objects[
-        draft.contradiction_room_object_index
-    ].casefold()
-
-    method_text = draft.method.casefold()
-    method_evidence_text = draft.method_evidence.casefold()
-    denial_text = draft.killer_denial.casefold()
-    hidden_text = draft.hidden_detail.casefold()
-    revealed_text = draft.killer_revealed_detail.casefold()
-    flaw_text = draft.killer_alibi_flaw.casefold()
-
-    if primary_object not in method_text:
-        issues.append(
-            "The method does not mention its primary room object."
-        )
-
-    if primary_object not in method_evidence_text:
-        issues.append(
-            "The method evidence does not mention the primary "
-            "room object."
-        )
-
-    if (
-        draft.contradiction_room_object_index
-        != draft.primary_room_object_index
-    ):
-        issues.append(
-            "The contradiction object must be the murder object."
-        )
-
-    if contradiction_object not in denial_text:
-        issues.append(
-            "The killer denial does not mention the locked "
-            "contradiction object."
-        )
-
-    if contradiction_object not in hidden_text:
-        issues.append(
-            "The hidden detail does not mention the locked "
-            "contradiction object."
-        )
-
-    if contradiction_object not in flaw_text:
-        issues.append(
-            "The killer alibi flaw does not mention the locked "
-            "contradiction object."
-        )
-
-    if not _has_shared_detail(
-        draft.hidden_detail,
-        draft.killer_revealed_detail,
-    ):
-        issues.append(
-            "The killer's revealed detail does not match the "
-            "locked hidden detail."
-        )
-
-    if not _has_shared_detail(
-        draft.hidden_detail,
-        draft.killer_alibi_flaw,
-    ):
-        issues.append(
-            "The killer alibi flaw does not explain the locked "
-            "hidden detail."
-        )
-
-    if not _has_shared_detail(
-        draft.killer_denial,
-        draft.killer_alibi_flaw,
-    ):
-        issues.append(
-            "The killer alibi flaw does not directly address the "
-            "killer's denial."
-        )
-
-    combined = " ".join(
-        [
-            draft.opening_incident,
-            draft.method,
-            draft.method_evidence,
-            draft.killer_alibi,
-            draft.killer_alibi_flaw,
-        ]
-    ).casefold()
-
-    for banned_term in BANNED_CORE_METHOD_TERMS:
-        if banned_term in combined:
-            issues.append(
-                "Core truth uses unsupported reasoning: "
-                f"{banned_term}."
-            )
-
-    for banned_term in BANNED_EVIDENCE_TERMS:
-        if banned_term in combined:
-            issues.append(
-                f"Core truth uses prohibited evidence: {banned_term}."
-            )
-
-    for banned_phrase in BANNED_REASONING_PHRASES:
-        if banned_phrase in flaw_text:
-            issues.append(
-                "Core truth uses weak alibi reasoning: "
-                f"{banned_phrase}."
-            )
-
-    for location in BANNED_EXTERNAL_LOCATIONS:
-        if location in combined:
-            issues.append(
-                "Core truth introduces an external location: "
-                f"{location}."
-            )
-
-    for key in SuspectKey:
-        if key.value in combined:
-            issues.append(
-                "Narrative fields expose an internal suspect key."
-            )
-            break
-
-    if not re.fullmatch(
-        r"(?:[01]\d|2[0-3]):[0-5]\d",
-        draft.time_of_death.strip(),
-    ):
-        issues.append(
-            "Time of death must be one exact 24-hour time."
-        )
-
+    if not _mentions_object(draft.method_evidence, method_object):
+        issues.append("Method evidence must name its photographed method object.")
+    if not _mentions_object(draft.method, method_object):
+        issues.append("The solution method must name its photographed method object.")
+    if not _mentions_object(draft.hidden_detail, contradiction_object):
+        issues.append("The killer contradiction must name its photographed object.")
+    if "after " not in draft.time_of_death.casefold() or "before " not in draft.time_of_death.casefold():
+        issues.append("Time of death must be expressed as a bounded after/before window.")
     if draft.killer_alibi.strip() == draft.killer_alibi_flaw.strip():
-        issues.append(
-            "The killer alibi and its flaw must be different."
+        issues.append("The killer alibi and its physical flaw must differ.")
+
+    title_text = draft.title.casefold().strip()
+    if (
+        title_text in {
+            "the mysterious death",
+            "the mysterious murder",
+            "the mysterious office death",
+            "the office murder",
+            "the office death",
+        }
+        or re.fullmatch(
+            r"(?:the\s+)?mysterious\s+(?:office\s+)?(?:death|murder)",
+            title_text,
         )
+    ):
+        issues.append("The case title is placeholder-level.")
+
+    if "because because" in draft.motive.casefold():
+        issues.append("The motive repeats the word 'because'.")
+
+    if " found dead in A " in draft.opening_incident:
+        issues.append("The opening incident contains a capitalised article fragment.")
+
+    for label, text in {
+        "title": draft.title,
+        "opening incident": draft.opening_incident,
+        "motive": draft.motive,
+        "method": draft.method,
+        "method evidence": draft.method_evidence,
+        "killer denial": draft.killer_denial,
+        "killer contradiction": draft.hidden_detail,
+        "killer alibi": draft.killer_alibi,
+        "killer alibi flaw": draft.killer_alibi_flaw,
+    }.items():
+        issues.extend(_text_issues(text, label, minimum=5 if label == "title" else 12))
 
     return issues
+
 
 def validate_suspect_cast(
     suspect_cast: SuspectCastDraft,
@@ -243,84 +151,67 @@ def validate_suspect_cast(
     room_objects: list[str],
 ) -> list[str]:
     issues: list[str] = []
+    suspects_by_key = {suspect.key: suspect for suspect in suspect_cast.suspects}
 
-    killer = next(
-        suspect
-        for suspect in suspect_cast.suspects
-        if suspect.key == core_truth.killer_key
-    )
+    if len(suspects_by_key) != 3:
+        return ["The cast must contain three distinct suspect keys."]
 
+    killer = suspects_by_key[core_truth.killer_key]
+    if killer.statement.strip() != core_truth.killer_denial.strip():
+        issues.append("The killer statement must exactly match the locked denial.")
     if killer.alibi_claim.strip() != core_truth.killer_alibi.strip():
-        issues.append(
-            "The killer alibi does not match the locked core truth."
-        )
+        issues.append("The killer alibi must exactly match the locked alibi.")
 
-    if (
-        killer.alibi_evidence_fact.strip()
-        != core_truth.killer_alibi_flaw.strip()
-    ):
-        issues.append(
-            "The killer evidence fact does not match the locked flaw."
-        )
+    names = [suspect.name.casefold().strip() for suspect in suspect_cast.suspects]
+    if len(set(names)) != 3:
+        issues.append("Suspect names must be distinct.")
 
-    if (
-        killer.alibi_room_object_index
-        != core_truth.primary_room_object_index
-    ):
-        issues.append(
-            "The killer must use the locked murder object."
-        )
-
-    alibi_indexes = {
-        suspect.alibi_room_object_index
+    innocent_names = [
+        suspect.name
         for suspect in suspect_cast.suspects
-    }
-
-    if len(alibi_indexes) != 3:
-        issues.append(
-            "Each suspect must use a different alibi room object."
-        )
+        if suspect.key != core_truth.killer_key
+    ]
+    killer_name = killer.name
 
     for suspect in suspect_cast.suspects:
-        fact = suspect.alibi_evidence_fact.casefold()
-        room_object = room_objects[
-            suspect.alibi_room_object_index
-        ].casefold()
-
-        for banned_term in BANNED_EVIDENCE_TERMS:
-            if banned_term in fact:
-                issues.append(
-                    f"{suspect.key.value} uses prohibited evidence: "
-                    f"{banned_term}."
-                )
-
-        for banned_phrase in BANNED_REASONING_PHRASES:
-            if banned_phrase in fact:
-                issues.append(
-                    f"{suspect.key.value} uses weak reasoning: "
-                    f"{banned_phrase}."
-                )
-
-        if room_object not in fact:
+        object_name = room_objects[suspect.alibi_room_object_index]
+        if not _mentions_object(suspect.alibi_evidence_fact, object_name):
             issues.append(
-                f"{suspect.key.value} evidence does not mention "
-                f"its indexed room object."
+                f"{suspect.name}'s evidence must name the indexed object {object_name!r}."
+            )
+        issues.extend(_text_issues(suspect.statement, f"{suspect.name} statement"))
+        issues.extend(_text_issues(suspect.alibi_claim, f"{suspect.name} alibi"))
+        issues.extend(_text_issues(
+            suspect.alibi_evidence_fact,
+            f"{suspect.name} alibi evidence",
+        ))
+
+    for innocent_name in innocent_names:
+        innocent = next(
+            suspect for suspect in suspect_cast.suspects if suspect.name == innocent_name
+        )
+        other_name = next(name for name in innocent_names if name != innocent_name)
+        if other_name.casefold() not in innocent.statement.casefold():
+            issues.append(
+                f"{innocent_name}'s shared alibi statement must name {other_name}."
             )
 
-        if suspect.key != core_truth.killer_key:
-            account = (
-                f"{suspect.statement} {suspect.alibi_claim}"
-            )
-            if not _has_shared_detail(
-                account,
-                suspect.alibi_evidence_fact,
-            ):
-                issues.append(
-                    f"{suspect.key.value} evidence does not "
-                    "corroborate a specific detail from their account."
-                )
+    if not any(
+        killer_name.casefold() in suspect.statement.casefold()
+        for suspect in suspect_cast.suspects
+        if suspect.key != core_truth.killer_key
+    ):
+        issues.append("At least one innocent statement must place the killer in the room.")
 
     return issues
+
+
+def _deduction_pairs(board: EvidenceBoardDraft, clue_index: int) -> set[tuple[DeductionKind, SuspectReferenceKey]]:
+    clue = board.clues[clue_index]
+    return {
+        (deduction.kind, deduction.related_suspect_key)
+        for deduction in clue.deductions
+    }
 
 
 def validate_evidence_board(
@@ -330,266 +221,112 @@ def validate_evidence_board(
     room_objects: list[str],
 ) -> list[str]:
     issues: list[str] = []
-    killer_key = core_truth.killer_key
-    innocent_keys = {
-        suspect.key
-        for suspect in suspect_cast.suspects
-        if suspect.key != killer_key
-    }
-    suspect_by_key = {
-        suspect.key: suspect
-        for suspect in suspect_cast.suspects
-    }
-    primary_object_index = core_truth.primary_room_object_index
-    primary_object = room_objects[primary_object_index].casefold()
-    killer = suspect_by_key[killer_key]
-    killer_object_index = (
-        core_truth.contradiction_room_object_index
-    )
-    killer_object = room_objects[killer_object_index].casefold()
-    death_times = re.findall(
-        r"\b\d{1,2}:\d{2}\b",
-        core_truth.time_of_death,
-    )
+    clues = board.clues
 
-    corroborated: set[SuspectKey] = set()
-    contradicted: set[SuspectKey] = set()
-    opportunity_for: set[SuspectKey] = set()
-    method_clues: set[int] = set()
-    timeline_clues: set[int] = set()
-    contradiction_clues: set[int] = set()
-    opportunity_clues: set[int] = set()
+    if len(clues) != 5:
+        return ["The evidence board must contain exactly five clues."]
+    if sum(clue.kind == ClueKind.red_herring for clue in clues) != 1:
+        issues.append("The evidence board must contain exactly one red herring.")
+    if {clue.room_object_index for clue in clues} != {0, 1, 2, 3}:
+        issues.append("All four photographed room objects must be used.")
 
-    for clue_index, clue in enumerate(board.clues):
-        detail = clue.detail.casefold()
-        room_object = room_objects[
-            clue.room_object_index
-        ].casefold()
+    for index, clue in enumerate(clues, start=1):
+        object_name = room_objects[clue.room_object_index]
+        if not _mentions_object(clue.detail, object_name):
+            issues.append(f"Clue {index} must name its indexed object {object_name!r}.")
+        issues.extend(_text_issues(clue.title, f"clue {index} title", minimum=3))
+        issues.extend(_text_issues(clue.detail, f"clue {index} detail"))
 
-        if room_object not in detail:
-            issues.append(
-                f"clue_{clue_index + 1} does not mention "
-                "its indexed room object."
-            )
-
-        for banned_term in BANNED_EVIDENCE_TERMS:
-            if banned_term in detail:
+        lowered_detail = clue.detail.casefold()
+        for phrase in BANNED_PLAYER_CONCLUSION_PHRASES:
+            if phrase in lowered_detail:
                 issues.append(
-                    f"clue_{clue_index + 1} uses prohibited evidence: "
-                    f"{banned_term}."
-                )
-
-        for banned_phrase in BANNED_REASONING_PHRASES:
-            if banned_phrase in detail:
-                issues.append(
-                    f"clue_{clue_index + 1} uses weak reasoning: "
-                    f"{banned_phrase}."
+                    f"Clue {index} explains its deduction to the player: {phrase}."
                 )
 
         if clue.kind == ClueKind.red_herring:
-            continue
+            for phrase in BANNED_RED_HERRING_RESOLUTION_PHRASES:
+                if phrase in lowered_detail:
+                    issues.append(
+                        f"The red herring reveals its resolution: {phrase}."
+                    )
 
+    killer_ref = SuspectReferenceKey(core_truth.killer_key.value)
+    innocent_refs = {
+        SuspectReferenceKey(suspect.key.value)
+        for suspect in suspect_cast.suspects
+        if suspect.key != core_truth.killer_key
+    }
+
+    clue_1_expected = {
+        (DeductionKind.establishes_method, SuspectReferenceKey.none),
+    }
+    clue_2_expected = {
+        (DeductionKind.establishes_timeline, SuspectReferenceKey.none),
+        *{
+            (kind, ref)
+            for ref in innocent_refs
+            for kind in (
+                DeductionKind.corroborates_alibi,
+            )
+        },
+    }
+    clue_3_expected = {
+        (DeductionKind.contradicts_statement, killer_ref),
+        (DeductionKind.establishes_opportunity, killer_ref),
+        (DeductionKind.supports_suspect, killer_ref),
+    }
+    clue_4_expected = {
+        (DeductionKind.supports_suspect, killer_ref),
+    }
+
+    expected_sets = [clue_1_expected, clue_2_expected, clue_3_expected, clue_4_expected]
+    for index, expected in enumerate(expected_sets):
+        actual = _deduction_pairs(board, index)
+        if actual != expected:
+            issues.append(
+                f"Clue {index + 1} has an invalid proof contract: "
+                f"expected {sorted((k.value, r.value) for k, r in expected)}, "
+                f"got {sorted((k.value, r.value) for k, r in actual)}."
+            )
+
+    if clues[4].kind != ClueKind.red_herring or clues[4].deductions:
+        issues.append("Clue 5 must be the resolved red herring with no deductions.")
+    if any(clue.kind != ClueKind.evidence for clue in clues[:4]):
+        issues.append("Clues 1 to 4 must be evidence clues.")
+    if clues[0].room_object_index != core_truth.primary_room_object_index:
+        issues.append("Clue 1 must use the locked method object.")
+    if clues[2].room_object_index != core_truth.contradiction_room_object_index:
+        issues.append("Clue 3 must use the locked contradiction object.")
+    if clues[2].room_object_index == clues[3].room_object_index:
+        issues.append("The two killer-specific clues must use independent objects.")
+
+    support_locations: dict[SuspectReferenceKey, set[int]] = {}
+    for index, clue in enumerate(clues):
         for deduction in clue.deductions:
-            related = deduction.related_suspect_key
+            if deduction.kind == DeductionKind.supports_suspect:
+                support_locations.setdefault(deduction.related_suspect_key, set()).add(index)
 
-            if deduction.kind == DeductionKind.establishes_method:
-                method_clues.add(clue_index)
+    if support_locations.get(killer_ref, set()) != {2, 3}:
+        issues.append("The killer must be supported by exactly two independent clues.")
+    if any(ref != killer_ref for ref in support_locations):
+        issues.append("No innocent suspect may receive a supportsSuspect deduction.")
 
-                if clue.room_object_index != primary_object_index:
-                    issues.append(
-                        f"clue_{clue_index + 1} establishes method "
-                        "using the wrong room object."
-                    )
-
-                if primary_object not in detail:
-                    issues.append(
-                        f"clue_{clue_index + 1} method detail does "
-                        "not mention the primary room object."
-                    )
-
-                if not _has_shared_detail(
-                    clue.detail,
-                    core_truth.method_evidence,
-                ):
-                    issues.append(
-                        f"clue_{clue_index + 1} does not use the "
-                        "locked method evidence."
-                    )
-
-            elif deduction.kind == DeductionKind.establishes_timeline:
-                timeline_clues.add(clue_index)
-
-                missing_times = [
-                    time_value
-                    for time_value in death_times
-                    if time_value not in clue.detail
-                ]
-
-                if missing_times:
-                    issues.append(
-                        f"clue_{clue_index + 1} timeline detail "
-                        "does not include every locked death time."
-                    )
-
-            elif deduction.kind == DeductionKind.corroborates_alibi:
-                key = SuspectKey(related.value)
-
-                if key == killer_key:
-                    issues.append(
-                        "The killer must not receive a corroboratesAlibi "
-                        "deduction."
-                    )
-                else:
-                    corroborated.add(key)
-                    locked_suspect = suspect_by_key[key]
-                    locked_fact = locked_suspect.alibi_evidence_fact
-
-                    if (
-                        clue.room_object_index
-                        != locked_suspect.alibi_room_object_index
-                    ):
-                        issues.append(
-                            f"clue_{clue_index + 1} corroborates "
-                            f"{key.value} using the wrong room object."
-                        )
-
-                    if not _has_shared_detail(
-                        clue.detail,
-                        locked_fact,
-                    ):
-                        issues.append(
-                            f"clue_{clue_index + 1} does not "
-                            f"corroborate {key.value}'s locked fact."
-                        )
-
-            elif deduction.kind == DeductionKind.eliminates_suspect:
-                key = SuspectKey(related.value)
-
-                if key == killer_key:
-                    issues.append(
-                        "No clue may eliminate the true killer."
-                    )
-                else:
-                    corroborated.add(key)
-
-            elif deduction.kind == DeductionKind.contradicts_statement:
-                key = SuspectKey(related.value)
-                contradicted.add(key)
-                contradiction_clues.add(clue_index)
-
-                if key == killer_key:
-                    if clue.room_object_index != killer_object_index:
-                        issues.append(
-                            f"clue_{clue_index + 1} contradicts the "
-                            "killer using the wrong room object."
-                        )
-
-                    if not _has_shared_detail(
-                        clue.detail,
-                        core_truth.killer_alibi_flaw,
-                    ):
-                        issues.append(
-                            f"clue_{clue_index + 1} does not expose "
-                            "the locked killer alibi flaw."
-                        )
-
-            elif deduction.kind == DeductionKind.establishes_opportunity:
-                key = SuspectKey(related.value)
-                opportunity_for.add(key)
-                opportunity_clues.add(clue_index)
-
-                if key != killer_key:
-                    issues.append(
-                        "Opportunity must be assigned to the killer."
-                    )
-
-                if clue.room_object_index != primary_object_index:
-                    issues.append(
-                        f"clue_{clue_index + 1} establishes opportunity "
-                        "using the wrong room object."
-                    )
-
-                if primary_object not in detail:
-                    issues.append(
-                        f"clue_{clue_index + 1} opportunity detail "
-                        "does not mention the primary room object."
-                    )
-
-                if killer_object not in detail:
-                    issues.append(
-                        f"clue_{clue_index + 1} opportunity detail "
-                        "does not mention the killer alibi room object."
-                    )
-
-                if not _has_shared_detail(
-                    clue.detail,
-                    core_truth.hidden_detail,
-                ):
-                    issues.append(
-                        f"clue_{clue_index + 1} opportunity does not "
-                        "use the locked hidden detail."
-                    )
-
-    missing_innocents = innocent_keys - corroborated
-    if missing_innocents:
-        names = ", ".join(
-            sorted(key.value for key in missing_innocents)
-        )
-        issues.append(
-            f"Missing innocent corroboration for: {names}."
-        )
-
-    if killer_key not in contradicted:
-        issues.append(
-            "No clue contradicts the killer's statement."
-        )
-
-    if killer_key not in opportunity_for:
-        issues.append(
-            "No clue establishes the killer's opportunity."
-        )
-
-    if not method_clues:
-        issues.append(
-            "No clue establishes the murder method."
-        )
-
-    if contradiction_clues and opportunity_clues:
-        if (
-            contradiction_clues == opportunity_clues
-            and len(contradiction_clues) == 1
-        ):
+    suspects_by_key = {suspect.key: suspect for suspect in suspect_cast.suspects}
+    killer_name = suspects_by_key[core_truth.killer_key].name
+    if killer_name.casefold() not in board.opportunity.casefold():
+        issues.append("The opportunity explanation must name the killer.")
+    for object_index in {
+        core_truth.primary_room_object_index,
+        clues[3].room_object_index,
+    }:
+        if not _mentions_object(board.opportunity, room_objects[object_index]):
+            issues.append("The opportunity explanation must name both killer-link objects.")
+    for suspect in suspect_cast.suspects:
+        if suspect.key != core_truth.killer_key and suspect.name.casefold() not in board.opportunity.casefold():
             issues.append(
-                "The killer contradiction and opportunity must not "
-                "both depend on a single clue."
+                f"The opportunity explanation must account for innocent suspect {suspect.name}."
             )
 
-    opportunity_text = board.opportunity.casefold()
-
-    if not board.opportunity.strip():
-        issues.append(
-            "The evidence board must explain opportunity."
-        )
-    else:
-        if primary_object not in opportunity_text:
-            issues.append(
-                "The case-level opportunity does not mention the "
-                "primary room object."
-            )
-
-        if killer_object not in opportunity_text:
-            issues.append(
-                "The case-level opportunity does not mention the "
-                "killer alibi room object."
-            )
-
-        if not _has_shared_detail(
-            board.opportunity,
-            core_truth.hidden_detail,
-        ):
-            issues.append(
-                "The case-level opportunity does not use the locked "
-                "hidden detail."
-            )
-
+    issues.extend(_text_issues(board.opportunity, "solution opportunity"))
     return issues

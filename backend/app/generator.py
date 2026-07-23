@@ -1,29 +1,30 @@
 from __future__ import annotations
 
 import json
-import random
 import logging
 import re
 from textwrap import dedent
-from typing import Optional, Type
+from typing import Type, TypeVar
 
-from openai import OpenAI
+from pydantic import BaseModel, ValidationError
 
 from app.assembly import assemble_mystery
 from app.config import get_settings
 from app.models import (
-    ClueDraft,
-    ClueKind,
-    CoreTruthAIResponse,
     CoreTruthDraft,
-    DeductionDraft,
-    DeductionKind,
     Difficulty,
     EvidenceBoardDraft,
     MysteryDraft,
+    NarrativeSeedAI,
     SuspectCastDraft,
     SuspectKey,
-    SuspectReferenceKey,
+)
+from app.planner import (
+    CasePlan,
+    PlanError,
+    build_case_plan,
+    compile_case,
+    narrative_seed_issues,
 )
 from app.validation import (
     validate_core_truth,
@@ -31,599 +32,339 @@ from app.validation import (
     validate_suspect_cast,
 )
 
-
 logger = logging.getLogger(__name__)
-settings = get_settings()
-
-client = OpenAI(
-    api_key=settings.groq_api_key,
-    base_url=settings.groq_base_url,
-)
+T = TypeVar("T", bound=BaseModel)
 
 
 class MysteryGenerationError(RuntimeError):
-    """Raised when a valid mystery phase cannot be produced."""
+    """Raised when a valid mystery cannot be produced."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool = True,
+        status_code: int | None = None,
+        retry_after_seconds: int | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.retryable = retryable
+        self.status_code = status_code
+        self.retry_after_seconds = retry_after_seconds
 
 
-def _is_retryable(error: Exception) -> bool:
-    status_code = getattr(error, "status_code", None)
-
-    if status_code is None:
-        return True
-
-    return status_code == 429 or status_code >= 500
-
-
-def _parse_json_object(
-    raw_content: str,
-    model_class: Type,
-):
-    """Extract and validate one model object from provider text."""
+def _parse_json_object(raw_content: str, model_class: Type[T]) -> T:
     cleaned = raw_content.strip()
-
     if cleaned.startswith("```"):
-        lines = cleaned.splitlines()
-
-        if lines and lines[0].startswith("```"):
-            lines = lines[1:]
-
-        if lines and lines[-1].strip() == "```":
-            lines = lines[:-1]
-
-        cleaned = "\n".join(lines).strip()
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
+        cleaned = re.sub(r"\s*```$", "", cleaned)
 
     try:
         payload = json.loads(cleaned)
-    except json.JSONDecodeError:
-        # Defensive fallback for a provider adding prose around an
-        # otherwise valid JSON object.
-        object_start = cleaned.find("{")
-
-        if object_start == -1:
-            raise ValueError(
-                "Provider response contains no JSON object. "
-                f"Response excerpt: {cleaned[:500]!r}"
-            )
-
+    except json.JSONDecodeError as error:
+        start = cleaned.find("{")
+        if start < 0:
+            raise ValueError("Provider response contained no JSON object.") from error
         try:
-            payload, _ = json.JSONDecoder().raw_decode(
-                cleaned[object_start:]
-            )
-        except json.JSONDecodeError as error:
-            raise ValueError(
-                "Provider returned malformed or truncated JSON. "
-                f"Response excerpt: {cleaned[:500]!r}"
-            ) from error
+            payload, _ = json.JSONDecoder().raw_decode(cleaned[start:])
+        except json.JSONDecodeError as inner:
+            raise ValueError("Provider returned malformed or truncated JSON.") from inner
 
     if not isinstance(payload, dict):
-        raise ValueError(
-            "Provider JSON must be an object, not "
-            f"{type(payload).__name__}."
-        )
+        raise ValueError("Provider JSON must be an object.")
+    return model_class.model_validate(payload)
 
-    # Some non-schema models wrap the result in {"result": {...}}.
-    if len(payload) == 1:
-        only_key, only_value = next(iter(payload.items()))
 
-        if (
-            isinstance(only_value, dict)
-            and only_key.casefold()
-            in {
-                "result",
-                "data",
-                model_class.__name__.casefold(),
-            }
-        ):
-            payload = only_value
+def _strict_schema_model(model_name: str) -> bool:
+    return model_name in {
+        "openai/gpt-oss-20b",
+        "openai/gpt-oss-120b",
+    }
 
-    allowed_fields = set(model_class.model_fields)
-    unexpected_fields = set(payload) - allowed_fields
 
-    if unexpected_fields:
-        logger.info(
-            "Ignoring unexpected %s fields: %s",
-            model_class.__name__,
-            sorted(unexpected_fields),
-        )
-        payload = {
-            key: value
-            for key, value in payload.items()
-            if key in allowed_fields
-        }
+def _best_effort_schema_model(model_name: str) -> bool:
+    return model_name in {
+        "meta-llama/llama-4-scout-17b-16e-instruct",
+        "openai/gpt-oss-safeguard-20b",
+    }
 
-    try:
-        return model_class.model_validate(payload)
-    except Exception as error:
-        raise ValueError(
-            f"Provider JSON did not match {model_class.__name__}: "
-            f"{error}. Response excerpt: {cleaned[:800]!r}"
-        ) from error
 
+
+def _retry_after_seconds(error: Exception) -> int | None:
+    """Read Retry-After from OpenAI-compatible provider errors."""
+    header_sources = [
+        getattr(error, "headers", None),
+        getattr(getattr(error, "response", None), "headers", None),
+    ]
+    for headers in header_sources:
+        if not headers:
+            continue
+        raw = headers.get("retry-after") or headers.get("Retry-After")
+        if raw is None:
+            continue
+        try:
+            return max(1, int(float(str(raw))))
+        except (TypeError, ValueError):
+            continue
+    return None
 
 def call_structured_model(
     prompt: str,
-    model_class: Type,
+    model_class: Type[T],
     *,
     max_tokens: int,
-    attempts: Optional[int] = None,
-):
-    schema = model_class.model_json_schema()
-    attempt_count = attempts or settings.generation_max_retries
-    last_error: Optional[Exception] = None
+) -> T:
+    """Call Groq once and validate the response against the same Pydantic model.
 
-    for attempt in range(1, attempt_count + 1):
-        try:
-            user_instruction = (
-                "Return one complete JSON object only. "
-                "Do not use Markdown or explanatory prose."
-            )
+    The OpenAI import and settings construction are lazy. Pure planner tests can
+    therefore run without an API key or the OpenAI package installed.
+    """
 
-            request_options = {
-                "model": settings.groq_model,
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": prompt,
-                    },
-                ],
-                "temperature": settings.generation_temperature,
-                "max_completion_tokens": max_tokens,
-            }
+    try:
+        from openai import OpenAI
+    except ImportError as error:
+        raise MysteryGenerationError(
+            "The backend requires the 'openai' package for Groq's "
+            "OpenAI-compatible endpoint.",
+            retryable=False,
+        ) from error
 
-            if settings.groq_model.startswith("openai/gpt-oss"):
-                request_options["reasoning_effort"] = (
-                    settings.generation_reasoning_effort
-                )
-                request_options["response_format"] = {
-                    "type": "json_schema",
-                    "json_schema": {
-                        "name": model_class.__name__,
-                        "strict": True,
-                        "schema": schema,
-                    },
-                }
-            else:
-                # JSON Object Mode guarantees JSON syntax, but it does
-                # not send the model our schema. Include the exact
-                # Pydantic schema in the instruction, then validate the
-                # result locally.
-                compact_schema = json.dumps(
-                    schema,
-                    separators=(",", ":"),
-                )
-                user_instruction += (
-                    "\nThe JSON must conform exactly to this schema:"
-                    f"\n{compact_schema}"
-                )
-                request_options["response_format"] = {
-                    "type": "json_object",
-                }
-
-            request_options["messages"].append(
-                {
-                    "role": "user",
-                    "content": user_instruction,
-                }
-            )
-
-            response = client.chat.completions.create(
-                **request_options,
-            )
-
-            raw_content = response.choices[0].message.content
-
-            if not raw_content:
-                raise ValueError(
-                    "Groq returned an empty response."
-                )
-
-            return _parse_json_object(
-                raw_content,
-                model_class,
-            )
-
-        except Exception as error:
-            last_error = error
-            logger.warning(
-                "%s generation attempt %s failed: %s",
-                model_class.__name__,
-                attempt,
-                error,
-            )
-
-            if not _is_retryable(error):
-                break
-
-    detail = (
-        repr(last_error)
-        if last_error is not None
-        else "Unknown generation error"
+    settings = get_settings()
+    client = OpenAI(
+        api_key=settings.groq_api_key,
+        base_url=settings.groq_base_url,
+        timeout=settings.request_timeout_seconds,
     )
+    schema = model_class.model_json_schema()
+
+    messages = [
+        {"role": "system", "content": prompt},
+        {
+            "role": "user",
+            "content": (
+                "Return exactly one complete JSON object matching the supplied "
+                "schema. Do not include Markdown, comments, or extra prose."
+            ),
+        },
+    ]
+    options: dict = {
+        "model": settings.groq_model,
+        "messages": messages,
+        "temperature": settings.generation_temperature,
+        "max_completion_tokens": max_tokens,
+    }
+
+    if _strict_schema_model(settings.groq_model):
+        options["reasoning_effort"] = settings.generation_reasoning_effort
+        options["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": model_class.__name__,
+                "strict": True,
+                "schema": schema,
+            },
+        }
+    elif _best_effort_schema_model(settings.groq_model):
+        options["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": model_class.__name__,
+                "strict": False,
+                "schema": schema,
+            },
+        }
+    else:
+        options["response_format"] = {"type": "json_object"}
+        messages[1]["content"] += (
+            "\nThe required JSON Schema is:\n"
+            + json.dumps(schema, separators=(",", ":"))
+        )
+
+    try:
+        completion = client.chat.completions.create(**options)
+        content = completion.choices[0].message.content
+        if not content:
+            raise ValueError("Groq returned an empty completion.")
+        return _parse_json_object(content, model_class)
+    except Exception as error:
+        status_code = getattr(error, "status_code", None)
+        if status_code is not None:
+            retry_after = _retry_after_seconds(error)
+            retryable = (
+                status_code in {408, 409}
+                or status_code >= 500
+                or (
+                    status_code == 400
+                    and _best_effort_schema_model(settings.groq_model)
+                )
+            )
+            # A 429 must escape immediately. Retrying the same whole case
+            # consumes each small amount of quota as it becomes available.
+            if status_code == 429:
+                retryable = False
+
+            raise MysteryGenerationError(
+                f"Groq request failed with HTTP {status_code}: {error}",
+                retryable=retryable,
+                status_code=status_code,
+                retry_after_seconds=retry_after,
+            ) from error
+        raise MysteryGenerationError(
+            f"Groq request failed before a response was received: {error}",
+            retryable=True,
+        ) from error
+
+
+def _narrative_prompt(
+    plan: CasePlan,
+    feedback: list[str] | None,
+) -> str:
+    objects = "\n".join(
+        f"{index}: {name}"
+        for index, name in enumerate(plan.room_objects)
+    )
+    killer_key = plan.killer_key.value
+    feedback_text = ""
+    if feedback:
+        feedback_text = (
+            "\nPREVIOUS NARRATIVE VALIDATION FAILURES:\n- "
+            + "\n- ".join(feedback[:12])
+            + "\nCorrect every failure in the replacement object."
+        )
+
+    return dedent(
+        f"""
+        You are the narrative casting layer for a British room-based murder
+        mystery game. Python has already constructed and proved the complete
+        evidence logic. You must provide only original narrative metadata.
+
+        CASE NONCE: {plan.seed}
+        DIFFICULTY: {plan.difficulty.value}
+        PHOTOGRAPHED ROOM OBJECTS:
+        {objects}
+
+        LOCKED MURDERER KEY: {killer_key}
+
+        Generate:
+        - one evocative title that is specific to this case;
+        - one concise setting description for the photographed room;
+        - a named adult victim and a plausible social or professional role;
+        - exactly three named adult suspects, using suspect_1, suspect_2 and
+          suspect_3 once each;
+        - each suspect's relationship to the victim;
+        - one motive_detail clause explaining the pressure that drove the locked
+          murderer to kill. The clause will be inserted after the word "because".
+
+        Do not generate clues, evidence, alibis, statements, methods, times,
+        deductions, IDs, police records, CCTV, witnesses, fingerprints, DNA, or
+        additional rooms. Python owns all of those facts.
+
+        Quality rules:
+        1. Use British English.
+        2. Use natural, distinctive names. Avoid John Smith, Jane Doe, Emily
+           Wilson, James Davis, Sarah Taylor and Richard Langley.
+        3. Do not expose the strings suspect_1, suspect_2 or suspect_3 anywhere
+           except the required key fields.
+        4. Do not call the case "Mansion Murder", "Murder Mystery", "The Murder"
+           or any similarly generic title.
+        5. Each relationship_to_victim must be a short role phrase such as
+           "estranged daughter" or "business partner", without a leading pronoun.
+        6. The setting must describe one room only and must be compatible with all
+           four supplied objects. Write it as a lower-case noun phrase beginning
+           with "a", "an" or "the".
+        7. The motive_detail must name a concrete secret, loss, betrayal or threat
+           and must grammatically follow the word "because". Do not begin it with
+           "because" and do not end it with a full stop.
+        8. Do not mention which suspect is the killer in prose. The locked key is
+           for internal consistency only.
+        {feedback_text}
+        """
+    ).strip()
+
+
+def _validate_compiled(
+    core: CoreTruthDraft,
+    cast: SuspectCastDraft,
+    evidence: EvidenceBoardDraft,
+    room_objects: list[str],
+) -> list[str]:
+    issues: list[str] = []
+    issues.extend(validate_core_truth(core, room_objects))
+    issues.extend(validate_suspect_cast(cast, core, room_objects))
+    issues.extend(validate_evidence_board(evidence, core, cast, room_objects))
+    return issues
+
+
+def _generate_all(
+    room_objects: list[str],
+    difficulty: Difficulty,
+    seed: int | None = None,
+) -> tuple[CoreTruthDraft, SuspectCastDraft, EvidenceBoardDraft]:
+    plan = build_case_plan(room_objects, difficulty, seed)
+    settings = get_settings()
+    feedback: list[str] | None = None
+    last_issues: list[str] = []
+
+    for attempt in range(1, settings.generation_max_retries + 1):
+        try:
+            narrative = call_structured_model(
+                _narrative_prompt(plan, feedback),
+                NarrativeSeedAI,
+                max_tokens=settings.narrative_max_tokens,
+            )
+        except (MysteryGenerationError, ValidationError, ValueError) as error:
+            if isinstance(error, MysteryGenerationError) and not error.retryable:
+                raise
+            feedback = [f"Narrative response failed validation: {error}"]
+            last_issues = feedback
+            logger.warning("Narrative attempt %s failed: %s", attempt, error)
+            continue
+
+        seed_issues = narrative_seed_issues(narrative)
+        if seed_issues:
+            feedback = seed_issues
+            last_issues = seed_issues
+            continue
+
+        try:
+            compiled = compile_case(narrative, plan)
+        except (PlanError, ValidationError, ValueError) as error:
+            feedback = [f"Deterministic compilation failed: {error}"]
+            last_issues = feedback
+            continue
+
+        issues = _validate_compiled(*compiled, room_objects)
+        if not issues:
+            return compiled
+
+        # A compiled failure indicates a programmer invariant, not a creative
+        # failure. Retrying Groq cannot repair deterministic templates.
+        raise MysteryGenerationError(
+            "The proof compiler produced an invalid case: " + "; ".join(issues[:20])
+        )
 
     raise MysteryGenerationError(
-        f"{model_class.__name__} generation failed. "
-        f"Last error: {detail}"
-    ) from last_error
-
-
-def _difficulty_guidance(difficulty: Difficulty) -> str:
-    if difficulty == Difficulty.easy:
-        return (
-            "EASY: make the killer contradiction direct. The player "
-            "should combine the contradiction with one method clue."
-        )
-
-    if difficulty == Difficulty.brutal:
-        return (
-            "BRUTAL: no single clue may identify the killer. Separate "
-            "the alibi contradiction, opportunity and method across "
-            "different clues, and make the red herring credible."
-        )
-
-    return (
-        "STANDARD: require at least two clues to identify the killer. "
-        "Keep the logic clear after the player compares them."
-    )
-
-
-def _feedback_prompt(
-    base_prompt: str,
-    issues: list[str],
-    phase_name: str,
-) -> str:
-    if not issues:
-        return base_prompt
-
-    feedback = "\n".join(f"- {issue}" for issue in issues)
-
-    return (
-        base_prompt
-        + "\n\nTHE PREVIOUS "
-        + phase_name.upper()
-        + " WAS REJECTED:\n"
-        + feedback
-        + "\nGenerate a different result that fixes every issue."
+        "Unable to obtain valid narrative metadata from Groq. "
+        + "; ".join(last_issues[:12])
     )
 
 
 def generate_core_truth(
     room_objects: list[str],
     difficulty: Difficulty = Difficulty.standard,
+    seed: int | None = None,
 ) -> CoreTruthDraft:
-    objects = "\n".join(
-        f"{index}: {name}"
-        for index, name in enumerate(room_objects)
-    )
+    return _generate_all(room_objects, difficulty, seed)[0]
 
-    primary_room_object_index = random.randrange(
-        len(room_objects)
-    )
-    primary_room_object = room_objects[
-        primary_room_object_index
-    ]
-
-    # The strongest fair deduction is impossible knowledge about
-    # the murder object itself. This makes opportunity follow from
-    # the same observable object rather than an inferred room layout.
-    contradiction_room_object_index = (
-        primary_room_object_index
-    )
-    contradiction_room_object = primary_room_object
-
-    base_prompt = dedent(
-        f"""
-        Create only the locked foundation for a fair, fictional
-        one-room murder mystery.
-
-        The mystery takes place entirely inside the photographed room.
-        Every important physical object must be one of these four:
-
-        {objects}
-
-        PRIMARY METHOD OBJECT:
-        {primary_room_object}
-
-        CONTRADICTION OBJECT:
-        {contradiction_room_object}
-
-        The method object and contradiction object are intentionally
-        the same supplied object.
-
-        DIFFICULTY:
-        {_difficulty_guidance(difficulty)}
-
-        REQUIRED LOGIC:
-
-        1. The method must use the exact primary method object,
-           "{primary_room_object}", as an ordinary real object.
-        2. The method must be physically plausible.
-        3. method_evidence must describe one visible physical trace on
-           "{primary_room_object}" that supports the exact method.
-           It must be observable without laboratory or forensic work.
-        4. killer_denial must clearly say the killer did not approach,
-           inspect or handle the contradiction object,
-           "{contradiction_room_object}".
-        5. hidden_detail must describe a different physical detail
-           on, under, inside or behind "{contradiction_room_object}".
-           It must not be visible from normal viewing distance.
-        6. killer_revealed_detail must accidentally reveal knowledge
-           of that exact hidden detail while preserving the denial.
-        7. The revealed detail must closely repeat the distinctive
-           words used in hidden_detail.
-        8. The contradiction comes from impossible knowledge. The
-           hidden detail itself does not prove who made it or who was
-           present during the murder.
-
-        HARD LIMITS:
-
-        - Use exactly one victim and one killer key.
-        - Use a 24-hour time such as "20:15".
-        - Keep all events and claims inside this single room.
-        - Do not invent another room, corridor, garden, kitchen,
-          study, break room, witness or external location.
-        - Do not use poison, sedatives, toxins, allergies,
-          electrocution, electrical surges or invisible chemicals.
-        - Do not use CCTV, recordings, live feeds, fingerprints,
-          DNA, forensic analysis, laboratory tests or confessions.
-        - Do not invent machinery, detachable crushing panels,
-          implausible traps or impossible object behaviour.
-        - Do not put suspect_1, suspect_2 or suspect_3 inside prose.
-        - Use grounded contemporary fiction, British English and
-          concise iPhone-friendly wording.
-        - Return only the required JSON object.
-        - Do not generate suspects, clues, an alibi flaw or indexes.
-        """
-    ).strip()
-
-    issues: list[str] = []
-    last_generation_error: Optional[
-        MysteryGenerationError
-    ] = None
-
-    for _ in range(settings.generation_max_retries):
-        try:
-            generated = call_structured_model(
-                _feedback_prompt(
-                    base_prompt,
-                    issues,
-                    "core truth",
-                ),
-                CoreTruthAIResponse,
-                max_tokens=settings.core_max_tokens,
-                attempts=1,
-            )
-        except MysteryGenerationError as error:
-            status_code = getattr(
-                error.__cause__,
-                "status_code",
-                None,
-            )
-
-            # Authentication and quota failures cannot be fixed by
-            # immediately asking the same provider again.
-            if status_code in {401, 403, 429}:
-                raise
-
-            last_generation_error = error
-            issues = [
-                "The provider returned malformed or incomplete JSON."
-            ]
-            continue
-
-        killer_denial = generated.killer_denial.strip()
-        revealed_detail = (
-            generated.killer_revealed_detail.strip()
-        )
-        hidden_detail = generated.hidden_detail.strip().rstrip(". ")
-
-        killer_alibi = " ".join(
-            [
-                killer_denial,
-                revealed_detail,
-            ]
-        )
-
-        # Python owns the deduction wording. The model supplies the
-        # facts, but it cannot replace impossible-knowledge logic with
-        # an unrelated claim about presence.
-        killer_alibi_flaw = (
-            f"{revealed_detail} This reveals knowledge of "
-            f"{hidden_detail} That detail cannot be observed without "
-            f"approaching, inspecting or handling the "
-            f"{contradiction_room_object}, directly contradicting "
-            f"the denial: {killer_denial}"
-        )
-
-        draft = CoreTruthDraft(
-            title=generated.title,
-            opening_incident=generated.opening_incident,
-            victim_name=generated.victim_name,
-            killer_key=generated.killer_key,
-            motive=generated.motive,
-            method=generated.method,
-            method_evidence=(
-                generated.method_evidence.strip().rstrip(". ")
-            ),
-            time_of_death=generated.time_of_death,
-            killer_denial=killer_denial,
-            hidden_detail=hidden_detail,
-            killer_revealed_detail=revealed_detail,
-            killer_alibi=killer_alibi,
-            killer_alibi_flaw=killer_alibi_flaw,
-            primary_room_object_index=(
-                primary_room_object_index
-            ),
-            contradiction_room_object_index=(
-                contradiction_room_object_index
-            ),
-        )
-
-        issues = validate_core_truth(
-            draft,
-            room_objects,
-        )
-
-        if not issues:
-            return draft
-
-    if (
-        last_generation_error is not None
-        and issues == [
-            "The provider returned malformed or incomplete JSON."
-        ]
-    ):
-        raise last_generation_error
-
-    if issues:
-        raise MysteryGenerationError(
-            "Core truth failed deterministic validation: "
-            + ", ".join(issues)
-        )
-
-    if last_generation_error is not None:
-        raise last_generation_error
-
-    raise MysteryGenerationError(
-        "Core truth generation failed without a result."
-    )
 
 def generate_suspect_cast(
     core_truth: CoreTruthDraft,
     room_objects: list[str],
     difficulty: Difficulty = Difficulty.standard,
+    seed: int | None = None,
 ) -> SuspectCastDraft:
-    objects = "\n".join(
-        f"{index}: {name}"
-        for index, name in enumerate(room_objects)
-    )
-
-    innocent_keys = [
-        key
-        for key in SuspectKey
-        if key != core_truth.killer_key
-    ]
-    innocent_object_indexes = [
-        index
-        for index in range(len(room_objects))
-        if index != core_truth.primary_room_object_index
-    ]
-
-    object_assignments = {
-        core_truth.killer_key: (
-            core_truth.contradiction_room_object_index
-        ),
-        innocent_keys[0]: innocent_object_indexes[0],
-        innocent_keys[1]: innocent_object_indexes[1],
-    }
-
-    assignment_text = "\n".join(
-        (
-            f"- {key.value}: index {index} "
-            f'("{room_objects[index]}")'
-        )
-        for key, index in object_assignments.items()
-    )
-
-    base_prompt = dedent(
-        f"""
-        Create exactly three suspects around this locked truth.
-
-        ROOM OBJECTS:
-        {objects}
-
-        LOCKED CORE:
-        {core_truth.model_dump_json()}
-
-        DIFFICULTY:
-        {_difficulty_guidance(difficulty)}
-
-        LOCKED ALIBI OBJECT ASSIGNMENTS:
-        {assignment_text}
-
-        HARD RULES:
-
-        1. Use suspect_1, suspect_2 and suspect_3 exactly once.
-        2. The locked killer key is the killer, but prose must not
-           reveal that.
-        3. Every suspect's alibi_room_object_index must exactly
-           match the locked assignment above.
-        4. The killer's assigned object is the locked contradiction
-           object. The killer's alibi_claim and alibi_evidence_fact
-           must exactly reproduce the locked alibi and flaw.
-        5. Each innocent statement must include one distinctive,
-           observable detail about their indexed room object.
-        6. Each innocent alibi_evidence_fact must corroborate that
-           exact detail. It need not prove absolute innocence.
-        7. Do not infer continuous behaviour from object temperature,
-           position, stains or condition.
-        7. Do not invent timestamps in stains, rings, dents, dust or
-           handwriting.
-        8. Do not use fingerprints, DNA, CCTV, recordings, hidden
-           logs, external rooms, unnamed witnesses or forensic work.
-        9. No innocent should admit handling the murder object during
-           the death window.
-        10. Statements and alibis must be concise for an iPhone screen.
-        11. Use British English and return only the schema.
-        """
-    ).strip()
-
-    issues: list[str] = []
-
-    for _ in range(settings.generation_max_retries):
-        cast = call_structured_model(
-            _feedback_prompt(base_prompt, issues, "suspect cast"),
-            SuspectCastDraft,
-            max_tokens=settings.suspect_max_tokens,
-            attempts=1,
-        )
-
-        # Locked killer facts and all object assignments are
-        # server-owned. The model may paraphrase exact text, so
-        # overwrite those fields before deterministic validation.
-        corrected_suspects = []
-
-        for suspect in cast.suspects:
-            updates = {
-                "alibi_room_object_index": (
-                    object_assignments[suspect.key]
-                )
-            }
-
-            if suspect.key == core_truth.killer_key:
-                updates.update(
-                    {
-                        "alibi_claim": (
-                            core_truth.killer_alibi
-                        ),
-                        "alibi_evidence_fact": (
-                            core_truth.killer_alibi_flaw
-                        ),
-                    }
-                )
-
-            corrected_suspects.append(
-                suspect.model_copy(update=updates)
-            )
-
-        cast = cast.model_copy(
-            update={
-                "suspects": corrected_suspects,
-            }
-        )
-
-        issues = validate_suspect_cast(
-            cast,
-            core_truth,
-            room_objects,
-        )
-
-        if not issues:
-            return cast
-
-    raise MysteryGenerationError(
-        "Suspect cast failed deterministic validation: "
-        + ", ".join(issues)
-    )
+    # Retained for endpoint compatibility. Production generation is atomic.
+    return _generate_all(room_objects, difficulty, seed)[1]
 
 
 def generate_evidence_board(
@@ -631,195 +372,16 @@ def generate_evidence_board(
     suspect_cast: SuspectCastDraft,
     room_objects: list[str],
     difficulty: Difficulty = Difficulty.standard,
+    seed: int | None = None,
 ) -> EvidenceBoardDraft:
-    """Assemble locked evidence without asking the model to copy facts."""
-    del difficulty
-
-    killer = next(
-        suspect
-        for suspect in suspect_cast.suspects
-        if suspect.key == core_truth.killer_key
-    )
-    innocents = [
-        suspect
-        for suspect in suspect_cast.suspects
-        if suspect.key != core_truth.killer_key
-    ]
-
-    first_innocent = innocents[0]
-    second_innocent = innocents[1]
-
-    primary_index = core_truth.primary_room_object_index
-    primary_object = room_objects[primary_index]
-
-    used_alibi_indexes = {
-        suspect.alibi_room_object_index
-        for suspect in suspect_cast.suspects
-    }
-    red_herring_index = next(
-        index
-        for index in range(len(room_objects))
-        if index not in used_alibi_indexes
-    )
-    red_herring_object = room_objects[red_herring_index]
-
-    first_object = room_objects[
-        first_innocent.alibi_room_object_index
-    ]
-    second_object = room_objects[
-        second_innocent.alibi_room_object_index
-    ]
-
-    clue_1 = ClueDraft(
-        title=f"The {first_object} Detail",
-        detail=(
-            f"{first_object}: "
-            f"{first_innocent.alibi_evidence_fact}"
-        ),
-        room_object_index=(
-            first_innocent.alibi_room_object_index
-        ),
-        kind=ClueKind.evidence,
-        deductions=[
-            DeductionDraft(
-                kind=DeductionKind.corroborates_alibi,
-                related_suspect_key=SuspectReferenceKey(
-                    first_innocent.key.value
-                ),
-            )
-        ],
-    )
-
-    clue_2 = ClueDraft(
-        title="The Hidden Detail",
-        detail=(
-            f"{primary_object}: "
-            f"{core_truth.killer_alibi_flaw}"
-        ),
-        room_object_index=primary_index,
-        kind=ClueKind.evidence,
-        deductions=[
-            DeductionDraft(
-                kind=DeductionKind.contradicts_statement,
-                related_suspect_key=SuspectReferenceKey(
-                    killer.key.value
-                ),
-            )
-        ],
-    )
-
-    clue_3 = ClueDraft(
-        title=f"Marks on the {primary_object}",
-        detail=(
-            f"{primary_object}: {core_truth.method_evidence} "
-            f"{killer.name}'s knowledge of "
-            f"{core_truth.hidden_detail} shows they inspected or "
-            f"handled the {primary_object}, giving them access to "
-            f"the same object used in this method: "
-            f"{core_truth.method}"
-        ),
-        room_object_index=primary_index,
-        kind=ClueKind.evidence,
-        deductions=[
-            DeductionDraft(
-                kind=DeductionKind.establishes_method,
-                related_suspect_key=SuspectReferenceKey.none,
-            ),
-            DeductionDraft(
-                kind=DeductionKind.establishes_opportunity,
-                related_suspect_key=SuspectReferenceKey(
-                    killer.key.value
-                ),
-            ),
-        ],
-    )
-
-    clue_4 = ClueDraft(
-        title=f"The {second_object} Detail",
-        detail=(
-            f"{second_object}: "
-            f"{second_innocent.alibi_evidence_fact}"
-        ),
-        room_object_index=(
-            second_innocent.alibi_room_object_index
-        ),
-        kind=ClueKind.evidence,
-        deductions=[
-            DeductionDraft(
-                kind=DeductionKind.corroborates_alibi,
-                related_suspect_key=SuspectReferenceKey(
-                    second_innocent.key.value
-                ),
-            )
-        ],
-    )
-
-    clue_5 = ClueDraft(
-        title=f"The Moved {red_herring_object}",
-        detail=(
-            f"{red_herring_object}: a fresh-looking scuff suggests "
-            "recent movement, creating suspicion without identifying "
-            "who moved it."
-        ),
-        room_object_index=red_herring_index,
-        kind=ClueKind.red_herring,
-        deductions=[],
-    )
-
-    opportunity = (
-        f"{killer.name}'s knowledge of {core_truth.hidden_detail} "
-        f"could only come from inspecting or handling the "
-        f"{primary_object}. That places them in direct contact with "
-        f"the same {primary_object} used in the murder method."
-    )
-
-    board = EvidenceBoardDraft(
-        opportunity=opportunity,
-        clue_1=clue_1,
-        clue_2=clue_2,
-        clue_3=clue_3,
-        clue_4=clue_4,
-        clue_5=clue_5,
-    )
-
-    issues = validate_evidence_board(
-        board,
-        core_truth,
-        suspect_cast,
-        room_objects,
-    )
-
-    if issues:
-        raise MysteryGenerationError(
-            "Deterministic evidence assembly failed: "
-            + ", ".join(issues)
-        )
-
-    return board
+    # Retained for endpoint compatibility. Production generation is atomic.
+    return _generate_all(room_objects, difficulty, seed)[2]
 
 
 def generate_mystery_draft(
     room_objects: list[str],
     difficulty: Difficulty = Difficulty.standard,
+    seed: int | None = None,
 ) -> MysteryDraft:
-    core_truth = generate_core_truth(
-        room_objects,
-        difficulty,
-    )
-    suspect_cast = generate_suspect_cast(
-        core_truth,
-        room_objects,
-        difficulty,
-    )
-    evidence_board = generate_evidence_board(
-        core_truth,
-        suspect_cast,
-        room_objects,
-        difficulty,
-    )
-
-    return assemble_mystery(
-        core_truth,
-        suspect_cast,
-        evidence_board,
-    )
+    core, cast, evidence = _generate_all(room_objects, difficulty, seed)
+    return assemble_mystery(core, cast, evidence)

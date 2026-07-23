@@ -176,14 +176,6 @@ struct MysteryValidator {
             issues.append(.missingMethodEvidence)
         }
 
-        let establishesTimeline = deductions.contains {
-            $0.kind == .establishesTimeline
-        }
-
-        if !establishesTimeline {
-            issues.append(.missingTimelineEvidence)
-        }
-
         let establishesOpportunity = deductions.contains {
             deduction in
 

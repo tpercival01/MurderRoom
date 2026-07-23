@@ -27,6 +27,11 @@
 		544EFF31300F8C44003E7F2D /* SuspectAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */; };
 		5456C898300FA54A0096F572 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C897300FA5440096F572 /* CameraPicker.swift */; };
 		5456C89A300FA8AD0096F572 /* RoomObjectRecogniser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */; };
+		5466D33B30121058006DF879 /* RoomObjectHotspot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D33A30121054006DF879 /* RoomObjectHotspot.swift */; };
+		5466D33D3012107D006DF879 /* HotspotPlacementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D33C30121073006DF879 /* HotspotPlacementView.swift */; };
+		5466D33F30121751006DF879 /* RoomPhotoInvestigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D33E3012174C006DF879 /* RoomPhotoInvestigationView.swift */; };
+		5466D341301218ED006DF879 /* ObjectClueSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D340301218E9006DF879 /* ObjectClueSheetView.swift */; };
+		5466D343301225F3006DF879 /* CaseNotebookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5466D342301225ED006DF879 /* CaseNotebookView.swift */; };
 		54E4D2DB301101A10069FA50 /* AIMysteryGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +76,11 @@
 		544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuspectAssessment.swift; sourceTree = "<group>"; };
 		5456C897300FA5440096F572 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
 		5456C899300FA8A80096F572 /* RoomObjectRecogniser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomObjectRecogniser.swift; sourceTree = "<group>"; };
+		5466D33A30121054006DF879 /* RoomObjectHotspot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomObjectHotspot.swift; sourceTree = "<group>"; };
+		5466D33C30121073006DF879 /* HotspotPlacementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotspotPlacementView.swift; sourceTree = "<group>"; };
+		5466D33E3012174C006DF879 /* RoomPhotoInvestigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPhotoInvestigationView.swift; sourceTree = "<group>"; };
+		5466D340301218E9006DF879 /* ObjectClueSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectClueSheetView.swift; sourceTree = "<group>"; };
+		5466D342301225ED006DF879 /* CaseNotebookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseNotebookView.swift; sourceTree = "<group>"; };
 		54E4D2DA3011019B0069FA50 /* AIMysteryGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIMysteryGenerator.swift; sourceTree = "<group>"; };
 		54E4D2DC3011023D0069FA50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -159,6 +169,11 @@
 		544EFF10300F65F1003E7F2D /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				5466D342301225ED006DF879 /* CaseNotebookView.swift */,
+				5466D340301218E9006DF879 /* ObjectClueSheetView.swift */,
+				5466D33E3012174C006DF879 /* RoomPhotoInvestigationView.swift */,
+				5466D33C30121073006DF879 /* HotspotPlacementView.swift */,
+				5466D33A30121054006DF879 /* RoomObjectHotspot.swift */,
 				544EFF30300F8C40003E7F2D /* SuspectAssessment.swift */,
 				544EFF2A300F8326003E7F2D /* InvestigationState.swift */,
 				544EFF28300F7DFB003E7F2D /* MysteryResolution.swift */,
@@ -344,12 +359,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5466D33D3012107D006DF879 /* HotspotPlacementView.swift in Sources */,
 				544EFF23300F6D20003E7F2D /* MysteryValidator.swift in Sources */,
 				544EFF1E300F6D0B003E7F2D /* MysteryClue.swift in Sources */,
+				5466D33F30121751006DF879 /* RoomPhotoInvestigationView.swift in Sources */,
 				544EFF2B300F832B003E7F2D /* InvestigationState.swift in Sources */,
 				544EFF31300F8C44003E7F2D /* SuspectAssessment.swift in Sources */,
 				544EFF25300F75DD003E7F2D /* MysteryGenerating.swift in Sources */,
+				5466D33B30121058006DF879 /* RoomObjectHotspot.swift in Sources */,
 				544EFF2F300F8432003E7F2D /* GameViewModel.swift in Sources */,
+				5466D343301225F3006DF879 /* CaseNotebookView.swift in Sources */,
 				5456C89A300FA8AD0096F572 /* RoomObjectRecogniser.swift in Sources */,
 				544EFF2E300F842E003E7F2D /* GameView.swift in Sources */,
 				544EFF0D300F6529003E7F2D /* ContentView.swift in Sources */,
@@ -357,6 +376,7 @@
 				544EFF22300F6D1C003E7F2D /* MysteryValidationIssue.swift in Sources */,
 				544EFF0E300F6529003E7F2D /* MurderRoomApp.swift in Sources */,
 				544EFF1C300F6CF7003E7F2D /* MysteryPerson.swift in Sources */,
+				5466D341301218ED006DF879 /* ObjectClueSheetView.swift in Sources */,
 				54E4D2DB301101A10069FA50 /* AIMysteryGenerator.swift in Sources */,
 				544EFF1F300F6D0F003E7F2D /* MysterySolution.swift in Sources */,
 				544EFF21300F6D18003E7F2D /* MysteryDeduction.swift in Sources */,

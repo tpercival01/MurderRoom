@@ -16,6 +16,8 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var isGenerating = false
     @Published private(set) var errorMessage: String?
     @Published var capturedImage: UIImage?
+    @Published private(set)
+    var objectHotspots: [String: RoomObjectHotspot] = [:]
     @Published private(set) var isRecognisingObjects = false
     @Published private(set) var hasConfirmedObjects = false
     @Published private(set) var recognitionMessage: String?
@@ -38,12 +40,30 @@ final class GameViewModel: ObservableObject {
     var canGenerate: Bool {
         capturedImage != nil &&
         hasConfirmedObjects &&
+        hasPlacedAllHotspots &&
         objectNames.count == 4 &&
         objectNames.allSatisfy {
             !$0.trimmingCharacters(
                 in: .whitespacesAndNewlines
             ).isEmpty
         }
+    }
+    
+    var placedHotspots: [RoomObjectHotspot] {
+        objectNames.compactMap {
+            hotspot(for: $0)
+        }
+    }
+
+    var nextObjectNeedingHotspot: String? {
+        objectNames.first {
+            hotspot(for: $0) == nil
+        }
+    }
+
+    var hasPlacedAllHotspots: Bool {
+        objectNames.count == 4 &&
+        placedHotspots.count == 4
     }
 
     var canAccuse: Bool {
@@ -107,16 +127,88 @@ final class GameViewModel: ObservableObject {
 
         guard
             cleanedNames.count == 4,
-            cleanedNames.allSatisfy({ !$0.isEmpty })
+            cleanedNames.allSatisfy({
+                !$0.isEmpty
+            })
         else {
             errorMessage = "Confirm four room objects."
             return
         }
 
+        let distinctNames = Set(
+            cleanedNames.map {
+                $0.lowercased()
+            }
+        )
+
+        guard distinctNames.count == 4 else {
+            errorMessage =
+                "Choose four different room objects."
+            return
+        }
+
         objectNames = cleanedNames
+        objectHotspots = [:]
         hasConfirmedObjects = true
         errorMessage = nil
-        recognitionMessage = "Objects confirmed."
+        recognitionMessage =
+            "Tap each object in the photograph."
+    }
+    
+    func placeHotspot(
+        for objectName: String,
+        at point: CGPoint
+    ) {
+        let cleanedName = objectName
+            .trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+
+        guard !cleanedName.isEmpty else {
+            return
+        }
+
+        let hotspot = RoomObjectHotspot(
+            objectName: cleanedName,
+            x: min(max(point.x, 0), 1),
+            y: min(max(point.y, 0), 1)
+        )
+
+        objectHotspots[
+            hotspotKey(for: cleanedName)
+        ] = hotspot
+
+        errorMessage = nil
+    }
+
+    func hotspot(
+        for objectName: String
+    ) -> RoomObjectHotspot? {
+        objectHotspots[
+            hotspotKey(for: objectName)
+        ]
+    }
+
+    func clearHotspots() {
+        objectHotspots = [:]
+        errorMessage = nil
+    }
+
+    func prepareForRetake() {
+        objectHotspots = [:]
+        hasConfirmedObjects = false
+        recognitionMessage = nil
+        errorMessage = nil
+    }
+
+    private func hotspotKey(
+        for objectName: String
+    ) -> String {
+        objectName
+            .trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+            .lowercased()
     }
 
     func generateMystery() async {
@@ -186,6 +278,72 @@ final class GameViewModel: ObservableObject {
             investigation = currentInvestigation
         } catch {
             errorMessage = "That clue could not be examined."
+        }
+    }
+    
+    func clues(
+        for roomObject: RoomObject
+    ) -> [MysteryClue] {
+        guard let mystery else {
+            return []
+        }
+
+        return mystery.clues.filter {
+            $0.roomObjectID == roomObject.id
+        }
+    }
+
+    func revealClues(
+        for roomObject: RoomObject
+    ) {
+        guard
+            let mystery,
+            var currentInvestigation =
+                investigation
+        else {
+            return
+        }
+
+        let objectClues = mystery.clues.filter {
+            $0.roomObjectID == roomObject.id
+        }
+
+        guard !objectClues.isEmpty else {
+            errorMessage =
+                "No evidence was attached to that object."
+            return
+        }
+
+        do {
+            for clue in objectClues {
+                try currentInvestigation.reveal(
+                    clueID: clue.id,
+                    in: mystery
+                )
+            }
+
+            investigation =
+                currentInvestigation
+            errorMessage = nil
+        } catch {
+            errorMessage =
+                "That evidence could not be examined."
+        }
+    }
+
+    func isObjectRevealed(
+        _ roomObject: RoomObject
+    ) -> Bool {
+        let objectClues = clues(
+            for: roomObject
+        )
+
+        guard !objectClues.isEmpty else {
+            return false
+        }
+
+        return objectClues.allSatisfy {
+            isRevealed($0)
         }
     }
 
@@ -286,6 +444,7 @@ final class GameViewModel: ObservableObject {
     
     func objectNamesDidChange() {
         hasConfirmedObjects = false
+        objectHotspots = [:]
     }
 
     func startAnotherCase() {
@@ -296,5 +455,6 @@ final class GameViewModel: ObservableObject {
         capturedImage = nil
         recognitionMessage = nil
         hasConfirmedObjects = false
+        objectHotspots = [:]
     }
 }

@@ -46,10 +46,10 @@ def build_success_row(path: Path, case: dict[str, Any]) -> dict[str, Any]:
 
     clue_titles = [clue.get("title", "") for clue in clues]
 
-    direct_killer_clues = 0
+    direct_killer_clue_locations: set[int] = set()
     corroborated_non_killers: set[str] = set()
 
-    for clue in clues:
+    for clue_index, clue in enumerate(clues):
         for deduction in clue.get("deductions", []):
             related_id = deduction.get("relatedSuspectID")
             deduction_kind = deduction.get("kind")
@@ -63,7 +63,7 @@ def build_success_row(path: Path, case: dict[str, Any]) -> dict[str, Any]:
                     "establishesOpportunity",
                 }
             ):
-                direct_killer_clues += 1
+                direct_killer_clue_locations.add(clue_index)
 
             if (
                 related_id
@@ -84,7 +84,7 @@ def build_success_row(path: Path, case: dict[str, Any]) -> dict[str, Any]:
     likely_obvious_killer = (
         len(suspects) == 3
         and len(corroborated_non_killers) == 2
-        and direct_killer_clues >= 2
+        and len(direct_killer_clue_locations) >= 2
     )
 
     red_herring_count = sum(
@@ -111,7 +111,7 @@ def build_success_row(path: Path, case: dict[str, Any]) -> dict[str, Any]:
         "time_of_death": solution.get("timeOfDeath", ""),
         "clue_titles": " | ".join(clue_titles),
         "clue_pattern": normalise_titles(clue_titles),
-        "direct_killer_clue_count": direct_killer_clues,
+        "direct_killer_clue_count": len(direct_killer_clue_locations),
         "corroborated_non_killer_count": len(corroborated_non_killers),
         "red_herring_count": red_herring_count,
         "objects_used_in_clues": len(used_object_ids),

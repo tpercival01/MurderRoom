@@ -46,6 +46,9 @@ class MethodStyle(str, Enum):
     poisoning = "poisoning"
     blunt = "blunt"
 
+class ProofStyle(str, Enum):
+    shared_alibi = "shared_alibi"
+    split_corroboration = "split_corroboration"
 
 @dataclass(frozen=True)
 class ObjectProfile:
@@ -84,6 +87,7 @@ class CasePlan:
     identity_index: int
     red_herring_index: int
     method_style: MethodStyle
+    proof_style: ProofStyle
     signature: Signature
     identity_marker: IdentityMarker
     departure_time: str
@@ -393,6 +397,11 @@ def build_case_plan(
     killer_key = list(SuspectKey)[actual_seed % len(SuspectKey)]
     signature = _SIGNATURES[(actual_seed // 3) % len(_SIGNATURES)]
     identity_marker = _IDENTITY_MARKERS[(actual_seed // 7) % len(_IDENTITY_MARKERS)]
+    proof_style = (
+        ProofStyle.shared_alibi
+        if actual_seed % 2 == 0
+        else ProofStyle.split_corroboration
+    )
 
     base_hour = 19 + ((actual_seed // 11) % 3)
     base_minute = (10, 20, 35, 45)[(actual_seed // 17) % 4]
@@ -409,6 +418,7 @@ def build_case_plan(
         identity_index=identity.index,
         red_herring_index=red_herring.index,
         method_style=_method_style(method),
+        proof_style=proof_style,
         signature=signature,
         identity_marker=identity_marker,
         departure_time=_format_time(departure_dt),
@@ -719,6 +729,12 @@ def compile_case(
 
     method, method_title, method_detail = _method_content(plan, narrative.victim_name)
     timeline_action_base, timeline_action_past, timeline_trace, timeline_title = _timeline_action(timeline_profile)
+    (
+        identity_action_base,
+        identity_action_past,
+        identity_trace,
+        identity_title,
+    ) = _timeline_action(identity_profile)
     if plan.method_style == MethodStyle.poisoning:
         attack_trace = "a narrow blue droplet from the spilled poisoned drink"
         attack_trace_short = "blue drink residue"
@@ -740,11 +756,19 @@ def compile_case(
         f"We left the room together immediately afterwards. {killer.name} and "
         f"{narrative.victim_name} were still inside."
     )
-    innocent_2_statement = (
-        f"At {plan.departure_time}, I helped {innocent_1.name} {timeline_action_base}. "
-        f"We then left together and remained together until the body was found at "
-        f"{plan.discovery_time}."
-    )
+    if plan.proof_style == ProofStyle.split_corroboration:
+        innocent_2_statement = (
+            f"At {plan.departure_time}, while {innocent_1.name} "
+            f"{timeline_action_past}, I {identity_action_past}. "
+            f"We then left together and remained together until the body was found at "
+            f"{plan.discovery_time}."
+        )
+    else:
+        innocent_2_statement = (
+            f"At {plan.departure_time}, I helped {innocent_1.name} "
+            f"{timeline_action_base}. We then left together and remained together until "
+            f"the body was found at {plan.discovery_time}."
+        )
     innocent_1_alibi = (
         f"{innocent_2.name} and I were together outside the room from "
         f"{plan.departure_time} until the discovery at {plan.discovery_time}."
@@ -773,17 +797,51 @@ def compile_case(
         f"remains unbroken. {innocent_1.name} and {innocent_2.name} both state that "
         f"they {timeline_action_past} at {plan.departure_time} before leaving together."
     )
-
-    opportunity = (
-        f"{killer.name} claimed to have left at {plan.claimed_exit_time}. The "
-        f"timeline evidence places the attack after {innocent_1.name} and "
-        f"{innocent_2.name} left together at {plan.departure_time}; the "
-        f"{signature.trace_plural} on {_object_phrase(method_profile.name)} and "
-        f"the {marker.colour} fragment recovered from {_object_phrase(identity_profile.name)} "
-        f"place {killer.name} inside afterwards. {killer.name} therefore had the "
-        f"only evidenced opportunity to be alone with {narrative.victim_name} and "
-        f"reach {_object_phrase(method_profile.name)} during the murder window."
+    identity_corroboration_detail = (
+        f"{identity_trace.capitalize()} is crossed by {attack_trace}. "
+        f"{innocent_2.name} states that they {identity_action_past} at "
+        f"{plan.departure_time} immediately before leaving the room."
     )
+
+    if plan.proof_style == ProofStyle.split_corroboration:
+        opportunity = (
+            f"{killer.name} claimed to have left at {plan.claimed_exit_time}. "
+            f"The physical trace on {_object_phrase(timeline_profile.name)} corroborates "
+            f"the action described by {innocent_1.name}, while the trace on "
+            f"{_object_phrase(identity_profile.name)} corroborates the action described "
+            f"by {innocent_2.name}. They left together at {plan.departure_time}, and both "
+            f"traces "
+            f"are crossed by evidence from the later attack. Meanwhile, "
+            f"{signature.trace_plural} on {_object_phrase(method_profile.name)} "
+            f"directly contradict {killer.name}'s denial and place them at the murder "
+            f"object during the attack window."
+        )
+        killer_alibi_flaw = (
+            f"{signature.trace_plural.capitalize()} on "
+            f"{_object_phrase(method_profile.name)} contradict {killer.name}'s claim "
+            f"never to have touched it. Separate traces on "
+            f"{_object_phrase(timeline_profile.name)} and "
+            f"{_object_phrase(identity_profile.name)} place the attack after both "
+            f"innocents completed their stated actions and left together."
+        )
+    else:
+        opportunity = (
+            f"{killer.name} claimed to have left at {plan.claimed_exit_time}. The "
+            f"timeline evidence places the attack after {innocent_1.name} and "
+            f"{innocent_2.name} left together at {plan.departure_time}; the "
+            f"{signature.trace_plural} on {_object_phrase(method_profile.name)} and "
+            f"the {marker.colour} fragment recovered from "
+            f"{_object_phrase(identity_profile.name)} place {killer.name} inside "
+            f"afterwards. {killer.name} therefore had the only evidenced opportunity "
+            f"to be alone with {narrative.victim_name} and reach "
+            f"{_object_phrase(method_profile.name)} during the murder window."
+        )
+        killer_alibi_flaw = (
+            f"Two independent physical traces place {killer.name} in the room after "
+            f"the claimed exit: {signature.trace_plural} on "
+            f"{_object_phrase(method_profile.name)} and {marker.fragment} at "
+            f"{_object_phrase(identity_profile.name)}."
+        )
 
     motive_clause = narrative.motive_detail.strip().rstrip(".")
     motive_clause = re.sub(
@@ -842,12 +900,7 @@ def compile_case(
             f"{signature.trace_plural} on {_object_phrase(method_profile.name)}."
         ),
         killer_alibi=killer_alibi,
-        killer_alibi_flaw=(
-            f"Two independent physical traces place {killer.name} in the room after "
-            f"the claimed exit: {signature.trace_plural} on "
-            f"{_object_phrase(method_profile.name)} and {marker.fragment} at "
-            f"{_object_phrase(identity_profile.name)}."
-        ),
+        killer_alibi_flaw=killer_alibi_flaw,
         primary_room_object_index=plan.method_index,
         contradiction_room_object_index=plan.method_index,
     )
@@ -868,8 +921,13 @@ def compile_case(
         else:
             statement = innocent_2_statement
             alibi = innocent_2_alibi
-            evidence_index = plan.timeline_index
-            evidence_fact = timeline_detail
+
+            if plan.proof_style == ProofStyle.split_corroboration:
+                evidence_index = plan.identity_index
+                evidence_fact = identity_corroboration_detail
+            else:
+                evidence_index = plan.timeline_index
+                evidence_fact = timeline_detail
 
         relationship = re.sub(
             r"^(?:his|her|their|the victim's)\s+",
@@ -895,6 +953,48 @@ def compile_case(
     innocent_2_ref = _ref(innocent_keys[1])
     killer_ref = _ref(plan.killer_key)
     red_title, red_detail = _red_herring_detail(red_profile)
+    if plan.proof_style == ProofStyle.split_corroboration:
+        clue_2_deductions = [
+            DeductionDraft(
+                kind=DeductionKind.establishes_timeline,
+                related_suspect_key=SuspectReferenceKey.none,
+            ),
+            DeductionDraft(
+                kind=DeductionKind.corroborates_alibi,
+                related_suspect_key=innocent_1_ref,
+            ),
+        ]
+        clue_4_title = identity_title
+        clue_4_detail = identity_corroboration_detail
+        clue_4_deductions = [
+            DeductionDraft(
+                kind=DeductionKind.corroborates_alibi,
+                related_suspect_key=innocent_2_ref,
+            )
+        ]
+    else:
+        clue_2_deductions = [
+            DeductionDraft(
+                kind=DeductionKind.establishes_timeline,
+                related_suspect_key=SuspectReferenceKey.none,
+            ),
+            DeductionDraft(
+                kind=DeductionKind.corroborates_alibi,
+                related_suspect_key=innocent_1_ref,
+            ),
+            DeductionDraft(
+                kind=DeductionKind.corroborates_alibi,
+                related_suspect_key=innocent_2_ref,
+            ),
+        ]
+        clue_4_title = f"Fragment at {_display(identity_profile.name)}"
+        clue_4_detail = identity_detail
+        clue_4_deductions = [
+            DeductionDraft(
+                kind=DeductionKind.supports_suspect,
+                related_suspect_key=killer_ref,
+            )
+        ]
 
     board = EvidenceBoardDraft(
         opportunity=opportunity,
@@ -915,20 +1015,7 @@ def compile_case(
             detail=timeline_detail,
             room_object_index=plan.timeline_index,
             kind=ClueKind.evidence,
-            deductions=[
-                DeductionDraft(
-                    kind=DeductionKind.establishes_timeline,
-                    related_suspect_key=SuspectReferenceKey.none,
-                ),
-                DeductionDraft(
-                    kind=DeductionKind.corroborates_alibi,
-                    related_suspect_key=innocent_1_ref,
-                ),
-                DeductionDraft(
-                    kind=DeductionKind.corroborates_alibi,
-                    related_suspect_key=innocent_2_ref,
-                ),
-            ],
+            deductions=clue_2_deductions,
         ),
         clue_3=ClueDraft(
             title=f"Fibres on {_display(method_profile.name)}",
@@ -951,16 +1038,11 @@ def compile_case(
             ],
         ),
         clue_4=ClueDraft(
-            title=f"Fragment at {_display(identity_profile.name)}",
-            detail=identity_detail,
+            title=clue_4_title,
+            detail=clue_4_detail,
             room_object_index=plan.identity_index,
             kind=ClueKind.evidence,
-            deductions=[
-                DeductionDraft(
-                    kind=DeductionKind.supports_suspect,
-                    related_suspect_key=killer_ref,
-                )
-            ],
+            deductions=clue_4_deductions,
         ),
         clue_5=ClueDraft(
             title=red_title,

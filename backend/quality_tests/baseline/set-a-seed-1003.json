@@ -1,10 +1,10 @@
 {
-  "id": "28ac1472-a994-4caf-90c4-4b532b3f558a",
-  "title": "The Whispering Lamp in Whitby Study",
-  "openingIncident": "At 8:55 pm, Eleanor Whitcombe, renowned antiquarian and museum curator, was found dead in a cosy study with dark wood paneling, a lamp, a book, a mug and an armchair. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "d411f33e-de12-4e4a-9952-d4850a8fb7dc",
+  "title": "The Midnight Ink of Whitby Library",
+  "openingIncident": "At 8:55 pm, Eleanor Ravenscroft, renowned antiquarian book dealer, was found dead in a cosy study lined with dark wood paneling, a battered armchair beside a brass lamp, a half\u2011filled mug on the desk and a well\u2011worn book stacked nearby. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "b631b83e-7f2c-4021-8bae-5d40b6ed191f",
-    "name": "Eleanor Whitcombe",
+    "id": "da22d5d6-d827-4831-a003-61b2613e6582",
+    "name": "Eleanor Ravenscroft",
     "role": "Victim",
     "relationshipToVictim": "Victim",
     "statement": "",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "119e40b3-4ca3-4c5c-849e-30a65d29253d",
-      "name": "Gareth Hargreaves",
+      "id": "4e5180ab-5c1f-4877-acb9-f694881f5928",
+      "name": "Gareth Pembroke",
       "role": "Suspect",
-      "relationshipToVictim": "former research assistant",
-      "statement": "At 8:45 pm, Percival Thorne helped me move the chair clear of the doorway. We left the room together immediately afterwards. Miranda Llewelyn and Eleanor Whitcombe were still inside.",
-      "alibiClaim": "Percival Thorne and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
+      "relationshipToVictim": "former business partner",
+      "statement": "At 8:45 pm, Victor Hale helped me move the chair clear of the doorway. We left the room together immediately afterwards. Clara Whitfield and Eleanor Ravenscroft were still inside.",
+      "alibiClaim": "Victor Hale and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
     },
     {
-      "id": "86b273bf-f360-42a3-b5f9-7d6543dac013",
-      "name": "Miranda Llewelyn",
+      "id": "2c364c94-0c6d-4eaa-b50b-7e64972d0a8a",
+      "name": "Clara Whitfield",
       "role": "Suspect",
-      "relationshipToVictim": "ex\u2011spouse",
+      "relationshipToVictim": "estranged sister",
       "statement": "I left at 8:40 pm. I never touched the lamp and did not go near the book.",
       "alibiClaim": "I had already left the room by 8:40 pm and did not return."
     },
     {
-      "id": "ae244da4-57c0-4f1b-a499-bbfa07b3cad5",
-      "name": "Percival Thorne",
+      "id": "b4aa9bbd-602a-473f-b0ab-b2a912a28a85",
+      "name": "Victor Hale",
       "role": "Suspect",
-      "relationshipToVictim": "business partner",
-      "statement": "At 8:45 pm, I helped Gareth Hargreaves move the chair clear of the doorway. We then left together and remained together until the body was found at 8:55 pm.",
-      "alibiClaim": "Gareth Hargreaves and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
+      "relationshipToVictim": "long\u2011time client",
+      "statement": "At 8:45 pm, while Gareth Pembroke moved the chair clear of the doorway, I returned the book squarely to its place. We then left together and remained together until the body was found at 8:55 pm.",
+      "alibiClaim": "Gareth Pembroke and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
     }
   ],
   "roomObjects": [
     {
-      "id": "a9d79ab5-af6d-4a17-b04b-0f478ab83345",
+      "id": "44a438f7-257d-495f-bca5-ac458b197221",
       "name": "lamp",
       "isConfirmed": true
     },
     {
-      "id": "bf69f823-5789-4797-88f1-a99a3a50818e",
+      "id": "83092c4a-394b-49f0-af3d-401011ef6da9",
       "name": "book",
       "isConfirmed": true
     },
     {
-      "id": "cf6e29eb-b0b9-4e71-82fb-e24f62f59093",
+      "id": "b7bf1b87-0168-4164-86c0-4cd3451b4409",
       "name": "mug",
       "isConfirmed": true
     },
     {
-      "id": "770ef0cb-733f-4253-af10-df68723e2ee5",
+      "id": "6323b263-1e31-473b-a52c-3f6a9ac4d7e1",
       "name": "chair",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "3dc05f42-5d17-4878-b557-606a77e1eb6c",
+      "id": "841ccd35-2cff-4d26-89c9-afd17fb21cf5",
       "title": "The Dented Lamp",
-      "detail": "A fresh blood smear and a new impact dent mark the lamp. Eleanor Whitcombe has a fresh blunt wound to the head.",
-      "roomObjectID": "a9d79ab5-af6d-4a17-b04b-0f478ab83345",
+      "detail": "A fresh blood smear and a new impact dent mark the lamp. Eleanor Ravenscroft has a fresh blunt wound to the head.",
+      "roomObjectID": "44a438f7-257d-495f-bca5-ac458b197221",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "baa8e33a-0df0-4386-91dc-8ba9acc640a5",
+      "id": "7dbe31e7-c930-4b1d-8476-f6bd829d525f",
       "title": "Movement of Chair",
-      "detail": "A fresh floor scrape made by the chair is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Gareth Hargreaves and Percival Thorne both state that they moved the chair clear of the doorway at 8:45 pm before leaving together.",
-      "roomObjectID": "770ef0cb-733f-4253-af10-df68723e2ee5",
+      "detail": "A fresh floor scrape made by the chair is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Gareth Pembroke and Victor Hale both state that they moved the chair clear of the doorway at 8:45 pm before leaving together.",
+      "roomObjectID": "6323b263-1e31-473b-a52c-3f6a9ac4d7e1",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,58 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "119e40b3-4ca3-4c5c-849e-30a65d29253d"
-        },
-        {
-          "kind": "corroboratesAlibi",
-          "relatedSuspectID": "ae244da4-57c0-4f1b-a499-bbfa07b3cad5"
+          "relatedSuspectID": "4e5180ab-5c1f-4877-acb9-f694881f5928"
         }
       ]
     },
     {
-      "id": "917d89f4-530c-4a28-8ff3-21179d040dac",
+      "id": "89b71838-84c2-4f94-907a-1df0fd3fa23e",
       "title": "Fibres on Lamp",
-      "detail": "Fine copper-coloured silk threads are caught inside a fresh split beneath the base of the lamp. Miranda Llewelyn's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
-      "roomObjectID": "a9d79ab5-af6d-4a17-b04b-0f478ab83345",
+      "detail": "Fine copper-coloured silk threads are caught inside a fresh split beneath the base of the lamp. Clara Whitfield's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
+      "roomObjectID": "44a438f7-257d-495f-bca5-ac458b197221",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "86b273bf-f360-42a3-b5f9-7d6543dac013"
+          "relatedSuspectID": "2c364c94-0c6d-4eaa-b50b-7e64972d0a8a"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "86b273bf-f360-42a3-b5f9-7d6543dac013"
+          "relatedSuspectID": "2c364c94-0c6d-4eaa-b50b-7e64972d0a8a"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "86b273bf-f360-42a3-b5f9-7d6543dac013"
+          "relatedSuspectID": "2c364c94-0c6d-4eaa-b50b-7e64972d0a8a"
         }
       ]
     },
     {
-      "id": "baa1f4ae-439e-40ad-82b2-0c60c1d16dcb",
-      "title": "Fragment at Book",
-      "detail": "A curved black lacquer chip edged in gold is lodged between the cover and first page of the book on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Miranda Llewelyn has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "bf69f823-5789-4797-88f1-a99a3a50818e",
+      "id": "7e23beee-2a90-4f0a-af6d-b194ea1fd654",
+      "title": "Position of Book",
+      "detail": "A clean rectangular outline left when the book was moved is crossed by a narrow blood droplet from the attack. Victor Hale states that they returned the book squarely to its place at 8:45 pm immediately before leaving the room.",
+      "roomObjectID": "83092c4a-394b-49f0-af3d-401011ef6da9",
       "kind": "evidence",
       "deductions": [
         {
-          "kind": "supportsSuspect",
-          "relatedSuspectID": "86b273bf-f360-42a3-b5f9-7d6543dac013"
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "b4aa9bbd-602a-473f-b0ab-b2a912a28a85"
         }
       ]
     },
     {
-      "id": "01673d84-eba5-439b-9c6d-47394abc69d3",
+      "id": "39cfd362-b0b0-48a3-b3a4-2d703a7cb94c",
       "title": "Crack in Mug",
       "detail": "A crack runs across the mug. A continuous yellowed glue line is visible deep inside the break.",
-      "roomObjectID": "cf6e29eb-b0b9-4e71-82fb-e24f62f59093",
+      "roomObjectID": "b7bf1b87-0168-4164-86c0-4cd3451b4409",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "86b273bf-f360-42a3-b5f9-7d6543dac013",
-    "motive": "Miranda Llewelyn killed Eleanor Whitcombe because she had discovered his embezzlement of museum funds.",
-    "method": "Eleanor Whitcombe was killed by a heavy blow from the lamp.",
+    "killerID": "2c364c94-0c6d-4eaa-b50b-7e64972d0a8a",
+    "motive": "Clara Whitfield killed Eleanor Ravenscroft because the imminent sale of a priceless medieval manuscript that would have left her bankrupt.",
+    "method": "Eleanor Ravenscroft was killed by a heavy blow from the lamp.",
     "timeOfDeath": "After 8:45 pm and before discovery at 8:55 pm",
-    "opportunity": "Miranda Llewelyn claimed to have left at 8:40 pm. The timeline evidence places the attack after Gareth Hargreaves and Percival Thorne left together at 8:45 pm; the fine copper-coloured silk threads on the lamp and the black and gold fragment recovered from the book place Miranda Llewelyn inside afterwards. Miranda Llewelyn therefore had the only evidenced opportunity to be alone with Eleanor Whitcombe and reach the lamp during the murder window."
+    "opportunity": "Clara Whitfield claimed to have left at 8:40 pm. The physical trace on the chair corroborates the action described by Gareth Pembroke, while the trace on the book corroborates the action described by Victor Hale. They left together at 8:45 pm, and both traces are crossed by evidence from the later attack. Meanwhile, fine copper-coloured silk threads on the lamp directly contradict Clara Whitfield's denial and place them at the murder object during the attack window."
   }
 }

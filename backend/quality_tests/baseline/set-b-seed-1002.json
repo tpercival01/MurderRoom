@@ -1,9 +1,9 @@
 {
-  "id": "35275527-23f6-4fc5-80f0-a4d6f6e177ac",
-  "title": "The Candlelit Reflection in Whitmore Study",
-  "openingIncident": "At 8:45 pm, Eleanor Whitmore, renowned art historian, was found dead in the study, its walls lined with dark wood, a large mirror above the fireplace, a ticking mantel clock, a solitary candle on the desk, and a faded family photograph. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "4331e2ae-cbed-4cc3-b593-bf8efed97e5f",
+  "title": "The Midnight Reflection in Whitby Hall",
+  "openingIncident": "At 8:45 pm, Eleanor Whitmore, renowned antiquarian and curator of the Whitmore Collection, was found dead in a dimly lit sitting room draped with heavy curtains, its walls lined with a gilt mirror, a ticking mantel clock, a solitary candle flickering beside an old family photograph. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "797611a8-c5b7-4a13-8c6f-d7a9e88878b8",
+    "id": "99d0c2d5-6ee4-4c3b-b0cb-9dcf4f85f21d",
     "name": "Eleanor Whitmore",
     "role": "Victim",
     "relationshipToVictim": "Victim",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "05a633f5-af7b-4149-a0ff-2a9e40a6fef6",
+      "id": "a834bc29-8d0b-481c-a5ef-057cc0c98ab4",
       "name": "Victor Hale",
       "role": "Suspect",
-      "relationshipToVictim": "former prot\u00e9g\u00e9",
+      "relationshipToVictim": "former business partner",
       "statement": "I left at 8:30 pm. I never touched the clock and did not go near the mirror.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     },
     {
-      "id": "ab1b7c79-bef6-4400-b006-36f1788d1748",
-      "name": "Clara Finch",
+      "id": "e9729209-378f-4992-8ff5-41c3a5b7334f",
+      "name": "Clara Pembroke",
       "role": "Suspect",
       "relationshipToVictim": "estranged sister",
-      "statement": "At 8:35 pm, Malcolm Reed helped me shift the candle to light the victim's papers. We left the room together immediately afterwards. Victor Hale and Eleanor Whitmore were still inside.",
-      "alibiClaim": "Malcolm Reed and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "statement": "At 8:35 pm, Dr. Alistair Finch helped me shift the candle to light the victim's papers. We left the room together immediately afterwards. Victor Hale and Eleanor Whitmore were still inside.",
+      "alibiClaim": "Dr. Alistair Finch and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "7a2a9ac0-16b7-4d54-96c7-1892db5b45c7",
-      "name": "Malcolm Reed",
+      "id": "441e7853-123c-47cb-931d-95a5ee7419fa",
+      "name": "Dr. Alistair Finch",
       "role": "Suspect",
-      "relationshipToVictim": "financial adviser",
-      "statement": "At 8:35 pm, I helped Clara Finch shift the candle to light the victim's papers. We then left together and remained together until the body was found at 8:45 pm.",
-      "alibiClaim": "Clara Finch and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "relationshipToVictim": "longtime confidant",
+      "statement": "At 8:35 pm, I helped Clara Pembroke shift the candle to light the victim's papers. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Clara Pembroke and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     }
   ],
   "roomObjects": [
     {
-      "id": "35200161-fd9f-420e-bbc2-045d343a6a8d",
+      "id": "d1dd6201-dab7-4b18-9b8a-81ea55da8519",
       "name": "mirror",
       "isConfirmed": true
     },
     {
-      "id": "00daadd1-b663-4941-b3bd-c44cb5d55fa5",
+      "id": "cf98cafe-d6a1-4bf8-9851-3d473d2fe3c3",
       "name": "clock",
       "isConfirmed": true
     },
     {
-      "id": "0e3df125-cc5c-4407-889a-8016ba8fbe6e",
+      "id": "095cbe8c-3dd3-44b0-9f23-dcbc4bb1a927",
       "name": "candle",
       "isConfirmed": true
     },
     {
-      "id": "f3a5f331-f37b-44d8-8446-b9f05d800124",
+      "id": "ada945e4-5b69-480c-bb02-538ef4487df9",
       "name": "photograph",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "2c0fbae1-69d1-4345-bf40-c8e5c6263462",
+      "id": "4c576f54-e9c1-4beb-b6df-703b45a66fe3",
       "title": "The Dented Clock",
       "detail": "A fresh blood smear and a new impact dent mark the clock. Eleanor Whitmore has a fresh blunt wound to the head.",
-      "roomObjectID": "00daadd1-b663-4941-b3bd-c44cb5d55fa5",
+      "roomObjectID": "cf98cafe-d6a1-4bf8-9851-3d473d2fe3c3",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "5ecc6f39-42e6-49ba-b37d-a8515996c941",
+      "id": "5edc5200-3bf6-4b68-aaa4-e6f713a4b48c",
       "title": "Outline beneath Candle",
-      "detail": "The clean outline beneath the shifted base of the candle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Clara Finch and Malcolm Reed both state that they shifted the candle to light the victim's papers at 8:35 pm before leaving together.",
-      "roomObjectID": "0e3df125-cc5c-4407-889a-8016ba8fbe6e",
+      "detail": "The clean outline beneath the shifted base of the candle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Clara Pembroke and Dr. Alistair Finch both state that they shifted the candle to light the victim's papers at 8:35 pm before leaving together.",
+      "roomObjectID": "095cbe8c-3dd3-44b0-9f23-dcbc4bb1a927",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,62 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "ab1b7c79-bef6-4400-b006-36f1788d1748"
+          "relatedSuspectID": "e9729209-378f-4992-8ff5-41c3a5b7334f"
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "7a2a9ac0-16b7-4d54-96c7-1892db5b45c7"
+          "relatedSuspectID": "441e7853-123c-47cb-931d-95a5ee7419fa"
         }
       ]
     },
     {
-      "id": "e90ba960-7bb2-4aec-8702-bd7ed4d0ec9a",
+      "id": "2dffb5ec-73e0-4fca-8962-dfdd9aaf432d",
       "title": "Fibres on Clock",
       "detail": "Fine copper-coloured silk threads are caught inside a fresh split on the clock. Victor Hale's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
-      "roomObjectID": "00daadd1-b663-4941-b3bd-c44cb5d55fa5",
+      "roomObjectID": "cf98cafe-d6a1-4bf8-9851-3d473d2fe3c3",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "05a633f5-af7b-4149-a0ff-2a9e40a6fef6"
+          "relatedSuspectID": "a834bc29-8d0b-481c-a5ef-057cc0c98ab4"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "05a633f5-af7b-4149-a0ff-2a9e40a6fef6"
+          "relatedSuspectID": "a834bc29-8d0b-481c-a5ef-057cc0c98ab4"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "05a633f5-af7b-4149-a0ff-2a9e40a6fef6"
+          "relatedSuspectID": "a834bc29-8d0b-481c-a5ef-057cc0c98ab4"
         }
       ]
     },
     {
-      "id": "f4cde9a2-064f-4c2f-8e37-53392d08193d",
+      "id": "84cf180e-a751-4684-871f-3caeff939522",
       "title": "Fragment at Mirror",
       "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the mirror on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Victor Hale has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "35200161-fd9f-420e-bbc2-045d343a6a8d",
+      "roomObjectID": "d1dd6201-dab7-4b18-9b8a-81ea55da8519",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "05a633f5-af7b-4149-a0ff-2a9e40a6fef6"
+          "relatedSuspectID": "a834bc29-8d0b-481c-a5ef-057cc0c98ab4"
         }
       ]
     },
     {
-      "id": "b74b482b-7417-4807-9e88-c3c6754a7810",
+      "id": "c0d94e77-e4b8-412a-a0e9-cb29cc9c165b",
       "title": "Mark on Photograph",
       "detail": "A dark mark crosses the photograph. The same intact factory finish continues over the marked area.",
-      "roomObjectID": "f3a5f331-f37b-44d8-8446-b9f05d800124",
+      "roomObjectID": "ada945e4-5b69-480c-bb02-538ef4487df9",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "05a633f5-af7b-4149-a0ff-2a9e40a6fef6",
-    "motive": "Victor Hale killed Eleanor Whitmore because the imminent exposure of his forged provenance documents.",
+    "killerID": "a834bc29-8d0b-481c-a5ef-057cc0c98ab4",
+    "motive": "Victor Hale killed Eleanor Whitmore because the imminent exposure of his embezzlement of the museum's endowment.",
     "method": "Eleanor Whitmore was killed by a heavy blow from the clock.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Victor Hale claimed to have left at 8:30 pm. The timeline evidence places the attack after Clara Finch and Malcolm Reed left together at 8:35 pm; the fine copper-coloured silk threads on the clock and the black and gold fragment recovered from the mirror place Victor Hale inside afterwards. Victor Hale therefore had the only evidenced opportunity to be alone with Eleanor Whitmore and reach the clock during the murder window."
+    "opportunity": "Victor Hale claimed to have left at 8:30 pm. The timeline evidence places the attack after Clara Pembroke and Dr. Alistair Finch left together at 8:35 pm; the fine copper-coloured silk threads on the clock and the black and gold fragment recovered from the mirror place Victor Hale inside afterwards. Victor Hale therefore had the only evidenced opportunity to be alone with Eleanor Whitmore and reach the clock during the murder window."
   }
 }

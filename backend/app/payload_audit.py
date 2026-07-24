@@ -151,12 +151,25 @@ def audit_payload(payload: dict[str, Any]) -> list[str]:
     killer_support_locations = {
         index for index, suspect_id in support if suspect_id == killer_id
     }
-    if len(killer_support_locations) < 2:
-        issues.append(
-            "The killer is not supported by two independent clue locations."
-        )
+    if not killer_support_locations:
+        issues.append("The killer is not supported by any clue location.")
     if any(suspect_id != killer_id for _, suspect_id in support):
         issues.append("A supportsSuspect deduction points to an innocent suspect.")
+
+    corroboration = deduction_locations.get("corroboratesAlibi", [])
+    corroborated_innocent_ids = {
+        suspect_id
+        for _, suspect_id in corroboration
+        if suspect_id is not None and suspect_id != killer_id
+    }
+    expected_innocent_ids = suspect_ids - {killer_id}
+
+    if corroborated_innocent_ids != expected_innocent_ids:
+        issues.append(
+            "Every innocent suspect must have a corroborated alibi."
+        )
+    if any(suspect_id == killer_id for _, suspect_id in corroboration):
+        issues.append("The killer may not receive a corroboratesAlibi deduction.")
 
     contradiction_refs = {
         suspect_id

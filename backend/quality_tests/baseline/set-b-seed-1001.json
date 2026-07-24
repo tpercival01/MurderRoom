@@ -1,9 +1,9 @@
 {
-  "id": "aa467ea9-c74c-4e3c-a8be-dd8f57cc086a",
+  "id": "7bb13f52-39ba-4e6b-8649-6cfe838eb81d",
   "title": "The Midnight Reflection in Ashford Hall",
-  "openingIncident": "At 8:45 pm, Eleanor Whitcombe, renowned antiquarian, was found dead in the drawing-room, its walls lined with dark wood paneling, a gilt-framed mirror above the fireplace, a ticking mantel clock, a solitary candle on a side table, and a sepia photograph on the mantelpiece. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "openingIncident": "At 8:45 pm, Eleanor Whitcombe, renowned antiquarian and curator of the local museum, was found dead in a dimly lit drawing\u2011room with a tall mirror, an ornate mantel clock, a solitary candle and a gilt\u2011framed photograph. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "a627fb89-ee60-4d2b-956e-1d3af3a04c76",
+    "id": "dc2bf6b1-7b7f-4693-9383-351e81ddb453",
     "name": "Eleanor Whitcombe",
     "role": "Victim",
     "relationshipToVictim": "Victim",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "b0678214-7cfb-4c5f-acaa-8b64325b26c7",
-      "name": "Victor Hargreaves",
+      "id": "36be7683-1433-43d5-8fb8-987994361cab",
+      "name": "Victor Hale",
       "role": "Suspect",
       "relationshipToVictim": "former business partner",
-      "statement": "At 8:35 pm, Clara Beaumont helped me shift the candle to light the victim's papers. We left the room together immediately afterwards. Dr. Alistair Finch and Eleanor Whitcombe were still inside.",
-      "alibiClaim": "Clara Beaumont and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "statement": "At 8:35 pm, Clara Pembroke helped me shift the candle to light the victim's papers. We left the room together immediately afterwards. Dr. Alistair Finch and Eleanor Whitcombe were still inside.",
+      "alibiClaim": "Clara Pembroke and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "743e4b13-4ce6-4e0c-9919-9454ac27e3b2",
-      "name": "Clara Beaumont",
+      "id": "554f8833-8613-4342-8c42-546d6bd89260",
+      "name": "Clara Pembroke",
       "role": "Suspect",
       "relationshipToVictim": "estranged sister",
-      "statement": "At 8:35 pm, I helped Victor Hargreaves shift the candle to light the victim's papers. We then left together and remained together until the body was found at 8:45 pm.",
-      "alibiClaim": "Victor Hargreaves and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "statement": "At 8:35 pm, while Victor Hale shifted the candle to light the victim's papers, I moved the mirror aside. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Victor Hale and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "1a22b771-11e2-4a62-a6cf-cca9de788920",
+      "id": "63e0578b-d4fd-4587-a9c0-feda860b63f9",
       "name": "Dr. Alistair Finch",
       "role": "Suspect",
-      "relationshipToVictim": "personal physician",
+      "relationshipToVictim": "long\u2011time confidant",
       "statement": "I left at 8:30 pm. I never touched the clock and did not go near the mirror.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     }
   ],
   "roomObjects": [
     {
-      "id": "60d2616b-0e24-46b1-a323-3985f0def203",
+      "id": "99b28861-f122-4976-ae65-cb057e04b941",
       "name": "mirror",
       "isConfirmed": true
     },
     {
-      "id": "d5db33ca-c484-4927-83d7-d1829b3b3877",
+      "id": "1c8cd89e-b7ef-4eba-9814-de26885174d4",
       "name": "clock",
       "isConfirmed": true
     },
     {
-      "id": "86d59e8d-0ec3-4501-aeef-b33f668a0e75",
+      "id": "11da6ac2-da11-48ad-a6a8-f8d90acc5004",
       "name": "candle",
       "isConfirmed": true
     },
     {
-      "id": "649b4281-8066-4004-9b91-073939977d70",
+      "id": "6b382212-915f-4e8a-81b4-2021553ad290",
       "name": "photograph",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "41e2bf77-663c-4367-9732-819c3d0733e9",
+      "id": "113c3cf7-adb8-489e-99c9-1f5cd4050dce",
       "title": "The Dented Clock",
       "detail": "A fresh blood smear and a new impact dent mark the clock. Eleanor Whitcombe has a fresh blunt wound to the head.",
-      "roomObjectID": "d5db33ca-c484-4927-83d7-d1829b3b3877",
+      "roomObjectID": "1c8cd89e-b7ef-4eba-9814-de26885174d4",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "15eb1dbc-68c0-4ca1-8842-dcb9f2d09f12",
+      "id": "cb13fc96-897d-4dd3-b412-6f8cff6e7359",
       "title": "Outline beneath Candle",
-      "detail": "The clean outline beneath the shifted base of the candle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Victor Hargreaves and Clara Beaumont both state that they shifted the candle to light the victim's papers at 8:35 pm before leaving together.",
-      "roomObjectID": "86d59e8d-0ec3-4501-aeef-b33f668a0e75",
+      "detail": "The clean outline beneath the shifted base of the candle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Victor Hale and Clara Pembroke both state that they shifted the candle to light the victim's papers at 8:35 pm before leaving together.",
+      "roomObjectID": "11da6ac2-da11-48ad-a6a8-f8d90acc5004",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,58 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "b0678214-7cfb-4c5f-acaa-8b64325b26c7"
-        },
-        {
-          "kind": "corroboratesAlibi",
-          "relatedSuspectID": "743e4b13-4ce6-4e0c-9919-9454ac27e3b2"
+          "relatedSuspectID": "36be7683-1433-43d5-8fb8-987994361cab"
         }
       ]
     },
     {
-      "id": "85e7d029-f61f-4fb3-87dd-31c290081433",
+      "id": "f12f914c-d503-4f52-8057-2e3eded9c100",
       "title": "Fibres on Clock",
       "detail": "Teal-and-cream tweed fibres are caught inside a fresh split on the clock. Dr. Alistair Finch's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
-      "roomObjectID": "d5db33ca-c484-4927-83d7-d1829b3b3877",
+      "roomObjectID": "1c8cd89e-b7ef-4eba-9814-de26885174d4",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "1a22b771-11e2-4a62-a6cf-cca9de788920"
+          "relatedSuspectID": "63e0578b-d4fd-4587-a9c0-feda860b63f9"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "1a22b771-11e2-4a62-a6cf-cca9de788920"
+          "relatedSuspectID": "63e0578b-d4fd-4587-a9c0-feda860b63f9"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "1a22b771-11e2-4a62-a6cf-cca9de788920"
+          "relatedSuspectID": "63e0578b-d4fd-4587-a9c0-feda860b63f9"
         }
       ]
     },
     {
-      "id": "0f1fe9bd-faec-42e7-974e-44c01c861269",
-      "title": "Fragment at Mirror",
-      "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the mirror on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Dr. Alistair Finch has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "60d2616b-0e24-46b1-a323-3985f0def203",
+      "id": "c7d3d226-2ddf-4f2d-9c04-7217b064c3b4",
+      "title": "Position of Mirror",
+      "detail": "The fresh contact mark left by the mirror is crossed by a narrow blood droplet from the attack. Clara Pembroke states that they moved the mirror aside at 8:35 pm immediately before leaving the room.",
+      "roomObjectID": "99b28861-f122-4976-ae65-cb057e04b941",
       "kind": "evidence",
       "deductions": [
         {
-          "kind": "supportsSuspect",
-          "relatedSuspectID": "1a22b771-11e2-4a62-a6cf-cca9de788920"
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "554f8833-8613-4342-8c42-546d6bd89260"
         }
       ]
     },
     {
-      "id": "332f37bb-b788-4add-a18f-a0b1a63a5395",
+      "id": "26a9b280-e6e3-4f18-8ae8-634f79f69158",
       "title": "Mark on Photograph",
       "detail": "A dark mark crosses the photograph. The same intact factory finish continues over the marked area.",
-      "roomObjectID": "649b4281-8066-4004-9b91-073939977d70",
+      "roomObjectID": "6b382212-915f-4e8a-81b4-2021553ad290",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "1a22b771-11e2-4a62-a6cf-cca9de788920",
-    "motive": "Dr. Alistair Finch killed Eleanor Whitcombe because the imminent exposure of his embezzlement scheme.",
+    "killerID": "63e0578b-d4fd-4587-a9c0-feda860b63f9",
+    "motive": "Dr. Alistair Finch killed Eleanor Whitcombe because he feared exposure of his embezzlement of museum funds.",
     "method": "Eleanor Whitcombe was killed by a heavy blow from the clock.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Dr. Alistair Finch claimed to have left at 8:30 pm. The timeline evidence places the attack after Victor Hargreaves and Clara Beaumont left together at 8:35 pm; the teal-and-cream tweed fibres on the clock and the black and gold fragment recovered from the mirror place Dr. Alistair Finch inside afterwards. Dr. Alistair Finch therefore had the only evidenced opportunity to be alone with Eleanor Whitcombe and reach the clock during the murder window."
+    "opportunity": "Dr. Alistair Finch claimed to have left at 8:30 pm. The physical trace on the candle corroborates the action described by Victor Hale, while the trace on the mirror corroborates the action described by Clara Pembroke. They left together at 8:35 pm, and both traces are crossed by evidence from the later attack. Meanwhile, teal-and-cream tweed fibres on the clock directly contradict Dr. Alistair Finch's denial and place them at the murder object during the attack window."
   }
 }

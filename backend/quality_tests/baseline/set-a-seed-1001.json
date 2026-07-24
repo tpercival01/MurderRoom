@@ -1,10 +1,10 @@
 {
-  "id": "02190ac5-be23-4ba1-b36b-02665933ef95",
-  "title": "The Midnight Ledger in the Study",
-  "openingIncident": "At 8:45 pm, Eleanor Whitcombe, renowned antiquarian book dealer, was found dead in a cosy study lined with dark oak shelves, a lamp casting amber light over a worn armchair, a mug steaming on the desk beside an open book. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "deb6154e-c9a4-4655-870f-90d6bbc1f41e",
+  "title": "The Ink\u2011Stained Lamp of Whitby Hall",
+  "openingIncident": "At 8:45 pm, Eleanor Whitmore, renowned antiquarian, was found dead in the modest library with a lamp, a book, a mug and a chair. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "6fdedec1-a44a-40b7-a0f2-e629923a336d",
-    "name": "Eleanor Whitcombe",
+    "id": "56a136c8-dd0d-4947-9e8a-7ead6eb0cb91",
+    "name": "Eleanor Whitmore",
     "role": "Victim",
     "relationshipToVictim": "Victim",
     "statement": "",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "97485ca9-c3f9-45bc-9942-01e2a706aa68",
-      "name": "Gareth Hargreaves",
+      "id": "3118cf4f-ccd2-4311-94db-13f244260c61",
+      "name": "Gareth Pembroke",
       "role": "Suspect",
       "relationshipToVictim": "former business partner",
-      "statement": "At 8:35 pm, Clara Beaumont helped me move the chair clear of the doorway. We left the room together immediately afterwards. Malcolm Pike and Eleanor Whitcombe were still inside.",
-      "alibiClaim": "Clara Beaumont and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "statement": "At 8:35 pm, Clara Haversham helped me move the chair clear of the doorway. We left the room together immediately afterwards. Victor Lyle and Eleanor Whitmore were still inside.",
+      "alibiClaim": "Clara Haversham and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "bef23039-4e50-49ab-9ee4-5fd82167cff6",
-      "name": "Clara Beaumont",
+      "id": "14960e56-2f85-4bfe-b5ae-b1ab9817de5e",
+      "name": "Clara Haversham",
       "role": "Suspect",
       "relationshipToVictim": "estranged niece",
-      "statement": "At 8:35 pm, I helped Gareth Hargreaves move the chair clear of the doorway. We then left together and remained together until the body was found at 8:45 pm.",
-      "alibiClaim": "Gareth Hargreaves and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "statement": "At 8:35 pm, while Gareth Pembroke moved the chair clear of the doorway, I returned the book squarely to its place. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Gareth Pembroke and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "af9246bc-82bd-4557-9ce5-8d689b01e0b3",
-      "name": "Malcolm Pike",
+      "id": "2fa29195-d18f-456b-97c9-65f314d1ea72",
+      "name": "Victor Lyle",
       "role": "Suspect",
-      "relationshipToVictim": "long\u2011time solicitor",
+      "relationshipToVictim": "secret lover",
       "statement": "I left at 8:30 pm. I never touched the lamp and did not go near the book.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     }
   ],
   "roomObjects": [
     {
-      "id": "7ae0fbd4-5d06-4efd-9917-e2c726ebd3ac",
+      "id": "600e376b-5967-48ff-9f18-a0ed9a1010f7",
       "name": "lamp",
       "isConfirmed": true
     },
     {
-      "id": "cb313253-9c07-4336-a6b5-15016cbedf04",
+      "id": "47b7fbfe-ec7e-437d-8287-1e26ba034e62",
       "name": "book",
       "isConfirmed": true
     },
     {
-      "id": "e019202c-2311-4e8b-84e7-e256b07b8a13",
+      "id": "ea161ffe-86a9-450c-afe6-9eff84eb36aa",
       "name": "mug",
       "isConfirmed": true
     },
     {
-      "id": "23a40eae-150d-41f5-8215-d767c3a9681d",
+      "id": "ea270403-7382-4d72-b8f0-1fcd0865148e",
       "name": "chair",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "2f39cc69-7c3a-4063-b2a9-f774569591a8",
+      "id": "b9d450f7-c4ca-4211-8b87-db51cc51d677",
       "title": "The Dented Lamp",
-      "detail": "A fresh blood smear and a new impact dent mark the lamp. Eleanor Whitcombe has a fresh blunt wound to the head.",
-      "roomObjectID": "7ae0fbd4-5d06-4efd-9917-e2c726ebd3ac",
+      "detail": "A fresh blood smear and a new impact dent mark the lamp. Eleanor Whitmore has a fresh blunt wound to the head.",
+      "roomObjectID": "600e376b-5967-48ff-9f18-a0ed9a1010f7",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "e548fabd-edf4-4b87-9a8a-0ee67f0c1282",
+      "id": "f2bb0c7b-4026-4dd6-844a-c90dd3392537",
       "title": "Movement of Chair",
-      "detail": "A fresh floor scrape made by the chair is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Gareth Hargreaves and Clara Beaumont both state that they moved the chair clear of the doorway at 8:35 pm before leaving together.",
-      "roomObjectID": "23a40eae-150d-41f5-8215-d767c3a9681d",
+      "detail": "A fresh floor scrape made by the chair is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Gareth Pembroke and Clara Haversham both state that they moved the chair clear of the doorway at 8:35 pm before leaving together.",
+      "roomObjectID": "ea270403-7382-4d72-b8f0-1fcd0865148e",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,58 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "97485ca9-c3f9-45bc-9942-01e2a706aa68"
-        },
-        {
-          "kind": "corroboratesAlibi",
-          "relatedSuspectID": "bef23039-4e50-49ab-9ee4-5fd82167cff6"
+          "relatedSuspectID": "3118cf4f-ccd2-4311-94db-13f244260c61"
         }
       ]
     },
     {
-      "id": "a33f60b9-244a-46a5-9135-6cc3949136bc",
+      "id": "4ee75b95-9f00-442f-8693-a20fa6833e09",
       "title": "Fibres on Lamp",
-      "detail": "Teal-and-cream tweed fibres are caught inside a fresh split beneath the base of the lamp. Malcolm Pike's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
-      "roomObjectID": "7ae0fbd4-5d06-4efd-9917-e2c726ebd3ac",
+      "detail": "Teal-and-cream tweed fibres are caught inside a fresh split beneath the base of the lamp. Victor Lyle's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
+      "roomObjectID": "600e376b-5967-48ff-9f18-a0ed9a1010f7",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "af9246bc-82bd-4557-9ce5-8d689b01e0b3"
+          "relatedSuspectID": "2fa29195-d18f-456b-97c9-65f314d1ea72"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "af9246bc-82bd-4557-9ce5-8d689b01e0b3"
+          "relatedSuspectID": "2fa29195-d18f-456b-97c9-65f314d1ea72"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "af9246bc-82bd-4557-9ce5-8d689b01e0b3"
+          "relatedSuspectID": "2fa29195-d18f-456b-97c9-65f314d1ea72"
         }
       ]
     },
     {
-      "id": "f2d6ff38-30c9-4a2d-870c-ab8ea2283bc6",
-      "title": "Fragment at Book",
-      "detail": "A curved black lacquer chip edged in gold is lodged between the cover and first page of the book on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Malcolm Pike has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "cb313253-9c07-4336-a6b5-15016cbedf04",
+      "id": "9ff8ec8f-912f-474d-9f72-03357bd4d381",
+      "title": "Position of Book",
+      "detail": "A clean rectangular outline left when the book was moved is crossed by a narrow blood droplet from the attack. Clara Haversham states that they returned the book squarely to its place at 8:35 pm immediately before leaving the room.",
+      "roomObjectID": "47b7fbfe-ec7e-437d-8287-1e26ba034e62",
       "kind": "evidence",
       "deductions": [
         {
-          "kind": "supportsSuspect",
-          "relatedSuspectID": "af9246bc-82bd-4557-9ce5-8d689b01e0b3"
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "14960e56-2f85-4bfe-b5ae-b1ab9817de5e"
         }
       ]
     },
     {
-      "id": "b792fa43-96ef-410d-9bef-c18c1e319969",
+      "id": "72d3ffc5-5f73-4298-98ac-ee6dff0d5b22",
       "title": "Crack in Mug",
       "detail": "A crack runs across the mug. A continuous yellowed glue line is visible deep inside the break.",
-      "roomObjectID": "e019202c-2311-4e8b-84e7-e256b07b8a13",
+      "roomObjectID": "ea161ffe-86a9-450c-afe6-9eff84eb36aa",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "af9246bc-82bd-4557-9ce5-8d689b01e0b3",
-    "motive": "Malcolm Pike killed Eleanor Whitcombe because the imminent exposure of his embezzlement of the victim's rare manuscript fund.",
-    "method": "Eleanor Whitcombe was killed by a heavy blow from the lamp.",
+    "killerID": "2fa29195-d18f-456b-97c9-65f314d1ea72",
+    "motive": "Victor Lyle killed Eleanor Whitmore because the imminent exposure of Victor's embezzlement of the society's funds.",
+    "method": "Eleanor Whitmore was killed by a heavy blow from the lamp.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Malcolm Pike claimed to have left at 8:30 pm. The timeline evidence places the attack after Gareth Hargreaves and Clara Beaumont left together at 8:35 pm; the teal-and-cream tweed fibres on the lamp and the black and gold fragment recovered from the book place Malcolm Pike inside afterwards. Malcolm Pike therefore had the only evidenced opportunity to be alone with Eleanor Whitcombe and reach the lamp during the murder window."
+    "opportunity": "Victor Lyle claimed to have left at 8:30 pm. The physical trace on the chair corroborates the action described by Gareth Pembroke, while the trace on the book corroborates the action described by Clara Haversham. They left together at 8:35 pm, and both traces are crossed by evidence from the later attack. Meanwhile, teal-and-cream tweed fibres on the lamp directly contradict Victor Lyle's denial and place them at the murder object during the attack window."
   }
 }

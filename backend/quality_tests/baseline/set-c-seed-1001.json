@@ -1,9 +1,9 @@
 {
-  "id": "b5956e14-9f28-4fdf-98c0-533ac5e569ad",
-  "title": "The Silent Echo of the Study",
+  "id": "036fc578-3919-4605-9493-526718b7806e",
+  "title": "The Silent Echo in the Study",
   "openingIncident": "At 8:45 pm, Eleanor Whitcombe, renowned art curator, was found dead in the cramped study littered with a shoe, a remote control, a water bottle and a backpack. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "a627c862-fa84-4c1b-b5fe-6b65809fbced",
+    "id": "4cbbfa3b-90ae-4a3a-98da-50af7cd6c0f9",
     "name": "Eleanor Whitcombe",
     "role": "Victim",
     "relationshipToVictim": "Victim",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "2b2ebf88-6e62-4f40-a100-46b52050d017",
-      "name": "Gareth Hargreaves",
+      "id": "e487a7ac-fb3d-40bd-ba74-d73e0c7d33ae",
+      "name": "Gareth Harlow",
       "role": "Suspect",
       "relationshipToVictim": "former assistant",
-      "statement": "At 8:35 pm, Miriam Calder helped me move the remote control aside. We left the room together immediately afterwards. Trevor Langford and Eleanor Whitcombe were still inside.",
+      "statement": "At 8:35 pm, Miriam Calder helped me move the remote control aside. We left the room together immediately afterwards. Victor Langford and Eleanor Whitcombe were still inside.",
       "alibiClaim": "Miriam Calder and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "cb4413a0-a8ea-4d49-8330-9ee2fab2cad0",
+      "id": "00908a0e-b9a5-4ccb-9d89-52f986e33cf7",
       "name": "Miriam Calder",
       "role": "Suspect",
       "relationshipToVictim": "ex\u2011partner",
-      "statement": "At 8:35 pm, I helped Gareth Hargreaves move the remote control aside. We then left together and remained together until the body was found at 8:45 pm.",
-      "alibiClaim": "Gareth Hargreaves and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "statement": "At 8:35 pm, while Gareth Harlow moved the remote control aside, I moved the shoe aside. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Gareth Harlow and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "82c896dd-8d2e-458b-aa02-3aca5265712c",
-      "name": "Trevor Langford",
+      "id": "4d4343e8-0676-4447-8fc8-99d26df5c819",
+      "name": "Victor Langford",
       "role": "Suspect",
-      "relationshipToVictim": "financial adviser",
+      "relationshipToVictim": "business partner",
       "statement": "I left at 8:30 pm. I never touched the water bottle and did not go near the shoe.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     }
   ],
   "roomObjects": [
     {
-      "id": "511338fb-ad2a-4c64-80f5-0b9371a2a04b",
+      "id": "949c2183-0c67-40f4-9a69-e877a665e3bf",
       "name": "shoe",
       "isConfirmed": true
     },
     {
-      "id": "e010e8f9-87cb-47e0-b9ed-2779a4c043d8",
+      "id": "e3b19686-e02c-4801-b865-fcd333f4fc19",
       "name": "remote control",
       "isConfirmed": true
     },
     {
-      "id": "f76c1e58-215c-47fc-9ad9-628d1f0f9b7e",
+      "id": "ed08ba00-40f0-41d3-8433-1c404cd7316b",
       "name": "water bottle",
       "isConfirmed": true
     },
     {
-      "id": "cdae39a4-2dd8-4bf6-9c21-0ec62d8f8fab",
+      "id": "d1108b5a-4205-4ce9-9099-9431904409ed",
       "name": "backpack",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "71834aee-d1f3-4170-9524-1c54724478ec",
+      "id": "ddf60308-c1b1-4179-bf43-f584132d0d8b",
       "title": "Granules in Water Bottle",
       "detail": "Undissolved blue granules cling below the liquid line inside the water bottle. The same blue residue is visible at Eleanor Whitcombe's lips and in the remaining drink.",
-      "roomObjectID": "f76c1e58-215c-47fc-9ad9-628d1f0f9b7e",
+      "roomObjectID": "ed08ba00-40f0-41d3-8433-1c404cd7316b",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "c12d7fed-746e-410b-813e-807d1e29efa8",
+      "id": "acba4b97-2895-4a28-8306-dd66e98dac5b",
       "title": "Position of Remote Control",
-      "detail": "The fresh contact mark left by the remote control is crossed by a narrow blue droplet from the spilled poisoned drink whose edge remains unbroken. Gareth Hargreaves and Miriam Calder both state that they moved the remote control aside at 8:35 pm before leaving together.",
-      "roomObjectID": "e010e8f9-87cb-47e0-b9ed-2779a4c043d8",
+      "detail": "The fresh contact mark left by the remote control is crossed by a narrow blue droplet from the spilled poisoned drink whose edge remains unbroken. Gareth Harlow and Miriam Calder both state that they moved the remote control aside at 8:35 pm before leaving together.",
+      "roomObjectID": "e3b19686-e02c-4801-b865-fcd333f4fc19",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,58 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "2b2ebf88-6e62-4f40-a100-46b52050d017"
-        },
-        {
-          "kind": "corroboratesAlibi",
-          "relatedSuspectID": "cb4413a0-a8ea-4d49-8330-9ee2fab2cad0"
+          "relatedSuspectID": "e487a7ac-fb3d-40bd-ba74-d73e0c7d33ae"
         }
       ]
     },
     {
-      "id": "f2b544d9-51b6-4bd9-822a-47a43b3f240f",
+      "id": "04b739b5-aa98-465e-9588-e2b18c9168d8",
       "title": "Fibres on Water Bottle",
-      "detail": "Teal-and-cream tweed fibres are caught around the handle and rim of the water bottle. Trevor Langford's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
-      "roomObjectID": "f76c1e58-215c-47fc-9ad9-628d1f0f9b7e",
+      "detail": "Teal-and-cream tweed fibres are caught around the handle and rim of the water bottle. Victor Langford's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
+      "roomObjectID": "ed08ba00-40f0-41d3-8433-1c404cd7316b",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
+          "relatedSuspectID": "4d4343e8-0676-4447-8fc8-99d26df5c819"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
+          "relatedSuspectID": "4d4343e8-0676-4447-8fc8-99d26df5c819"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
+          "relatedSuspectID": "4d4343e8-0676-4447-8fc8-99d26df5c819"
         }
       ]
     },
     {
-      "id": "8d5b325b-b4f0-41f7-8321-87e082c43478",
-      "title": "Fragment at Shoe",
-      "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the shoe on top of a narrow blue droplet from the spilled poisoned drink. The black-and-gold fountain-pen cap worn by Trevor Langford has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "511338fb-ad2a-4c64-80f5-0b9371a2a04b",
+      "id": "45a635cf-897e-4548-a69a-9f263a467b3c",
+      "title": "Position of Shoe",
+      "detail": "The fresh contact mark left by the shoe is crossed by a narrow blue droplet from the spilled poisoned drink. Miriam Calder states that they moved the shoe aside at 8:35 pm immediately before leaving the room.",
+      "roomObjectID": "949c2183-0c67-40f4-9a69-e877a665e3bf",
       "kind": "evidence",
       "deductions": [
         {
-          "kind": "supportsSuspect",
-          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "00908a0e-b9a5-4ccb-9d89-52f986e33cf7"
         }
       ]
     },
     {
-      "id": "61edaeaf-a1db-4eb4-815d-810217a75a59",
+      "id": "4c90d24f-5d8c-47fc-ae51-44aa84c85cf6",
       "title": "Mark on Backpack",
       "detail": "A dark mark crosses the backpack. The same intact factory finish continues over the marked area.",
-      "roomObjectID": "cdae39a4-2dd8-4bf6-9c21-0ec62d8f8fab",
+      "roomObjectID": "d1108b5a-4205-4ce9-9099-9431904409ed",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "82c896dd-8d2e-458b-aa02-3aca5265712c",
-    "motive": "Trevor Langford killed Eleanor Whitcombe because the discovery that the victim had embezzled a six\u2011figure sum from their shared investment portfolio.",
+    "killerID": "4d4343e8-0676-4447-8fc8-99d26df5c819",
+    "motive": "Victor Langford killed Eleanor Whitcombe because the discovery that the victim had secretly diverted a lucrative exhibition commission to fund Victor's personal debts.",
     "method": "A fatal crushed dose was dissolved in the water bottle before Eleanor Whitcombe drank.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Trevor Langford claimed to have left at 8:30 pm. The timeline evidence places the attack after Gareth Hargreaves and Miriam Calder left together at 8:35 pm; the teal-and-cream tweed fibres on the water bottle and the black and gold fragment recovered from the shoe place Trevor Langford inside afterwards. Trevor Langford therefore had the only evidenced opportunity to be alone with Eleanor Whitcombe and reach the water bottle during the murder window."
+    "opportunity": "Victor Langford claimed to have left at 8:30 pm. The physical trace on the remote control corroborates the action described by Gareth Harlow, while the trace on the shoe corroborates the action described by Miriam Calder. They left together at 8:35 pm, and both traces are crossed by evidence from the later attack. Meanwhile, teal-and-cream tweed fibres on the water bottle directly contradict Victor Langford's denial and place them at the murder object during the attack window."
   }
 }

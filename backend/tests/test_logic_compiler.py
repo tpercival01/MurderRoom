@@ -11,8 +11,9 @@ from app.models import (
     NarrativeSeedAI,
     NarrativeSuspectAI,
     SuspectKey,
+    SuspectReferenceKey
 )
-from app.planner import build_case_plan, compile_case
+from app.planner import ProofStyle, build_case_plan, compile_case
 from app.validation import (
     validate_core_truth,
     validate_evidence_board,
@@ -119,3 +120,62 @@ def test_killer_links_are_independent() -> None:
         clue.room_object_index != opportunity_clue.room_object_index
         for clue in supporting_clues
     )
+
+def test_seed_parity_selects_proof_style() -> None:
+    even_plan = build_case_plan(
+        ROOM_OBJECTS,
+        Difficulty.standard,
+        1002,
+    )
+    odd_plan = build_case_plan(
+        ROOM_OBJECTS,
+        Difficulty.standard,
+        1001,
+    )
+
+    assert even_plan.proof_style == ProofStyle.shared_alibi
+    assert odd_plan.proof_style == ProofStyle.split_corroboration
+
+def test_split_corroboration_has_one_killer_clue() -> None:
+    plan = build_case_plan(
+        ROOM_OBJECTS,
+        Difficulty.standard,
+        1001,
+    )
+    core, cast, board = compile_case(narrative(), plan)
+
+    innocent_keys = [
+        suspect.key
+        for suspect in cast.suspects
+        if suspect.key != core.killer_key
+    ]
+    killer_ref = SuspectReferenceKey(core.killer_key.value)
+    innocent_1_ref = SuspectReferenceKey(innocent_keys[0].value)
+    innocent_2_ref = SuspectReferenceKey(innocent_keys[1].value)
+
+    clue_2_pairs = {
+        (deduction.kind, deduction.related_suspect_key)
+        for deduction in board.clue_2.deductions
+    }
+    clue_3_pairs = {
+        (deduction.kind, deduction.related_suspect_key)
+        for deduction in board.clue_3.deductions
+    }
+    clue_4_pairs = {
+        (deduction.kind, deduction.related_suspect_key)
+        for deduction in board.clue_4.deductions
+    }
+
+    assert plan.proof_style == ProofStyle.split_corroboration
+    assert clue_2_pairs == {
+        (DeductionKind.establishes_timeline, SuspectReferenceKey.none),
+        (DeductionKind.corroborates_alibi, innocent_1_ref),
+    }
+    assert clue_3_pairs == {
+        (DeductionKind.contradicts_statement, killer_ref),
+        (DeductionKind.establishes_opportunity, killer_ref),
+        (DeductionKind.supports_suspect, killer_ref),
+    }
+    assert clue_4_pairs == {
+        (DeductionKind.corroborates_alibi, innocent_2_ref),
+    }

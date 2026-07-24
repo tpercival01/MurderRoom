@@ -261,34 +261,56 @@ def validate_evidence_board(
     clue_1_expected = {
         (DeductionKind.establishes_method, SuspectReferenceKey.none),
     }
-    clue_2_expected = {
-        (DeductionKind.establishes_timeline, SuspectReferenceKey.none),
-        *{
-            (kind, ref)
-            for ref in innocent_refs
-            for kind in (
-                DeductionKind.corroborates_alibi,
-            )
-        },
-    }
     clue_3_expected = {
         (DeductionKind.contradicts_statement, killer_ref),
         (DeductionKind.establishes_opportunity, killer_ref),
         (DeductionKind.supports_suspect, killer_ref),
     }
-    clue_4_expected = {
-        (DeductionKind.supports_suspect, killer_ref),
-    }
 
-    expected_sets = [clue_1_expected, clue_2_expected, clue_3_expected, clue_4_expected]
-    for index, expected in enumerate(expected_sets):
-        actual = _deduction_pairs(board, index)
-        if actual != expected:
-            issues.append(
-                f"Clue {index + 1} has an invalid proof contract: "
-                f"expected {sorted((k.value, r.value) for k, r in expected)}, "
-                f"got {sorted((k.value, r.value) for k, r in actual)}."
-            )
+    shared_alibi_contract = [
+        clue_1_expected,
+        {
+            (DeductionKind.establishes_timeline, SuspectReferenceKey.none),
+            *{
+                (DeductionKind.corroborates_alibi, ref)
+                for ref in innocent_refs
+            },
+        },
+        clue_3_expected,
+        {
+            (DeductionKind.supports_suspect, killer_ref),
+        },
+    ]
+
+    split_corroboration_contracts = [
+        [
+            clue_1_expected,
+            {
+                (DeductionKind.establishes_timeline, SuspectReferenceKey.none),
+                (DeductionKind.corroborates_alibi, first_innocent),
+            },
+            clue_3_expected,
+            {
+                (DeductionKind.corroborates_alibi, second_innocent),
+            },
+        ]
+        for first_innocent in innocent_refs
+        for second_innocent in innocent_refs
+        if first_innocent != second_innocent
+    ]
+
+    actual_contract = [
+        _deduction_pairs(board, index)
+        for index in range(4)
+    ]
+
+    allowed_contracts = [
+        shared_alibi_contract,
+        *split_corroboration_contracts,
+    ]
+
+    if actual_contract not in allowed_contracts:
+        issues.append("The evidence board does not match an allowed proof contract.")
 
     if clues[4].kind != ClueKind.red_herring or clues[4].deductions:
         issues.append("Clue 5 must be the resolved red herring with no deductions.")
@@ -307,8 +329,21 @@ def validate_evidence_board(
             if deduction.kind == DeductionKind.supports_suspect:
                 support_locations.setdefault(deduction.related_suspect_key, set()).add(index)
 
-    if support_locations.get(killer_ref, set()) != {2, 3}:
-        issues.append("The killer must be supported by exactly two independent clues.")
+    if actual_contract == shared_alibi_contract:
+        expected_killer_support_locations = {2, 3}
+    elif actual_contract in split_corroboration_contracts:
+        expected_killer_support_locations = {2}
+    else:
+        expected_killer_support_locations = None
+
+    if (
+        expected_killer_support_locations is not None
+        and support_locations.get(killer_ref, set())
+        != expected_killer_support_locations
+    ):
+        issues.append(
+            "The killer-support deductions do not match the selected proof contract."
+        )
     if any(ref != killer_ref for ref in support_locations):
         issues.append("No innocent suspect may receive a supportsSuspect deduction.")
 

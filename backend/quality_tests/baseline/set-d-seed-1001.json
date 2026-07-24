@@ -1,10 +1,10 @@
 {
-  "id": "323eadd6-cf1a-4def-bdab-5660d6759ace",
-  "title": "Shattered Reflections in the Conservatory",
-  "openingIncident": "At 8:45 pm, Eleanor Whitcombe, renowned art dealer, was found dead in a sunlit conservatory table set with glass, bottle, plate and knife. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "9d7156bd-4e50-4bb4-8fa8-eb52e8386a72",
+  "title": "The Shattered Toast at Whitby Hall",
+  "openingIncident": "At 8:45 pm, Eleanor Whitmore, renowned culinary critic, was found dead in the cosy kitchen table. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "c27c8fbd-f4ef-488f-9bf4-53a0cca10c01",
-    "name": "Eleanor Whitcombe",
+    "id": "482dffe8-c621-46f4-ae81-7c09d74afc8e",
+    "name": "Eleanor Whitmore",
     "role": "Victim",
     "relationshipToVictim": "Victim",
     "statement": "",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "e489a427-1b90-4668-a7de-c2d08aaa0307",
+      "id": "a740108a-9379-4411-b5da-7d1817292a31",
       "name": "Gareth Pembroke",
       "role": "Suspect",
-      "relationshipToVictim": "former apprentice",
-      "statement": "At 8:35 pm, Clara Haversham helped me set the bottle down on the side table. We left the room together immediately afterwards. Victor Lyle and Eleanor Whitcombe were still inside.",
+      "relationshipToVictim": "former sous\u2011chef",
+      "statement": "At 8:35 pm, Clara Haversham helped me set the bottle down on the side table. We left the room together immediately afterwards. Victor Langford and Eleanor Whitmore were still inside.",
       "alibiClaim": "Clara Haversham and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "bf4e8254-3a0c-488c-a3e9-71e7fa7ff9f4",
+      "id": "85b51f05-ec51-4983-9702-e213c6b6b8aa",
       "name": "Clara Haversham",
       "role": "Suspect",
-      "relationshipToVictim": "ex\u2011wife",
-      "statement": "At 8:35 pm, I helped Gareth Pembroke set the bottle down on the side table. We then left together and remained together until the body was found at 8:45 pm.",
+      "relationshipToVictim": "ex\u2011girlfriend",
+      "statement": "At 8:35 pm, while Gareth Pembroke set the bottle down on the side table, I set the glass down on the side table. We then left together and remained together until the body was found at 8:45 pm.",
       "alibiClaim": "Gareth Pembroke and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "09e5463b-2e3c-492f-a450-0c5f7f3a1afc",
-      "name": "Victor Lyle",
+      "id": "f3e726af-08f0-4b22-b4eb-eb8644a6a126",
+      "name": "Victor Langford",
       "role": "Suspect",
-      "relationshipToVictim": "financial adviser",
+      "relationshipToVictim": "business partner",
       "statement": "I left at 8:30 pm. I never touched the knife and did not go near the glass.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     }
   ],
   "roomObjects": [
     {
-      "id": "f3027c31-0328-4e98-b48e-76a47bf3ba40",
+      "id": "af2bdec2-c10f-421a-9665-85ae2017dd3f",
       "name": "glass",
       "isConfirmed": true
     },
     {
-      "id": "5c685cc6-74fa-4fcf-9dc3-a4f3c75e2f5d",
+      "id": "5b402a3d-6311-424c-8aad-cfcb95dcb6f3",
       "name": "bottle",
       "isConfirmed": true
     },
     {
-      "id": "e49e73e6-990c-45e2-9da4-44c6ffd5c497",
+      "id": "d05180a4-aee1-4c69-9fc2-4f027cad3bc9",
       "name": "plate",
       "isConfirmed": true
     },
     {
-      "id": "596dbf58-f1ed-4ebd-ac95-0bdf606660c4",
+      "id": "ae2179c2-689a-4c8f-b6b2-d021708f5447",
       "name": "knife",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "cbdd78b3-1548-48b6-a3ab-803afb1178ef",
+      "id": "078407bd-d377-4fee-93c0-f7f1bc33f217",
       "title": "The Edge of Knife",
-      "detail": "A fresh line of blood runs along one edge of the knife, and its point has a new bend. Eleanor Whitcombe has a narrow wound consistent with that edge.",
-      "roomObjectID": "596dbf58-f1ed-4ebd-ac95-0bdf606660c4",
+      "detail": "A fresh line of blood runs along one edge of the knife, and its point has a new bend. Eleanor Whitmore has a narrow wound consistent with that edge.",
+      "roomObjectID": "ae2179c2-689a-4c8f-b6b2-d021708f5447",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "d7fd08d1-599b-406f-813d-f35869817800",
+      "id": "e09ed92c-c2c6-4e07-accb-cc345e417873",
       "title": "Ring beneath Bottle",
       "detail": "The fresh circular ring beneath the bottle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Gareth Pembroke and Clara Haversham both state that they set the bottle down on the side table at 8:35 pm before leaving together.",
-      "roomObjectID": "5c685cc6-74fa-4fcf-9dc3-a4f3c75e2f5d",
+      "roomObjectID": "5b402a3d-6311-424c-8aad-cfcb95dcb6f3",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,58 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "e489a427-1b90-4668-a7de-c2d08aaa0307"
-        },
-        {
-          "kind": "corroboratesAlibi",
-          "relatedSuspectID": "bf4e8254-3a0c-488c-a3e9-71e7fa7ff9f4"
+          "relatedSuspectID": "a740108a-9379-4411-b5da-7d1817292a31"
         }
       ]
     },
     {
-      "id": "3176b206-6534-439c-bcc3-d44b95803db4",
+      "id": "82f6343a-214d-4cf2-aa6f-5c81d9a861de",
       "title": "Fibres on Knife",
-      "detail": "Teal-and-cream tweed fibres are caught around the handle of the knife. Victor Lyle's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
-      "roomObjectID": "596dbf58-f1ed-4ebd-ac95-0bdf606660c4",
+      "detail": "Teal-and-cream tweed fibres are caught around the handle of the knife. Victor Langford's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
+      "roomObjectID": "ae2179c2-689a-4c8f-b6b2-d021708f5447",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "09e5463b-2e3c-492f-a450-0c5f7f3a1afc"
+          "relatedSuspectID": "f3e726af-08f0-4b22-b4eb-eb8644a6a126"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "09e5463b-2e3c-492f-a450-0c5f7f3a1afc"
+          "relatedSuspectID": "f3e726af-08f0-4b22-b4eb-eb8644a6a126"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "09e5463b-2e3c-492f-a450-0c5f7f3a1afc"
+          "relatedSuspectID": "f3e726af-08f0-4b22-b4eb-eb8644a6a126"
         }
       ]
     },
     {
-      "id": "8e2c64cb-7862-4054-a5a9-6cfdff1852e7",
-      "title": "Fragment at Glass",
-      "detail": "A curved black lacquer chip edged in gold is lodged inside the handle joint of the glass on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Victor Lyle has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "f3027c31-0328-4e98-b48e-76a47bf3ba40",
+      "id": "9eb6353f-c82b-49fa-af1b-24ac5f5fcdd1",
+      "title": "Ring beneath Glass",
+      "detail": "The fresh circular ring beneath the glass is crossed by a narrow blood droplet from the attack. Clara Haversham states that they set the glass down on the side table at 8:35 pm immediately before leaving the room.",
+      "roomObjectID": "af2bdec2-c10f-421a-9665-85ae2017dd3f",
       "kind": "evidence",
       "deductions": [
         {
-          "kind": "supportsSuspect",
-          "relatedSuspectID": "09e5463b-2e3c-492f-a450-0c5f7f3a1afc"
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "85b51f05-ec51-4983-9702-e213c6b6b8aa"
         }
       ]
     },
     {
-      "id": "379b91f6-12b6-45f8-88b6-698c0fa3b788",
+      "id": "96e904e2-9b09-4558-9de2-0dd4a1702b7c",
       "title": "Crack in Plate",
       "detail": "A crack runs across the plate. A continuous yellowed glue line is visible deep inside the break.",
-      "roomObjectID": "e49e73e6-990c-45e2-9da4-44c6ffd5c497",
+      "roomObjectID": "d05180a4-aee1-4c69-9fc2-4f027cad3bc9",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "09e5463b-2e3c-492f-a450-0c5f7f3a1afc",
-    "motive": "Victor Lyle killed Eleanor Whitcombe because the imminent exposure of his embezzlement scheme.",
-    "method": "Eleanor Whitcombe was fatally stabbed with the knife.",
+    "killerID": "f3e726af-08f0-4b22-b4eb-eb8644a6a126",
+    "motive": "Victor Langford killed Eleanor Whitmore because the imminent publication of a damning review that would ruin his restaurant's reputation.",
+    "method": "Eleanor Whitmore was fatally stabbed with the knife.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Victor Lyle claimed to have left at 8:30 pm. The timeline evidence places the attack after Gareth Pembroke and Clara Haversham left together at 8:35 pm; the teal-and-cream tweed fibres on the knife and the black and gold fragment recovered from the glass place Victor Lyle inside afterwards. Victor Lyle therefore had the only evidenced opportunity to be alone with Eleanor Whitcombe and reach the knife during the murder window."
+    "opportunity": "Victor Langford claimed to have left at 8:30 pm. The physical trace on the bottle corroborates the action described by Gareth Pembroke, while the trace on the glass corroborates the action described by Clara Haversham. They left together at 8:35 pm, and both traces are crossed by evidence from the later attack. Meanwhile, teal-and-cream tweed fibres on the knife directly contradict Victor Langford's denial and place them at the murder object during the attack window."
   }
 }

@@ -1,10 +1,10 @@
 {
-  "id": "1c0a78cc-a396-4c4e-897e-0501a71431f2",
-  "title": "The Vineyard Victim",
-  "openingIncident": "At 8:55 pm, Clementine Fraser, wine merchant, was found dead in the dimly lit dining room. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "32b1ed42-06f2-4c04-8ee8-b44a7202b17d",
+  "title": "The Shattered Toast at Whitby Hall",
+  "openingIncident": "At 8:55 pm, Eleanor Whitmore, renowned art dealer, was found dead in the dining room, its polished oak table set with a glass, a bottle, a plate and a knife. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "51ce694b-24ae-4ffb-bcb7-162834f0d891",
-    "name": "Clementine Fraser",
+    "id": "ed277893-f7a5-4f69-90d2-1aad2c423391",
+    "name": "Eleanor Whitmore",
     "role": "Victim",
     "relationshipToVictim": "Victim",
     "statement": "",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "460fb79d-35b6-43b5-a441-3ff3b923db25",
-      "name": "Astrid Blackwood",
+      "id": "c07c6ed0-e690-47c1-a84c-7341b0aca8fc",
+      "name": "Gareth Loxley",
       "role": "Suspect",
       "relationshipToVictim": "former business partner",
-      "statement": "At 8:45 pm, Piper Redding helped me set the glass down on the side table. We left the room together immediately afterwards. Elijah Patel and Clementine Fraser were still inside.",
-      "alibiClaim": "Piper Redding and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
+      "statement": "At 8:45 pm, Dr. Felix Armitage helped me set the glass down on the side table. We left the room together immediately afterwards. Miranda Havers and Eleanor Whitmore were still inside.",
+      "alibiClaim": "Dr. Felix Armitage and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
     },
     {
-      "id": "e1add2dc-a255-4526-9473-3f011eab6cc6",
-      "name": "Elijah Patel",
+      "id": "09da372b-6cc5-4c90-af26-48afe65a9030",
+      "name": "Miranda Havers",
       "role": "Suspect",
-      "relationshipToVictim": "estranged son-in-law",
+      "relationshipToVictim": "estranged sister",
       "statement": "I left at 8:40 pm. I never touched the knife and did not go near the bottle.",
       "alibiClaim": "I had already left the room by 8:40 pm and did not return."
     },
     {
-      "id": "9f4b79e9-a4dc-4ba3-ae59-42b9b963be1a",
-      "name": "Piper Redding",
+      "id": "692f10de-4aab-4e32-86ad-5502cb25fbfa",
+      "name": "Dr. Felix Armitage",
       "role": "Suspect",
-      "relationshipToVictim": "rival vintner",
-      "statement": "At 8:45 pm, I helped Astrid Blackwood set the glass down on the side table. We then left together and remained together until the body was found at 8:55 pm.",
-      "alibiClaim": "Astrid Blackwood and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
+      "relationshipToVictim": "personal physician",
+      "statement": "At 8:45 pm, I helped Gareth Loxley set the glass down on the side table. We then left together and remained together until the body was found at 8:55 pm.",
+      "alibiClaim": "Gareth Loxley and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
     }
   ],
   "roomObjects": [
     {
-      "id": "2a6ad4da-197b-4650-bdba-e0def37884ff",
+      "id": "5c5288e9-3ed1-4085-b609-8d09371b03d5",
       "name": "glass",
       "isConfirmed": true
     },
     {
-      "id": "601ec0fb-c567-4233-a502-34613613deda",
+      "id": "25e94979-43f5-444f-b3ee-a52cdbcc9b4a",
       "name": "bottle",
       "isConfirmed": true
     },
     {
-      "id": "58803a97-c63c-4c5a-be4c-368b122aeb0c",
+      "id": "0a107c3b-49b7-4215-9780-a16a11226cc3",
       "name": "plate",
       "isConfirmed": true
     },
     {
-      "id": "3d2328bd-b14d-4f19-81cf-bce2d72020f6",
+      "id": "5030c8aa-de46-4713-b404-17a00abc175f",
       "name": "knife",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "0b8c9aa7-2ba1-46f7-9dad-d4f94100581d",
+      "id": "47c839ab-90e8-44cd-b34d-6a772ad696cd",
       "title": "The Edge of Knife",
-      "detail": "A fresh line of blood runs along one edge of the knife, and its point has a new bend. Clementine Fraser has a narrow wound consistent with that edge.",
-      "roomObjectID": "3d2328bd-b14d-4f19-81cf-bce2d72020f6",
+      "detail": "A fresh line of blood runs along one edge of the knife, and its point has a new bend. Eleanor Whitmore has a narrow wound consistent with that edge.",
+      "roomObjectID": "5030c8aa-de46-4713-b404-17a00abc175f",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "805ee64e-c0a4-446c-b4b7-b233b935a4d9",
+      "id": "7b4d569a-6e4f-4ac5-b81e-18ff006cf1b4",
       "title": "Ring beneath Glass",
-      "detail": "The fresh circular ring beneath the glass is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Astrid Blackwood and Piper Redding both state that they set the glass down on the side table at 8:45 pm before leaving together.",
-      "roomObjectID": "2a6ad4da-197b-4650-bdba-e0def37884ff",
+      "detail": "The fresh circular ring beneath the glass is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Gareth Loxley and Dr. Felix Armitage both state that they set the glass down on the side table at 8:45 pm before leaving together.",
+      "roomObjectID": "5c5288e9-3ed1-4085-b609-8d09371b03d5",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,62 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "460fb79d-35b6-43b5-a441-3ff3b923db25"
+          "relatedSuspectID": "c07c6ed0-e690-47c1-a84c-7341b0aca8fc"
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "9f4b79e9-a4dc-4ba3-ae59-42b9b963be1a"
+          "relatedSuspectID": "692f10de-4aab-4e32-86ad-5502cb25fbfa"
         }
       ]
     },
     {
-      "id": "ae5645e0-e140-4ba1-8b58-a862c7b09363",
+      "id": "9412decf-5cb1-4bed-95f2-782cac2b668a",
       "title": "Fibres on Knife",
-      "detail": "Fine copper-coloured silk threads are caught around the handle of the knife. Elijah Patel's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
-      "roomObjectID": "3d2328bd-b14d-4f19-81cf-bce2d72020f6",
+      "detail": "Fine copper-coloured silk threads are caught around the handle of the knife. Miranda Havers's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
+      "roomObjectID": "5030c8aa-de46-4713-b404-17a00abc175f",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "e1add2dc-a255-4526-9473-3f011eab6cc6"
+          "relatedSuspectID": "09da372b-6cc5-4c90-af26-48afe65a9030"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "e1add2dc-a255-4526-9473-3f011eab6cc6"
+          "relatedSuspectID": "09da372b-6cc5-4c90-af26-48afe65a9030"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "e1add2dc-a255-4526-9473-3f011eab6cc6"
+          "relatedSuspectID": "09da372b-6cc5-4c90-af26-48afe65a9030"
         }
       ]
     },
     {
-      "id": "71cfcb13-3d6d-4d38-9f13-d1bd191f543d",
+      "id": "9f8a9a04-2ad5-4f1c-ae51-fc7b977c2684",
       "title": "Fragment at Bottle",
-      "detail": "A curved black lacquer chip edged in gold is lodged inside the handle joint of the bottle on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Elijah Patel has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "601ec0fb-c567-4233-a502-34613613deda",
+      "detail": "A curved black lacquer chip edged in gold is lodged inside the handle joint of the bottle on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Miranda Havers has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "25e94979-43f5-444f-b3ee-a52cdbcc9b4a",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "e1add2dc-a255-4526-9473-3f011eab6cc6"
+          "relatedSuspectID": "09da372b-6cc5-4c90-af26-48afe65a9030"
         }
       ]
     },
     {
-      "id": "887c622c-0795-4bd8-8b9f-fab67bb08ea1",
+      "id": "fd9d945e-856b-4608-84b9-42fe92eed7b2",
       "title": "Crack in Plate",
       "detail": "A crack runs across the plate. A continuous yellowed glue line is visible deep inside the break.",
-      "roomObjectID": "58803a97-c63c-4c5a-be4c-368b122aeb0c",
+      "roomObjectID": "0a107c3b-49b7-4215-9780-a16a11226cc3",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "e1add2dc-a255-4526-9473-3f011eab6cc6",
-    "motive": "Elijah Patel killed Clementine Fraser because a long-buried family secret regarding the vineyard's true ownership because.",
-    "method": "Clementine Fraser was fatally stabbed with the knife.",
+    "killerID": "09da372b-6cc5-4c90-af26-48afe65a9030",
+    "motive": "Miranda Havers killed Eleanor Whitmore because the imminent exposure of his embezzlement scheme.",
+    "method": "Eleanor Whitmore was fatally stabbed with the knife.",
     "timeOfDeath": "After 8:45 pm and before discovery at 8:55 pm",
-    "opportunity": "Elijah Patel claimed to have left at 8:40 pm. The timeline evidence places the attack after Astrid Blackwood and Piper Redding left together at 8:45 pm; the fine copper-coloured silk threads on the knife and the black and gold fragment recovered from the bottle place Elijah Patel inside afterwards. Elijah Patel therefore had the only evidenced opportunity to be alone with Clementine Fraser and reach the knife during the murder window."
+    "opportunity": "Miranda Havers claimed to have left at 8:40 pm. The timeline evidence places the attack after Gareth Loxley and Dr. Felix Armitage left together at 8:45 pm; the fine copper-coloured silk threads on the knife and the black and gold fragment recovered from the bottle place Miranda Havers inside afterwards. Miranda Havers therefore had the only evidenced opportunity to be alone with Eleanor Whitmore and reach the knife during the murder window."
   }
 }

@@ -111,7 +111,7 @@ class NarrativeSeedAI(StrictModel):
     """
 
     title: str = Field(min_length=5, max_length=100)
-    setting_description: str = Field(min_length=20, max_length=260)
+    setting_description: str = Field(min_length=15, max_length=260)
     victim_name: str = Field(min_length=4, max_length=60)
     victim_role: str = Field(min_length=4, max_length=100)
     suspects: list[NarrativeSuspectAI]

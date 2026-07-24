@@ -256,3 +256,37 @@ def test_generic_narrative_title_is_rejected() -> None:
     assert "The title is generic. Create a specific, evocative title." in (
         narrative_seed_issues(seeded)
     )
+
+def test_narrative_rejects_motive_ending_with_because() -> None:
+    from app.planner import narrative_seed_issues
+
+    seeded = narrative().model_copy(
+        update={
+            "motive_detail": (
+                "a long-buried family secret threatened to destroy "
+                "the killer's reputation because"
+            )
+        }
+    )
+
+    assert (
+        "motive_detail must not end with 'because'."
+        in narrative_seed_issues(seeded)
+    )
+
+def test_narrative_rejects_because_inside_motive_clause() -> None:
+    from app.planner import narrative_seed_issues
+
+    seeded = narrative().model_copy(
+        update={
+            "motive_detail": (
+                "a family scandal threatened the killer's reputation "
+                "because of an impending memoir"
+            )
+        }
+    )
+
+    assert (
+        "motive_detail must not contain 'because'; Python adds that word."
+        in narrative_seed_issues(seeded)
+    )

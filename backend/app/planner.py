@@ -463,6 +463,14 @@ def narrative_seed_issues(seed: NarrativeSeedAI) -> list[str]:
         issues.append(
             "motive_detail must not begin with 'because'; Python adds that word."
         )
+    if re.search(r"\bbecause[.!?]?$", motive_text):
+        issues.append(
+            "motive_detail must not end with 'because'."
+        )
+    if re.search(r"\bbecause\b", motive_text):
+        issues.append(
+            "motive_detail must not contain 'because'; Python adds that word."
+        )
     if any(
         phrase in motive_text
         for phrase in (

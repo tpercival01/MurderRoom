@@ -237,7 +237,11 @@ def main() -> None:
     ]
 
     with OUTPUT_FILE.open("w", newline="", encoding="utf-8") as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer = csv.DictWriter(
+            csv_file,
+            fieldnames=fieldnames,
+            lineterminator="\n",
+        )
         writer.writeheader()
         writer.writerows(rows)
 

@@ -1,10 +1,10 @@
 {
-  "id": "78356f60-58db-48cf-abd1-8f838a913f3d",
-  "title": "The Shadow at Netherwood Manor",
-  "openingIncident": "At 8:45 pm, Cassandra Markham, renowned food critic, was found dead in the grand dining room with a large wooden table and ornate chandelier. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "58fa6d03-f5e0-4e81-94ab-700e34bf5900",
+  "title": "Shattered Reflections in the Conservatory",
+  "openingIncident": "At 8:45 pm, Eleanor Whitcombe, renowned art dealer, was found dead in the dining room table set with a glass, a bottle, a plate and a knife. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "c0d5e86c-0138-44e0-b136-353231bea0b3",
-    "name": "Cassandra Markham",
+    "id": "dc3ef98d-8db1-4f14-ad63-3fd4204e7fa0",
+    "name": "Eleanor Whitcombe",
     "role": "Victim",
     "relationshipToVictim": "Victim",
     "statement": "",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "3605e4f6-a5c1-460d-b018-278a09118efb",
-      "name": "Astrid Blackwood",
+      "id": "279ccbc7-3321-4970-a46f-781267335a7f",
+      "name": "Graham Hargreaves",
       "role": "Suspect",
-      "relationshipToVictim": "estranged sister",
+      "relationshipToVictim": "former business partner",
       "statement": "I left at 8:30 pm. I never touched the knife and did not go near the glass.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     },
     {
-      "id": "bc199486-7765-44d6-b5e2-a4c172a44cc0",
-      "name": "Elijah Patel",
+      "id": "0ae15a94-4a65-4f7c-a1cd-f53e78775fe0",
+      "name": "Clara Beaumont",
       "role": "Suspect",
-      "relationshipToVictim": "business partner",
-      "statement": "At 8:35 pm, Lysander Grey helped me set the bottle down on the side table. We left the room together immediately afterwards. Astrid Blackwood and Cassandra Markham were still inside.",
-      "alibiClaim": "Lysander Grey and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "relationshipToVictim": "estranged sister",
+      "statement": "At 8:35 pm, Victor Lyle helped me set the bottle down on the side table. We left the room together immediately afterwards. Graham Hargreaves and Eleanor Whitcombe were still inside.",
+      "alibiClaim": "Victor Lyle and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "853c6a4e-1924-4901-8c7d-6e82090cbcd2",
-      "name": "Lysander Grey",
+      "id": "094f017f-b19b-4e61-9e3d-3063108b9bd3",
+      "name": "Victor Lyle",
       "role": "Suspect",
-      "relationshipToVictim": "former lover",
-      "statement": "At 8:35 pm, I helped Elijah Patel set the bottle down on the side table. We then left together and remained together until the body was found at 8:45 pm.",
-      "alibiClaim": "Elijah Patel and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "relationshipToVictim": "private solicitor",
+      "statement": "At 8:35 pm, I helped Clara Beaumont set the bottle down on the side table. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Clara Beaumont and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     }
   ],
   "roomObjects": [
     {
-      "id": "3dfdbf81-18d4-43e8-908a-2c9c78fd93ae",
+      "id": "5ec56982-07ea-4ca9-a4cc-074b75101459",
       "name": "glass",
       "isConfirmed": true
     },
     {
-      "id": "8d182947-10f4-4a17-8c00-e75bf9db57d4",
+      "id": "8d5ee27c-3a3d-410e-9375-21b73a6f44f4",
       "name": "bottle",
       "isConfirmed": true
     },
     {
-      "id": "ae6381b5-6146-450d-a84b-d15336b553e0",
+      "id": "4eccbebe-428b-414d-8490-a6d6b071f228",
       "name": "plate",
       "isConfirmed": true
     },
     {
-      "id": "6541ff4f-7536-49de-85df-2abb2855a5b9",
+      "id": "b4b7951f-448c-4ca0-b7de-2d14264600c5",
       "name": "knife",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "7e87a8cf-4855-412f-84b4-7aded4f36b71",
+      "id": "c492c6c0-b479-4f0d-9c44-694780c00cbf",
       "title": "The Edge of Knife",
-      "detail": "A fresh line of blood runs along one edge of the knife, and its point has a new bend. Cassandra Markham has a narrow wound consistent with that edge.",
-      "roomObjectID": "6541ff4f-7536-49de-85df-2abb2855a5b9",
+      "detail": "A fresh line of blood runs along one edge of the knife, and its point has a new bend. Eleanor Whitcombe has a narrow wound consistent with that edge.",
+      "roomObjectID": "b4b7951f-448c-4ca0-b7de-2d14264600c5",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "123a88ea-c5f1-49e7-91be-9227204799a9",
+      "id": "a1701624-9863-4e27-8916-6ebd8b3d82e4",
       "title": "Ring beneath Bottle",
-      "detail": "The fresh circular ring beneath the bottle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Elijah Patel and Lysander Grey both state that they set the bottle down on the side table at 8:35 pm before leaving together.",
-      "roomObjectID": "8d182947-10f4-4a17-8c00-e75bf9db57d4",
+      "detail": "The fresh circular ring beneath the bottle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Clara Beaumont and Victor Lyle both state that they set the bottle down on the side table at 8:35 pm before leaving together.",
+      "roomObjectID": "8d5ee27c-3a3d-410e-9375-21b73a6f44f4",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,62 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "bc199486-7765-44d6-b5e2-a4c172a44cc0"
+          "relatedSuspectID": "0ae15a94-4a65-4f7c-a1cd-f53e78775fe0"
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "853c6a4e-1924-4901-8c7d-6e82090cbcd2"
+          "relatedSuspectID": "094f017f-b19b-4e61-9e3d-3063108b9bd3"
         }
       ]
     },
     {
-      "id": "b6a34d8d-d7ce-46fd-99aa-32456289a89a",
+      "id": "955926ed-ddd9-4769-951b-28d3f19bc0a2",
       "title": "Fibres on Knife",
-      "detail": "Fine copper-coloured silk threads are caught around the handle of the knife. Astrid Blackwood's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
-      "roomObjectID": "6541ff4f-7536-49de-85df-2abb2855a5b9",
+      "detail": "Fine copper-coloured silk threads are caught around the handle of the knife. Graham Hargreaves's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
+      "roomObjectID": "b4b7951f-448c-4ca0-b7de-2d14264600c5",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "3605e4f6-a5c1-460d-b018-278a09118efb"
+          "relatedSuspectID": "279ccbc7-3321-4970-a46f-781267335a7f"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "3605e4f6-a5c1-460d-b018-278a09118efb"
+          "relatedSuspectID": "279ccbc7-3321-4970-a46f-781267335a7f"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "3605e4f6-a5c1-460d-b018-278a09118efb"
+          "relatedSuspectID": "279ccbc7-3321-4970-a46f-781267335a7f"
         }
       ]
     },
     {
-      "id": "ea1dc9bf-d483-49d0-ba7c-c058daf80d44",
+      "id": "dea924eb-8f32-4d47-8a6b-c3475ebeea9f",
       "title": "Fragment at Glass",
-      "detail": "A curved black lacquer chip edged in gold is lodged inside the handle joint of the glass on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Astrid Blackwood has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "3dfdbf81-18d4-43e8-908a-2c9c78fd93ae",
+      "detail": "A curved black lacquer chip edged in gold is lodged inside the handle joint of the glass on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Graham Hargreaves has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "5ec56982-07ea-4ca9-a4cc-074b75101459",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "3605e4f6-a5c1-460d-b018-278a09118efb"
+          "relatedSuspectID": "279ccbc7-3321-4970-a46f-781267335a7f"
         }
       ]
     },
     {
-      "id": "d7ec40d3-39a5-4436-aa1a-617ed1661c13",
+      "id": "5794721a-b19b-4e44-b0aa-d8bc0ee9b41a",
       "title": "Crack in Plate",
       "detail": "A crack runs across the plate. A continuous yellowed glue line is visible deep inside the break.",
-      "roomObjectID": "ae6381b5-6146-450d-a84b-d15336b553e0",
+      "roomObjectID": "4eccbebe-428b-414d-8490-a6d6b071f228",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "3605e4f6-a5c1-460d-b018-278a09118efb",
-    "motive": "Astrid Blackwood killed Cassandra Markham because a long-buried family secret that threatened to destroy their reputation because of a hidden will and a disputed inheritance.",
-    "method": "Cassandra Markham was fatally stabbed with the knife.",
+    "killerID": "279ccbc7-3321-4970-a46f-781267335a7f",
+    "motive": "Graham Hargreaves killed Eleanor Whitcombe because the imminent exposure of his embezzlement scheme that would ruin his reputation and leave him bankrupt.",
+    "method": "Eleanor Whitcombe was fatally stabbed with the knife.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Astrid Blackwood claimed to have left at 8:30 pm. The timeline evidence places the attack after Elijah Patel and Lysander Grey left together at 8:35 pm; the fine copper-coloured silk threads on the knife and the black and gold fragment recovered from the glass place Astrid Blackwood inside afterwards. Astrid Blackwood therefore had the only evidenced opportunity to be alone with Cassandra Markham and reach the knife during the murder window."
+    "opportunity": "Graham Hargreaves claimed to have left at 8:30 pm. The timeline evidence places the attack after Clara Beaumont and Victor Lyle left together at 8:35 pm; the fine copper-coloured silk threads on the knife and the black and gold fragment recovered from the glass place Graham Hargreaves inside afterwards. Graham Hargreaves therefore had the only evidenced opportunity to be alone with Eleanor Whitcombe and reach the knife during the murder window."
   }
 }

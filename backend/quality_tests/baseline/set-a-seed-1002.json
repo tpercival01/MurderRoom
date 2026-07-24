@@ -1,10 +1,10 @@
 {
-  "id": "6cd60a6b-d304-41b1-9b95-be5b5d0cdd52",
-  "title": "The Shadow in the Study",
-  "openingIncident": "At 8:45 pm, Astrid Markham, renowned literary critic, was found dead in the victim's dimly lit home office. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "70cdde94-7c66-46f8-81c3-c611862f6cba",
+  "title": "The Whispered Secrets of Whitby Library",
+  "openingIncident": "At 8:45 pm, Eleanor Whitmore, renowned antiquarian and curator of rare manuscripts, was found dead in the small study with a lamp, a book, a mug and a chair. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "e9ece3e7-1e4e-4ee9-8cbb-f5c7263bd593",
-    "name": "Astrid Markham",
+    "id": "4a6bb411-9bd4-4de3-a5ff-a0de15d1afed",
+    "name": "Eleanor Whitmore",
     "role": "Victim",
     "relationshipToVictim": "Victim",
     "statement": "",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "7178954a-e680-400c-a82e-319bbfde09d4",
-      "name": "Cassandra Wellesley",
+      "id": "f2fc3aa0-db5c-4070-83b8-6cee6c47c5b6",
+      "name": "Gareth Hargreaves",
       "role": "Suspect",
-      "relationshipToVictim": "estranged niece",
+      "relationshipToVictim": "former research assistant",
       "statement": "I left at 8:30 pm. I never touched the lamp and did not go near the book.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     },
     {
-      "id": "4074b184-7bfe-4b44-8f65-3e09f9702d8e",
-      "name": "Elijah Pembroke",
+      "id": "e9e1e175-32bd-47fe-8a87-6daa6ee42b1b",
+      "name": "Clara Beaumont",
       "role": "Suspect",
-      "relationshipToVictim": "fellow critic and rival",
-      "statement": "At 8:35 pm, Lysander Blackwood helped me move the chair clear of the doorway. We left the room together immediately afterwards. Cassandra Wellesley and Astrid Markham were still inside.",
-      "alibiClaim": "Lysander Blackwood and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "relationshipToVictim": "estranged sister",
+      "statement": "At 8:35 pm, Victor Lyle helped me move the chair clear of the doorway. We left the room together immediately afterwards. Gareth Hargreaves and Eleanor Whitmore were still inside.",
+      "alibiClaim": "Victor Lyle and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "ab5c9eb9-6c13-45c5-b2c3-057eedb000d7",
-      "name": "Lysander Blackwood",
+      "id": "a8bcc659-af19-45b0-8bea-9ffd32375645",
+      "name": "Victor Lyle",
       "role": "Suspect",
-      "relationshipToVictim": "aspiring author and prot\u00e9g\u00e9",
-      "statement": "At 8:35 pm, I helped Elijah Pembroke move the chair clear of the doorway. We then left together and remained together until the body was found at 8:45 pm.",
-      "alibiClaim": "Elijah Pembroke and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "relationshipToVictim": "business partner",
+      "statement": "At 8:35 pm, I helped Clara Beaumont move the chair clear of the doorway. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Clara Beaumont and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     }
   ],
   "roomObjects": [
     {
-      "id": "cc60275b-17b1-4fc2-a58e-3ead0e06a324",
+      "id": "80f4b233-ecd1-402e-aa82-df442372cc58",
       "name": "lamp",
       "isConfirmed": true
     },
     {
-      "id": "363c595f-1351-4a55-b36a-057a81ba840b",
+      "id": "273b19c2-960d-41f0-9488-1aa46de2d404",
       "name": "book",
       "isConfirmed": true
     },
     {
-      "id": "90e50a0a-04b6-4df0-9848-351ce246834b",
+      "id": "77b65292-f7af-499d-8c34-67bdfdbc7746",
       "name": "mug",
       "isConfirmed": true
     },
     {
-      "id": "01e00b38-3091-47ae-9e2b-88e3c06e103f",
+      "id": "d6a6623c-87ac-47ec-8269-482ae1fe5f9d",
       "name": "chair",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "9dd24a99-8bad-472e-9620-d1fe0a338317",
+      "id": "1a1e2256-73f0-4442-b01b-f2268e7d9949",
       "title": "The Dented Lamp",
-      "detail": "A fresh blood smear and a new impact dent mark the lamp. Astrid Markham has a fresh blunt wound to the head.",
-      "roomObjectID": "cc60275b-17b1-4fc2-a58e-3ead0e06a324",
+      "detail": "A fresh blood smear and a new impact dent mark the lamp. Eleanor Whitmore has a fresh blunt wound to the head.",
+      "roomObjectID": "80f4b233-ecd1-402e-aa82-df442372cc58",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "0bc76b50-6246-4e07-ac3b-4bae35a7d24b",
+      "id": "d900958a-0167-42e1-86c8-fbf24b35044b",
       "title": "Movement of Chair",
-      "detail": "A fresh floor scrape made by the chair is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Elijah Pembroke and Lysander Blackwood both state that they moved the chair clear of the doorway at 8:35 pm before leaving together.",
-      "roomObjectID": "01e00b38-3091-47ae-9e2b-88e3c06e103f",
+      "detail": "A fresh floor scrape made by the chair is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Clara Beaumont and Victor Lyle both state that they moved the chair clear of the doorway at 8:35 pm before leaving together.",
+      "roomObjectID": "d6a6623c-87ac-47ec-8269-482ae1fe5f9d",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,62 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "4074b184-7bfe-4b44-8f65-3e09f9702d8e"
+          "relatedSuspectID": "e9e1e175-32bd-47fe-8a87-6daa6ee42b1b"
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "ab5c9eb9-6c13-45c5-b2c3-057eedb000d7"
+          "relatedSuspectID": "a8bcc659-af19-45b0-8bea-9ffd32375645"
         }
       ]
     },
     {
-      "id": "8bc70000-34c0-4bb6-ae93-b6d752a0b1cb",
+      "id": "b029ca3b-7da4-4bb1-8e0d-be8bee6d59c3",
       "title": "Fibres on Lamp",
-      "detail": "Fine copper-coloured silk threads are caught inside a fresh split beneath the base of the lamp. Cassandra Wellesley's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
-      "roomObjectID": "cc60275b-17b1-4fc2-a58e-3ead0e06a324",
+      "detail": "Fine copper-coloured silk threads are caught inside a fresh split beneath the base of the lamp. Gareth Hargreaves's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
+      "roomObjectID": "80f4b233-ecd1-402e-aa82-df442372cc58",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "7178954a-e680-400c-a82e-319bbfde09d4"
+          "relatedSuspectID": "f2fc3aa0-db5c-4070-83b8-6cee6c47c5b6"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "7178954a-e680-400c-a82e-319bbfde09d4"
+          "relatedSuspectID": "f2fc3aa0-db5c-4070-83b8-6cee6c47c5b6"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "7178954a-e680-400c-a82e-319bbfde09d4"
+          "relatedSuspectID": "f2fc3aa0-db5c-4070-83b8-6cee6c47c5b6"
         }
       ]
     },
     {
-      "id": "7f95beb0-34b1-4363-809c-9a55afd5d12c",
+      "id": "2daf0f6b-e3bf-433e-95cb-b66c529dd2d0",
       "title": "Fragment at Book",
-      "detail": "A curved black lacquer chip edged in gold is lodged between the cover and first page of the book on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Cassandra Wellesley has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "363c595f-1351-4a55-b36a-057a81ba840b",
+      "detail": "A curved black lacquer chip edged in gold is lodged between the cover and first page of the book on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Gareth Hargreaves has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "273b19c2-960d-41f0-9488-1aa46de2d404",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "7178954a-e680-400c-a82e-319bbfde09d4"
+          "relatedSuspectID": "f2fc3aa0-db5c-4070-83b8-6cee6c47c5b6"
         }
       ]
     },
     {
-      "id": "fe193a54-7208-48c8-8fa3-f0867a006829",
+      "id": "a33bce0d-163a-4736-84bb-b32a7090bf34",
       "title": "Crack in Mug",
       "detail": "A crack runs across the mug. A continuous yellowed glue line is visible deep inside the break.",
-      "roomObjectID": "90e50a0a-04b6-4df0-9848-351ce246834b",
+      "roomObjectID": "77b65292-f7af-499d-8c34-67bdfdbc7746",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "7178954a-e680-400c-a82e-319bbfde09d4",
-    "motive": "Cassandra Wellesley killed Astrid Markham because a long-buried family secret that threatened to destroy Astrid's reputation and livelihood because.",
-    "method": "Astrid Markham was killed by a heavy blow from the lamp.",
+    "killerID": "f2fc3aa0-db5c-4070-83b8-6cee6c47c5b6",
+    "motive": "Gareth Hargreaves killed Eleanor Whitmore because the imminent exposure of a forged medieval manuscript that would ruin his reputation.",
+    "method": "Eleanor Whitmore was killed by a heavy blow from the lamp.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Cassandra Wellesley claimed to have left at 8:30 pm. The timeline evidence places the attack after Elijah Pembroke and Lysander Blackwood left together at 8:35 pm; the fine copper-coloured silk threads on the lamp and the black and gold fragment recovered from the book place Cassandra Wellesley inside afterwards. Cassandra Wellesley therefore had the only evidenced opportunity to be alone with Astrid Markham and reach the lamp during the murder window."
+    "opportunity": "Gareth Hargreaves claimed to have left at 8:30 pm. The timeline evidence places the attack after Clara Beaumont and Victor Lyle left together at 8:35 pm; the fine copper-coloured silk threads on the lamp and the black and gold fragment recovered from the book place Gareth Hargreaves inside afterwards. Gareth Hargreaves therefore had the only evidenced opportunity to be alone with Eleanor Whitmore and reach the lamp during the murder window."
   }
 }

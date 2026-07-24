@@ -1,0 +1,146 @@
+{
+  "id": "0cc8cf34-6fca-4371-b8b3-777cbc7f72a8",
+  "title": "The Midnight Reflection in Whitby Hall",
+  "openingIncident": "At 8:55 pm, Eleanor Whitmore, renowned antiquarian, was found dead in a dimly lit drawing room with a gilt\u2011framed mirror, a ticking mantel clock, a solitary candle, and a faded family photograph. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "victim": {
+    "id": "e44c0f8b-e0ee-4526-918b-2fb6795e7463",
+    "name": "Eleanor Whitmore",
+    "role": "Victim",
+    "relationshipToVictim": "Victim",
+    "statement": "",
+    "alibiClaim": ""
+  },
+  "suspects": [
+    {
+      "id": "d20ea833-82d8-4262-905a-2f747d95930d",
+      "name": "Victor Hargreaves",
+      "role": "Suspect",
+      "relationshipToVictim": "former business partner",
+      "statement": "At 8:45 pm, Dr. Malcolm Pike helped me shift the candle to light the victim's papers. We left the room together immediately afterwards. Clara Beaumont and Eleanor Whitmore were still inside.",
+      "alibiClaim": "Dr. Malcolm Pike and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
+    },
+    {
+      "id": "ba66a65b-bb14-4545-bb22-a4ee4c5e8583",
+      "name": "Clara Beaumont",
+      "role": "Suspect",
+      "relationshipToVictim": "estranged sister",
+      "statement": "I left at 8:40 pm. I never touched the clock and did not go near the mirror.",
+      "alibiClaim": "I had already left the room by 8:40 pm and did not return."
+    },
+    {
+      "id": "15a75ce8-8867-46fe-b2a3-0a54d3486dc7",
+      "name": "Dr. Malcolm Pike",
+      "role": "Suspect",
+      "relationshipToVictim": "family physician",
+      "statement": "At 8:45 pm, I helped Victor Hargreaves shift the candle to light the victim's papers. We then left together and remained together until the body was found at 8:55 pm.",
+      "alibiClaim": "Victor Hargreaves and I were together outside the room from 8:45 pm until the discovery at 8:55 pm."
+    }
+  ],
+  "roomObjects": [
+    {
+      "id": "8d3fe636-ea9b-42aa-a256-bf1e760a61a9",
+      "name": "mirror",
+      "isConfirmed": true
+    },
+    {
+      "id": "8862e41b-5769-4181-8541-d65ea58a353b",
+      "name": "clock",
+      "isConfirmed": true
+    },
+    {
+      "id": "9bf7659a-89e5-471e-82e0-d81b4b7435b3",
+      "name": "candle",
+      "isConfirmed": true
+    },
+    {
+      "id": "5bc5b64e-b763-43cf-932b-9a10cde80f23",
+      "name": "photograph",
+      "isConfirmed": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "612ab088-352f-46d4-8a45-7912d10f4e69",
+      "title": "The Dented Clock",
+      "detail": "A fresh blood smear and a new impact dent mark the clock. Eleanor Whitmore has a fresh blunt wound to the head.",
+      "roomObjectID": "8862e41b-5769-4181-8541-d65ea58a353b",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesMethod",
+          "relatedSuspectID": null
+        }
+      ]
+    },
+    {
+      "id": "3252bdce-a958-4c2a-a64e-0d9bec80bf96",
+      "title": "Outline beneath Candle",
+      "detail": "The clean outline beneath the shifted base of the candle is crossed by a narrow blood droplet from the attack whose edge remains unbroken. Victor Hargreaves and Dr. Malcolm Pike both state that they shifted the candle to light the victim's papers at 8:45 pm before leaving together.",
+      "roomObjectID": "9bf7659a-89e5-471e-82e0-d81b4b7435b3",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "establishesTimeline",
+          "relatedSuspectID": null
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "d20ea833-82d8-4262-905a-2f747d95930d"
+        },
+        {
+          "kind": "corroboratesAlibi",
+          "relatedSuspectID": "15a75ce8-8867-46fe-b2a3-0a54d3486dc7"
+        }
+      ]
+    },
+    {
+      "id": "935cd3a5-93b5-429c-9cbe-90ad89ffe102",
+      "title": "Fibres on Clock",
+      "detail": "Fine copper-coloured silk threads are caught inside a fresh split on the clock. Clara Beaumont's copper silk pocket square has a fresh narrow tear, exposing the same alternating copper and navy stripe.",
+      "roomObjectID": "8862e41b-5769-4181-8541-d65ea58a353b",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "contradictsStatement",
+          "relatedSuspectID": "ba66a65b-bb14-4545-bb22-a4ee4c5e8583"
+        },
+        {
+          "kind": "establishesOpportunity",
+          "relatedSuspectID": "ba66a65b-bb14-4545-bb22-a4ee4c5e8583"
+        },
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "ba66a65b-bb14-4545-bb22-a4ee4c5e8583"
+        }
+      ]
+    },
+    {
+      "id": "94a5fdcb-cb67-460a-82f8-78eab82d27be",
+      "title": "Fragment at Mirror",
+      "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the mirror on top of a narrow blood droplet from the attack. The black-and-gold fountain-pen cap worn by Clara Beaumont has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "8d3fe636-ea9b-42aa-a256-bf1e760a61a9",
+      "kind": "evidence",
+      "deductions": [
+        {
+          "kind": "supportsSuspect",
+          "relatedSuspectID": "ba66a65b-bb14-4545-bb22-a4ee4c5e8583"
+        }
+      ]
+    },
+    {
+      "id": "2404d6ed-ec24-4589-8d4f-68801c8a657a",
+      "title": "Mark on Photograph",
+      "detail": "A dark mark crosses the photograph. The same intact factory finish continues over the marked area.",
+      "roomObjectID": "5bc5b64e-b763-43cf-932b-9a10cde80f23",
+      "kind": "redHerring",
+      "deductions": []
+    }
+  ],
+  "solution": {
+    "killerID": "ba66a65b-bb14-4545-bb22-a4ee4c5e8583",
+    "motive": "Clara Beaumont killed Eleanor Whitmore because a hidden deed transferring the estate to a secret heir threatened her control.",
+    "method": "Eleanor Whitmore was killed by a heavy blow from the clock.",
+    "timeOfDeath": "After 8:45 pm and before discovery at 8:55 pm",
+    "opportunity": "Clara Beaumont claimed to have left at 8:40 pm. The timeline evidence places the attack after Victor Hargreaves and Dr. Malcolm Pike left together at 8:45 pm; the fine copper-coloured silk threads on the clock and the black and gold fragment recovered from the mirror place Clara Beaumont inside afterwards. Clara Beaumont therefore had the only evidenced opportunity to be alone with Eleanor Whitmore and reach the clock during the murder window."
+  }
+}

@@ -25,6 +25,7 @@ def main() -> None:
         for set_name, room_objects in OBJECT_SETS.items():
             for seed in SEEDS:
                 filename = OUTPUT_DIR / f"{set_name}-seed-{seed}.json"
+                error_filename = OUTPUT_DIR / f"{set_name}-seed-{seed}-error.json"
 
                 print(f"Generating {filename.name}...")
 
@@ -42,7 +43,7 @@ def main() -> None:
                 duration = time.perf_counter() - started_at
 
                 if response.is_error:
-                    error_filename = OUTPUT_DIR / f"{set_name}-seed-{seed}-error.json"
+                    filename.unlink(missing_ok=True)
                     error_filename.write_text(
                         json.dumps(
                             {
@@ -65,6 +66,7 @@ def main() -> None:
                     json.dumps(response.json(), indent=2),
                     encoding="utf-8",
                 )
+                error_filename.unlink(missing_ok=True)
 
                 print(
                     f"Saved {filename.name} "

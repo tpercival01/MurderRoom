@@ -1,5 +1,0 @@
-{
-  "status_code": 502,
-  "response": "{\"detail\":\"Unable to obtain valid narrative metadata from Groq. Narrative response failed validation: Groq request failed before a response was received: 1 validation error for NarrativeSeedAI\\nsetting_description\\n  String should have at least 20 characters [type=string_too_short, input_value='the dimly lit study', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.13/v/string_too_short\"}",
-  "duration_seconds": 17.9
-}

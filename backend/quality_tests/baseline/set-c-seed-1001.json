@@ -1,10 +1,10 @@
 {
-  "id": "f0cb36a9-c2bb-493e-973d-6f9f070230a9",
-  "title": "The Shadow in the Study",
-  "openingIncident": "At 8:45 pm, Aubrey Finch, local journalist, was found dead in the victim's cluttered home office. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
+  "id": "b5956e14-9f28-4fdf-98c0-533ac5e569ad",
+  "title": "The Silent Echo of the Study",
+  "openingIncident": "At 8:45 pm, Eleanor Whitcombe, renowned art curator, was found dead in the cramped study littered with a shoe, a remote control, a water bottle and a backpack. Three people had been present during the final minutes, and each gave a different account. Nothing outside the room is needed to identify the killer.",
   "victim": {
-    "id": "2c3ef391-8d62-40ea-b187-8ec8faf1edac",
-    "name": "Aubrey Finch",
+    "id": "a627c862-fa84-4c1b-b5fe-6b65809fbced",
+    "name": "Eleanor Whitcombe",
     "role": "Victim",
     "relationshipToVictim": "Victim",
     "statement": "",
@@ -12,58 +12,58 @@
   },
   "suspects": [
     {
-      "id": "8cb32fcc-5ba8-4f5a-8cc2-3d1ea8363352",
-      "name": "Cassandra Markham",
+      "id": "2b2ebf88-6e62-4f40-a100-46b52050d017",
+      "name": "Gareth Hargreaves",
       "role": "Suspect",
-      "relationshipToVictim": "rival journalist",
-      "statement": "At 8:35 pm, Elijah Patel helped me move the remote control aside. We left the room together immediately afterwards. Lysander Blackwood and Aubrey Finch were still inside.",
-      "alibiClaim": "Elijah Patel and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "relationshipToVictim": "former assistant",
+      "statement": "At 8:35 pm, Miriam Calder helped me move the remote control aside. We left the room together immediately afterwards. Trevor Langford and Eleanor Whitcombe were still inside.",
+      "alibiClaim": "Miriam Calder and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "fbf5b839-c455-4af4-b538-4d217320c56d",
-      "name": "Elijah Patel",
+      "id": "cb4413a0-a8ea-4d49-8330-9ee2fab2cad0",
+      "name": "Miriam Calder",
       "role": "Suspect",
-      "relationshipToVictim": "former colleague",
-      "statement": "At 8:35 pm, I helped Cassandra Markham move the remote control aside. We then left together and remained together until the body was found at 8:45 pm.",
-      "alibiClaim": "Cassandra Markham and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
+      "relationshipToVictim": "ex\u2011partner",
+      "statement": "At 8:35 pm, I helped Gareth Hargreaves move the remote control aside. We then left together and remained together until the body was found at 8:45 pm.",
+      "alibiClaim": "Gareth Hargreaves and I were together outside the room from 8:35 pm until the discovery at 8:45 pm."
     },
     {
-      "id": "7a24ede6-0871-4ae4-a514-ba3d5bcdf63e",
-      "name": "Lysander Blackwood",
+      "id": "82c896dd-8d2e-458b-aa02-3aca5265712c",
+      "name": "Trevor Langford",
       "role": "Suspect",
-      "relationshipToVictim": "estranged son",
+      "relationshipToVictim": "financial adviser",
       "statement": "I left at 8:30 pm. I never touched the water bottle and did not go near the shoe.",
       "alibiClaim": "I had already left the room by 8:30 pm and did not return."
     }
   ],
   "roomObjects": [
     {
-      "id": "25089271-dfb4-4ba9-a2ba-48d2e2552d4f",
+      "id": "511338fb-ad2a-4c64-80f5-0b9371a2a04b",
       "name": "shoe",
       "isConfirmed": true
     },
     {
-      "id": "fad56d3a-196b-415e-be10-0a2f2cb652ac",
+      "id": "e010e8f9-87cb-47e0-b9ed-2779a4c043d8",
       "name": "remote control",
       "isConfirmed": true
     },
     {
-      "id": "e498a445-e451-472b-92c9-4a2d85e05c63",
+      "id": "f76c1e58-215c-47fc-9ad9-628d1f0f9b7e",
       "name": "water bottle",
       "isConfirmed": true
     },
     {
-      "id": "28913d30-e32c-4ab0-a62e-706c0447f08f",
+      "id": "cdae39a4-2dd8-4bf6-9c21-0ec62d8f8fab",
       "name": "backpack",
       "isConfirmed": true
     }
   ],
   "clues": [
     {
-      "id": "bcf90d36-0a32-4bbc-8b09-2de02ab82fa4",
+      "id": "71834aee-d1f3-4170-9524-1c54724478ec",
       "title": "Granules in Water Bottle",
-      "detail": "Undissolved blue granules cling below the liquid line inside the water bottle. The same blue residue is visible at Aubrey Finch's lips and in the remaining drink.",
-      "roomObjectID": "e498a445-e451-472b-92c9-4a2d85e05c63",
+      "detail": "Undissolved blue granules cling below the liquid line inside the water bottle. The same blue residue is visible at Eleanor Whitcombe's lips and in the remaining drink.",
+      "roomObjectID": "f76c1e58-215c-47fc-9ad9-628d1f0f9b7e",
       "kind": "evidence",
       "deductions": [
         {
@@ -73,10 +73,10 @@
       ]
     },
     {
-      "id": "60098e79-4364-42a2-9e8d-4450af6cf228",
+      "id": "c12d7fed-746e-410b-813e-807d1e29efa8",
       "title": "Position of Remote Control",
-      "detail": "The fresh contact mark left by the remote control is crossed by a narrow blue droplet from the spilled poisoned drink whose edge remains unbroken. Cassandra Markham and Elijah Patel both state that they moved the remote control aside at 8:35 pm before leaving together.",
-      "roomObjectID": "fad56d3a-196b-415e-be10-0a2f2cb652ac",
+      "detail": "The fresh contact mark left by the remote control is crossed by a narrow blue droplet from the spilled poisoned drink whose edge remains unbroken. Gareth Hargreaves and Miriam Calder both state that they moved the remote control aside at 8:35 pm before leaving together.",
+      "roomObjectID": "e010e8f9-87cb-47e0-b9ed-2779a4c043d8",
       "kind": "evidence",
       "deductions": [
         {
@@ -85,62 +85,62 @@
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "8cb32fcc-5ba8-4f5a-8cc2-3d1ea8363352"
+          "relatedSuspectID": "2b2ebf88-6e62-4f40-a100-46b52050d017"
         },
         {
           "kind": "corroboratesAlibi",
-          "relatedSuspectID": "fbf5b839-c455-4af4-b538-4d217320c56d"
+          "relatedSuspectID": "cb4413a0-a8ea-4d49-8330-9ee2fab2cad0"
         }
       ]
     },
     {
-      "id": "658aa0ec-df29-4970-823a-c5e7cc824185",
+      "id": "f2b544d9-51b6-4bd9-822a-47a43b3f240f",
       "title": "Fibres on Water Bottle",
-      "detail": "Teal-and-cream tweed fibres are caught around the handle and rim of the water bottle. Lysander Blackwood's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
-      "roomObjectID": "e498a445-e451-472b-92c9-4a2d85e05c63",
+      "detail": "Teal-and-cream tweed fibres are caught around the handle and rim of the water bottle. Trevor Langford's teal tweed jacket cuff has a newly frayed cuff edge, exposing the same unusual teal-and-cream check.",
+      "roomObjectID": "f76c1e58-215c-47fc-9ad9-628d1f0f9b7e",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "contradictsStatement",
-          "relatedSuspectID": "7a24ede6-0871-4ae4-a514-ba3d5bcdf63e"
+          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
         },
         {
           "kind": "establishesOpportunity",
-          "relatedSuspectID": "7a24ede6-0871-4ae4-a514-ba3d5bcdf63e"
+          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
         },
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "7a24ede6-0871-4ae4-a514-ba3d5bcdf63e"
+          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
         }
       ]
     },
     {
-      "id": "ff8ffbc1-75d9-4193-9723-34f95b70d216",
+      "id": "8d5b325b-b4f0-41f7-8321-87e082c43478",
       "title": "Fragment at Shoe",
-      "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the shoe on top of a narrow blue droplet from the spilled poisoned drink. The black-and-gold fountain-pen cap worn by Lysander Blackwood has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
-      "roomObjectID": "25089271-dfb4-4ba9-a2ba-48d2e2552d4f",
+      "detail": "A curved black lacquer chip edged in gold is lodged in a narrow edge of the shoe on top of a narrow blue droplet from the spilled poisoned drink. The black-and-gold fountain-pen cap worn by Trevor Langford has a fresh curved gap in the lacquer; the exposed edges visibly fit the fragment.",
+      "roomObjectID": "511338fb-ad2a-4c64-80f5-0b9371a2a04b",
       "kind": "evidence",
       "deductions": [
         {
           "kind": "supportsSuspect",
-          "relatedSuspectID": "7a24ede6-0871-4ae4-a514-ba3d5bcdf63e"
+          "relatedSuspectID": "82c896dd-8d2e-458b-aa02-3aca5265712c"
         }
       ]
     },
     {
-      "id": "03c6ff48-dda5-4cd8-8c31-8377b4fae6b2",
+      "id": "61edaeaf-a1db-4eb4-815d-810217a75a59",
       "title": "Mark on Backpack",
       "detail": "A dark mark crosses the backpack. The same intact factory finish continues over the marked area.",
-      "roomObjectID": "28913d30-e32c-4ab0-a62e-706c0447f08f",
+      "roomObjectID": "cdae39a4-2dd8-4bf6-9c21-0ec62d8f8fab",
       "kind": "redHerring",
       "deductions": []
     }
   ],
   "solution": {
-    "killerID": "7a24ede6-0871-4ae4-a514-ba3d5bcdf63e",
-    "motive": "Lysander Blackwood killed Aubrey Finch because the victim's discovery of a dark family secret that threatened to destroy Lysander's reputation and political ambitions because.",
-    "method": "A fatal crushed dose was dissolved in the water bottle before Aubrey Finch drank.",
+    "killerID": "82c896dd-8d2e-458b-aa02-3aca5265712c",
+    "motive": "Trevor Langford killed Eleanor Whitcombe because the discovery that the victim had embezzled a six\u2011figure sum from their shared investment portfolio.",
+    "method": "A fatal crushed dose was dissolved in the water bottle before Eleanor Whitcombe drank.",
     "timeOfDeath": "After 8:35 pm and before discovery at 8:45 pm",
-    "opportunity": "Lysander Blackwood claimed to have left at 8:30 pm. The timeline evidence places the attack after Cassandra Markham and Elijah Patel left together at 8:35 pm; the teal-and-cream tweed fibres on the water bottle and the black and gold fragment recovered from the shoe place Lysander Blackwood inside afterwards. Lysander Blackwood therefore had the only evidenced opportunity to be alone with Aubrey Finch and reach the water bottle during the murder window."
+    "opportunity": "Trevor Langford claimed to have left at 8:30 pm. The timeline evidence places the attack after Gareth Hargreaves and Miriam Calder left together at 8:35 pm; the teal-and-cream tweed fibres on the water bottle and the black and gold fragment recovered from the shoe place Trevor Langford inside afterwards. Trevor Langford therefore had the only evidenced opportunity to be alone with Eleanor Whitcombe and reach the water bottle during the murder window."
   }
 }

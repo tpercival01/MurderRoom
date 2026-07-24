@@ -273,8 +273,8 @@ def _narrative_prompt(
            four supplied objects. Write it as a lower-case noun phrase beginning
            with "a", "an" or "the".
         7. The motive_detail must name a concrete secret, loss, betrayal or threat
-           and must grammatically follow the word "because". Do not begin it with
-           "because" and do not end it with a full stop.
+            and must grammatically follow the word "because". Do not include the word
+            "because" anywhere in motive_detail and do not end it with a full stop.
         8. Do not mention which suspect is the killer in prose. The locked key is
            for internal consistency only.
         {feedback_text}
